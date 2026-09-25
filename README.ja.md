@@ -50,7 +50,11 @@ Windows / Mac 対応。
 
 - **好きな構成で、どこからでも** — 音声認識（STT）・LLM・音声合成（TTS）はローカルAIとAPIを自由に組み合わせ。PCをサーバーにして、スマホやタブレットのブラウザで彼女と話すこともできます
 
-  <!-- TODO(公開時): 圧縮済み動画「好きな構成で、どこからでも.mp4」「好きな構成２.mp4」をGitHubのWeb編集画面へドラッグ&ドロップし、生成されたURL2本をここに貼る -->
+  サムネイルをクリックすると動画が開きます（字幕付き）
+
+  | 料理しながら | ゲームしながら |
+  |:---:|:---:|
+  | <a href="https://github.com/user-attachments/assets/54767326-f7b5-41a7-a37c-4669a931c001"><img alt="料理しながら話す" src="readme_images/video_clip_cooking.ja.jpg" width="360"></a> | <a href="https://github.com/user-attachments/assets/12440d5f-f7fe-40d7-8f3e-9cbe1cadab5e"><img alt="ゲームしながら話す" src="readme_images/video_clip_gaming.ja.jpg" width="360"></a> |
 
 **目次**
 
@@ -107,7 +111,7 @@ Windows / Mac 対応。
 
 AGを動かしているPCをサーバーにして、スマホや外出先のノートPCのブラウザからそのサーバーにアクセスすると、家のPCに居るキャラクターとそのまま会話できます。通信はVPNサービスTailscale（無料枠で十分）で自宅のPCと直接つながります。インターネットへポートを開放するわけではないので、あなたがTailscaleに参加させた端末以外からはアクセスできません（詳しくは「[データとプライバシー](#データとプライバシー)」）。スマホ向けのモバイルUIと、サーバーを遠隔管理する管理画面が使え、スマホのホーム画面にアプリとして追加することもできます。
 
-<!-- TODO(公開時): 圧縮済み動画「サーバーモード — スマホからも、同じ彼女と.mp4」をGitHubのWeb編集画面へドラッグ&ドロップし、生成されたURLをここに貼る -->
+https://github.com/user-attachments/assets/47160f32-3788-4739-afb6-ace2658ffc82
 
 ## アーキテクチャ
 

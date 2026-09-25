@@ -50,7 +50,11 @@ Works on Windows and Mac.
 
 - **Any setup, from anywhere** — Mix local AI and cloud APIs freely for speech recognition (STT), the LLM and speech synthesis (TTS). You can also turn the PC into a server and talk with her from a phone or tablet browser
 
-  <!-- TODO(when publishing): drag & drop the two compressed videos ("好きな構成で、どこからでも.mp4" / "好きな構成２.mp4", shared with the Japanese README) into GitHub's web editor and paste the two generated URLs here -->
+  Click a thumbnail to play the clip (subtitled)
+
+  | While cooking | While gaming |
+  |:---:|:---:|
+  | <a href="https://github.com/user-attachments/assets/c9b57caf-2a39-452f-88df-537e38e51de5"><img alt="Talking with her while cooking" src="readme_images/video_clip_cooking.en.jpg" width="360"></a> | <a href="https://github.com/user-attachments/assets/a0bc5262-e6e2-4979-b171-31da00035924"><img alt="Talking with her while gaming" src="readme_images/video_clip_gaming.en.jpg" width="360"></a> |
 
 **Table of contents**
 
@@ -107,7 +111,7 @@ On top of the basic conversation, there is a set of features that make the conve
 
 Server mode turns the PC running AG into a server — access that server from a phone or a laptop's browser while you are out, and you can talk with the character living on your home PC just as usual. Traffic goes directly to your home PC over the VPN service Tailscale (the free plan is plenty). No port is opened to the internet, so nothing but the devices you have joined to your Tailscale network can reach it (see "[Data and privacy](#data-and-privacy)" for details). You get a mobile UI for phones and an admin console for managing the server remotely, and AG can be added to your phone's home screen as an app.
 
-<!-- TODO(when publishing): drag & drop the compressed video ("サーバーモード — スマホからも、同じ彼女と.mp4", shared with the Japanese README) into GitHub's web editor and paste the generated URL here -->
+https://github.com/user-attachments/assets/8e16e740-6df7-4f2d-8a5c-1e48ea77ef90
 
 ## Architecture
 
