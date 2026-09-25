@@ -50,11 +50,9 @@ Windows / Mac 対応。
 
 - **好きな構成で、どこからでも** — 音声認識（STT）・LLM・音声合成（TTS）はローカルAIとAPIを自由に組み合わせ。PCをサーバーにして、スマホやタブレットのブラウザで彼女と話すこともできます
 
-  サムネイルをクリックすると動画が開きます（字幕付き）
-
   | 料理しながら | ゲームしながら |
   |:---:|:---:|
-  | <a href="https://github.com/user-attachments/assets/54767326-f7b5-41a7-a37c-4669a931c001"><img alt="料理しながら話す" src="readme_images/video_clip_cooking.ja.jpg" width="360"></a> | <a href="https://github.com/user-attachments/assets/12440d5f-f7fe-40d7-8f3e-9cbe1cadab5e"><img alt="ゲームしながら話す" src="readme_images/video_clip_gaming.ja.jpg" width="360"></a> |
+  | https://github.com/user-attachments/assets/54767326-f7b5-41a7-a37c-4669a931c001 | https://github.com/user-attachments/assets/12440d5f-f7fe-40d7-8f3e-9cbe1cadab5e |
 
 **目次**
 

@@ -50,11 +50,9 @@ Works on Windows and Mac.
 
 - **Any setup, from anywhere** — Mix local AI and cloud APIs freely for speech recognition (STT), the LLM and speech synthesis (TTS). You can also turn the PC into a server and talk with her from a phone or tablet browser
 
-  Click a thumbnail to play the clip (subtitled)
-
   | While cooking | While gaming |
   |:---:|:---:|
-  | <a href="https://github.com/user-attachments/assets/c9b57caf-2a39-452f-88df-537e38e51de5"><img alt="Talking with her while cooking" src="readme_images/video_clip_cooking.en.jpg" width="360"></a> | <a href="https://github.com/user-attachments/assets/a0bc5262-e6e2-4979-b171-31da00035924"><img alt="Talking with her while gaming" src="readme_images/video_clip_gaming.en.jpg" width="360"></a> |
+  | https://github.com/user-attachments/assets/c9b57caf-2a39-452f-88df-537e38e51de5 | https://github.com/user-attachments/assets/a0bc5262-e6e2-4979-b171-31da00035924 |
 
 **Table of contents**
 
