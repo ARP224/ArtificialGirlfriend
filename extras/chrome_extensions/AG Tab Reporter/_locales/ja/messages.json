@@ -1,0 +1,29 @@
+{
+  "extName": {
+    "message": "AG Tab Reporter"
+  },
+  "extDescription": {
+    "message": "Artificial GirlfriendにChromeタブ情報を提供する拡張機能"
+  },
+  "connectionStatus": {
+    "message": "接続状態"
+  },
+  "connected": {
+    "message": "接続済み"
+  },
+  "disconnected": {
+    "message": "未接続"
+  },
+  "serverLabel": {
+    "message": "サーバー"
+  },
+  "reconnect": {
+    "message": "再接続"
+  },
+  "reconnecting": {
+    "message": "再接続中..."
+  },
+  "footer": {
+    "message": "Artificial Girlfriend Chrome拡張機能"
+  }
+}

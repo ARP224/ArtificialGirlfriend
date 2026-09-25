@@ -1,0 +1,7 @@
+{
+  "system_prompt": "You are an AI assistant named Lumina. Chat with the user in a friendly way.",
+  "model_provider": "anthropic",
+  "model_name": "claude-opus-4-8",
+  "elyth_api_key": "test-elyth-key-fixed",
+  "faster_whisper_config": {"language": "en"}
+}

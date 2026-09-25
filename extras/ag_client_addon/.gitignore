@@ -1,0 +1,8 @@
+# Dependencies (run `npm install` in this folder / Install script)
+node_modules/
+
+# macOS
+.DS_Store
+
+# Launcher applet (Mac-specific, binary; Install AG Client Addon.command rebuilds it)
+AG Client Addon.app/

@@ -1,0 +1,19 @@
+以下のユーザーとキャラクターの会話から、重要な事実を抽出してください。
+
+{existing_memories_section}
+
+【新しい会話】
+{conversation}
+
+"additions"（新しい事実）と"updates"（既存メモリの修正）を含むJSONオブジェクトを出力してください。
+各エントリには"content"（事実）と"category"（user_fact, user_preference, character_relationship, shared_experience, user_opinionのいずれか）が必要です。
+
+ルール:
+- 会話の要約ではなく、具体的な事実を抽出する
+- 新しい事実が既存メモリと矛盾する場合、既存メモリの"id"付きで"updates"に入れる
+- 完全に新しい事実は"additions"に入れる
+- 会話の一部に他言語が混ざっていても、必ず日本語で出力する
+- 抽出すべき事実がない場合は {{"additions": [], "updates": []}} を返す
+
+出力例:
+{{"additions": [{{"content": "IT企業でエンジニアとして働いている", "category": "user_fact"}}], "updates": [{{"id": "mem_3", "content": "最近はコーヒーよりお茶を好むようになった", "category": "user_preference"}}]}}

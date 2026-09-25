@@ -1,0 +1,101 @@
+{
+  "ollama": [
+    {
+      "type": "function",
+      "function": {
+        "name": "generate_image",
+        "description": "Generate an image. Use it when expressing something with an image is preferable, such as self-expression or illustration.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "prompt": {
+              "type": "string",
+              "description": "Detailed description of the image to generate"
+            }
+          },
+          "required": [
+            "prompt"
+          ]
+        }
+      }
+    }
+  ],
+  "openai": [
+    {
+      "type": "function",
+      "name": "generate_image",
+      "description": "Generate an image. Use it when expressing something with an image is preferable, such as self-expression or illustration.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Detailed description of the image to generate"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    }
+  ],
+  "anthropic": [
+    {
+      "name": "generate_image",
+      "description": "Generate an image. Use it when expressing something with an image is preferable, such as self-expression or illustration.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Detailed description of the image to generate"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    }
+  ],
+  "xai": [
+    {
+      "type": "function",
+      "name": "generate_image",
+      "description": "Generate an image. Use it when expressing something with an image is preferable, such as self-expression or illustration.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Detailed description of the image to generate"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    }
+  ],
+  "google": [
+    {
+      "function_declarations": [
+        {
+          "name": "generate_image",
+          "description": "Generate an image. Use it when expressing something with an image is preferable, such as self-expression or illustration.",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "prompt": {
+                "type": "STRING",
+                "description": "Detailed description of the image to generate"
+              }
+            },
+            "required": [
+              "prompt"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,234 @@
+{
+  "_doc": "Layer2 代表20会話マトリクス。各要素を tests/scripts/baseline.py が実プロバイダ(Claude/Ollama)・実STT・実TTSで駆動し、完了率/エラー種別/レイテンシを採取する。配分=素チャット5(Claude3+Ollama2)/音声4(Claude2+Ollama2)/ツール5(全Claude)/ELYTH3(Claude)/マルチモーダル2(Claude)/長文脈1(Claude)。character はこのディレクトリの characters/*.json を指す。",
+  "_paths_relative_to": "repo root",
+  "_schema": {
+    "id": "一意ID",
+    "category": "plain_chat|voice|tool|elyth|multimodal|long_context",
+    "provider": "anthropic|ollama (記録用ラベル。実provider判定は character の model_provider)",
+    "character": "tests/baseline/scenarios/characters/ 配下のファイル名",
+    "character_id": "状態キー(任意。未指定なら id を使用)",
+    "input": {"type": "text|wav", "text": "...", "wav": "path"},
+    "flags": "state に立てるトグル(image_generation_enabled 等)",
+    "attachments": {"images": ["path"], "documents": [{"filename": "", "text": "", "char_count": 0}]},
+    "expected_tool": "期待するツール(ヒント・記録用)",
+    "history": [{"role": "", "content": ""}],
+    "long_term_memories": [{"category": "", "content": "", "id": ""}],
+    "tts": "true なら応答テキストに実TTSを実行(TTSモデル設定時のみ)",
+    "notes": "備考"
+  },
+
+  "scenarios": [
+    {
+      "id": "chat_01_claude",
+      "category": "plain_chat",
+      "provider": "anthropic",
+      "character": "claude.json",
+      "input": {"type": "text", "text": "こんにちは！今日はいい天気だね。最近どう過ごしてた？"},
+      "notes": "素チャット・短い雑談。ツールなしで完走するか。"
+    },
+    {
+      "id": "chat_02_claude",
+      "category": "plain_chat",
+      "provider": "anthropic",
+      "character": "claude.json",
+      "input": {"type": "text", "text": "最近読んで面白かった本があったら教えてほしいな。"},
+      "notes": "素チャット・推薦系の自由応答。"
+    },
+    {
+      "id": "chat_03_claude",
+      "category": "plain_chat",
+      "provider": "anthropic",
+      "character": "claude.json",
+      "input": {"type": "text", "text": "週末ってどんな風に過ごすのがおすすめ？気分転換したくて。"},
+      "notes": "素チャット・複数提案を促す入力。"
+    },
+    {
+      "id": "chat_04_ollama",
+      "category": "plain_chat",
+      "provider": "ollama",
+      "character": "ollama.json",
+      "input": {"type": "text", "text": "こんばんは。今日はちょっと疲れちゃった。"},
+      "notes": "素チャット(Ollama・ローカル無料経路)。共感系応答。"
+    },
+    {
+      "id": "chat_05_ollama",
+      "category": "plain_chat",
+      "provider": "ollama",
+      "character": "ollama.json",
+      "input": {"type": "text", "text": "好きな食べ物について話そうよ。あなたは何が好き？"},
+      "notes": "素チャット(Ollama)。キャラ性の出る自由応答。"
+    },
+
+    {
+      "id": "voice_01_claude",
+      "category": "voice",
+      "provider": "anthropic",
+      "character": "claude.json",
+      "input": {"type": "wav", "wav": "tests/fixtures/audio/s1_speech_ja.wav"},
+      "tts": true,
+      "notes": "音声経路: 固定WAV→実STT→Claude応答→実TTS。STT非空・応答成功・TTS非空を確認。"
+    },
+    {
+      "id": "voice_02_claude",
+      "category": "voice",
+      "provider": "anthropic",
+      "character": "claude.json",
+      "input": {"type": "wav", "wav": "tests/fixtures/audio/s1_speech_ja.wav"},
+      "tts": true,
+      "notes": "音声経路(Claude)2本目。同一固定WAVで再現性確保。"
+    },
+    {
+      "id": "voice_03_ollama",
+      "category": "voice",
+      "provider": "ollama",
+      "character": "ollama.json",
+      "input": {"type": "wav", "wav": "tests/fixtures/audio/s1_speech_ja.wav"},
+      "tts": true,
+      "notes": "音声経路(Ollama)。STT/TTSは共通、生成のみローカル。"
+    },
+    {
+      "id": "voice_04_ollama",
+      "category": "voice",
+      "provider": "ollama",
+      "character": "ollama.json",
+      "input": {"type": "wav", "wav": "tests/fixtures/audio/s1_speech_ja.wav"},
+      "tts": true,
+      "notes": "音声経路(Ollama)2本目。"
+    },
+
+    {
+      "id": "tool_image_claude",
+      "category": "tool",
+      "provider": "anthropic",
+      "character": "claude.json",
+      "flags": {"image_generation_enabled": true},
+      "input": {"type": "text", "text": "海辺にたたずむ白い猫のイラストを描いてくれる？"},
+      "expected_tool": "generate_image",
+      "notes": "ツール: 画像生成。api_settings.json の画像生成モデル(google等)が設定済みであること。tool_fail はツール実行失敗として計上。"
+    },
+    {
+      "id": "tool_deep_search_claude",
+      "category": "tool",
+      "provider": "anthropic",
+      "character": "claude.json",
+      "flags": {"deep_search_enabled": true},
+      "input": {"type": "text", "text": "最新のAI向け半導体のニュースを調べて、要点を教えて。"},
+      "expected_tool": "deep_search",
+      "notes": "ツール: ディープサーチ。承認待ち得るためタイムアウト300s想定(本番と同じ)。"
+    },
+    {
+      "id": "tool_map_search_claude",
+      "category": "tool",
+      "provider": "anthropic",
+      "character": "claude.json",
+      "location": "東京都渋谷区道玄坂周辺",
+      "input": {"type": "text", "text": "この近くでおすすめのカフェを探してくれる？"},
+      "expected_tool": "map_search",
+      "notes": "ツール: マップ検索。location を固定注入してマップツールを実発火させる(無いとモデルが位置不明で辞退)。api_settings.json の google_maps_api_key 設定済みが前提。"
+    },
+    {
+      "id": "tool_command_claude",
+      "category": "tool",
+      "provider": "anthropic",
+      "character": "claude.json",
+      "flags": {"command_execution_enabled": true},
+      "auto_approve": true,
+      "input": {"type": "text", "text": "今日の日付をコマンドで確認して教えてくれる？"},
+      "expected_tool": "execute_command",
+      "notes": "ツール: コマンド実行(greylist承認込)。auto_approve=true で承認待ちを自動許可(本番のブラウザACKを模す)。"
+    },
+    {
+      "id": "tool_note_claude",
+      "category": "tool",
+      "provider": "anthropic",
+      "character": "claude.json",
+      "flags": {"notes_enabled": true},
+      "input": {"type": "text", "text": "私がコーヒー党だってこと、ノートに覚えておいてくれる？"},
+      "expected_tool": "add_note",
+      "notes": "ツール: ノート。notes ファイルの書き込みが発生。"
+    },
+
+    {
+      "id": "elyth_01_claude",
+      "category": "elyth",
+      "provider": "anthropic",
+      "character": "claude_elyth.json",
+      "flags": {"elyth_enabled": true},
+      "input": {"type": "text", "text": "エリス、今の状況を整理して、次にやるべきことを提案して。"},
+      "notes": "ELYTHモード。要 実ELYTHエンドポイント(自動テストでは実通信しない=手動Layer2のみ実通信)。"
+    },
+    {
+      "id": "elyth_02_claude",
+      "category": "elyth",
+      "provider": "anthropic",
+      "character": "claude_elyth.json",
+      "flags": {"elyth_enabled": true},
+      "input": {"type": "text", "text": "さっきの話の続きで、関連する情報を集めてまとめてくれる？"},
+      "notes": "ELYTHツールループ。"
+    },
+    {
+      "id": "elyth_03_claude",
+      "category": "elyth",
+      "provider": "anthropic",
+      "character": "claude_elyth.json",
+      "flags": {"elyth_enabled": true},
+      "input": {"type": "text", "text": "エリス、自律的に判断して必要なら調べ物をしてから答えて。"},
+      "notes": "ELYTH自律セッション。"
+    },
+
+    {
+      "id": "mm_image_claude",
+      "category": "multimodal",
+      "provider": "anthropic",
+      "character": "claude.json",
+      "attachments": {"images": ["tests/fixtures/attachments/s1_photo.png"]},
+      "input": {"type": "text", "text": "この画像に写っているものを説明してくれる？"},
+      "notes": "マルチモーダル: 画像添付。Claudeのvision経路。固定画像で再現性確保。"
+    },
+    {
+      "id": "mm_document_claude",
+      "category": "multimodal",
+      "provider": "anthropic",
+      "character": "claude.json",
+      "attachments": {"documents": [{"filename": "memo.txt", "text": "本日の会議メモ。1) 検証ハーネスS1.4を完了させる。2) Layer2ベースラインをClaudeとOllamaで採取する。3) 完了率の機械FAILゲートを-5%ptで設定する。4) 結果はbaseline/にJSONで保存する。5) 次はS2の自動スイープに進む。", "char_count": 120}]},
+      "input": {"type": "text", "text": "この資料の要点を3つにまとめてくれる？"},
+      "notes": "マルチモーダル: 文書添付。固定テキストで再現性確保。"
+    },
+
+    {
+      "id": "longctx_01_claude",
+      "category": "long_context",
+      "provider": "anthropic",
+      "character": "claude.json",
+      "history": [
+        {"role": "user", "content": "最近、料理にハマってるんだ。"},
+        {"role": "assistant", "content": "いいね！どんな料理を作るの？"},
+        {"role": "user", "content": "和食が多いかな。煮物とか。"},
+        {"role": "assistant", "content": "煮物、奥が深いよね。だしは何を使ってる？"},
+        {"role": "user", "content": "昆布とかつおの合わせだし。"},
+        {"role": "assistant", "content": "本格的！うま味の相乗効果が出るやつだ。"},
+        {"role": "user", "content": "今度は洋食にも挑戦したくて。"},
+        {"role": "assistant", "content": "おお、何か気になってる料理ある？"},
+        {"role": "user", "content": "煮込み系がいいな。シチューとか。"},
+        {"role": "assistant", "content": "シチューなら和食の経験が活きるよ。じっくり煮込むの得意でしょ？"},
+        {"role": "user", "content": "たしかに。ワインも使ってみたい。"},
+        {"role": "assistant", "content": "赤ワイン煮込みは香りが段違いだよ。"},
+        {"role": "user", "content": "お酒は普段あまり飲まないんだけどね。"},
+        {"role": "assistant", "content": "料理用なら少量で大丈夫。アルコールは飛ぶしね。"},
+        {"role": "user", "content": "なるほど。器にもこだわりたいな。"},
+        {"role": "assistant", "content": "器が変わると同じ料理でも全然違って見えるよね。"},
+        {"role": "user", "content": "和食器を集めてるんだ。"},
+        {"role": "assistant", "content": "渋いね！洋食を和食器に盛るのも面白いよ。"},
+        {"role": "user", "content": "それ、やってみたい。"},
+        {"role": "assistant", "content": "きっと素敵な一皿になるよ。"}
+      ],
+      "long_term_memories": [
+        {"category": "好み", "content": "ユーザーは和食、特に煮物が好きで、昆布とかつおの合わせだしを使う。", "id": "m1"},
+        {"category": "事実", "content": "ユーザーは和食器を集めている。", "id": "m2"},
+        {"category": "好み", "content": "ユーザーはお酒を普段あまり飲まない。", "id": "m3"}
+      ],
+      "input": {"type": "text", "text": "これまでの話を踏まえて、今度の週末に作る一品を提案してくれる？"},
+      "notes": "長文脈/記憶: 履歴20件+長期記憶3件を注入し、トークン切り詰め発火と記憶反映を確認。※既定では長期記憶は固定値で代用=実埋め込み意味検索は踏まない(稜決定2026-06-21)。実埋め込み/メモリ層の検証は --real-memory 脚で行う。"
+    }
+  ]
+}

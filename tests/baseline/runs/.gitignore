@@ -1,0 +1,9 @@
+# S1.4 / B0b Layer2 run artifacts.
+# Timestamped per-run reports (<timestamp>.json) are NOT tracked — they are
+# machine/run-specific. The established baseline (_reference.json) IS tracked
+# so the -5%pt completion-rate gate has a committed reference to compare against.
+*.json
+!_reference.json
+# scratch/review artifacts produced by a run (console log, human-readable dumps)
+*.txt
+*.log

@@ -1,0 +1,304 @@
+{
+  "ollama": [
+    {
+      "type": "function",
+      "function": {
+        "name": "add_note",
+        "description": "Add a new entry to your notes. Use it when there is important information about the user worth remembering.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Content of the entry to add (one line, concise, in English)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "remove_note",
+        "description": "Delete an entry that is no longer needed from your notes. Use it to remove outdated or incorrect information.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "Number of the entry to delete"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "replace_note",
+        "description": "Update an existing entry in your notes. Use it when information changes or you obtain more accurate information.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "Number of the entry to replace"
+            },
+            "content": {
+              "type": "string",
+              "description": "New content (one line, concise, in English)"
+            }
+          },
+          "required": [
+            "index",
+            "content"
+          ]
+        }
+      }
+    }
+  ],
+  "openai": [
+    {
+      "type": "function",
+      "name": "add_note",
+      "description": "Add a new entry to your notes. Use it when there is important information about the user worth remembering.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Content of the entry to add (one line, concise, in English)"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "remove_note",
+      "description": "Delete an entry that is no longer needed from your notes. Use it to remove outdated or incorrect information.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "Number of the entry to delete"
+          }
+        },
+        "required": [
+          "index"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "replace_note",
+      "description": "Update an existing entry in your notes. Use it when information changes or you obtain more accurate information.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "Number of the entry to replace"
+          },
+          "content": {
+            "type": "string",
+            "description": "New content (one line, concise, in English)"
+          }
+        },
+        "required": [
+          "index",
+          "content"
+        ]
+      }
+    }
+  ],
+  "anthropic": [
+    {
+      "name": "add_note",
+      "description": "Add a new entry to your notes. Use it when there is important information about the user worth remembering.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Content of the entry to add (one line, concise, in English)"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "remove_note",
+      "description": "Delete an entry that is no longer needed from your notes. Use it to remove outdated or incorrect information.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "Number of the entry to delete"
+          }
+        },
+        "required": [
+          "index"
+        ]
+      }
+    },
+    {
+      "name": "replace_note",
+      "description": "Update an existing entry in your notes. Use it when information changes or you obtain more accurate information.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "Number of the entry to replace"
+          },
+          "content": {
+            "type": "string",
+            "description": "New content (one line, concise, in English)"
+          }
+        },
+        "required": [
+          "index",
+          "content"
+        ]
+      }
+    }
+  ],
+  "xai": [
+    {
+      "type": "function",
+      "name": "add_note",
+      "description": "Add a new entry to your notes. Use it when there is important information about the user worth remembering.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Content of the entry to add (one line, concise, in English)"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "remove_note",
+      "description": "Delete an entry that is no longer needed from your notes. Use it to remove outdated or incorrect information.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "Number of the entry to delete"
+          }
+        },
+        "required": [
+          "index"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "replace_note",
+      "description": "Update an existing entry in your notes. Use it when information changes or you obtain more accurate information.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "Number of the entry to replace"
+          },
+          "content": {
+            "type": "string",
+            "description": "New content (one line, concise, in English)"
+          }
+        },
+        "required": [
+          "index",
+          "content"
+        ]
+      }
+    }
+  ],
+  "google": [
+    {
+      "function_declarations": [
+        {
+          "name": "add_note",
+          "description": "Add a new entry to your notes. Use it when there is important information about the user worth remembering.",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "content": {
+                "type": "STRING",
+                "description": "Content of the entry to add (one line, concise, in English)"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "function_declarations": [
+        {
+          "name": "remove_note",
+          "description": "Delete an entry that is no longer needed from your notes. Use it to remove outdated or incorrect information.",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "index": {
+                "type": "INTEGER",
+                "description": "Number of the entry to delete"
+              }
+            },
+            "required": [
+              "index"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "function_declarations": [
+        {
+          "name": "replace_note",
+          "description": "Update an existing entry in your notes. Use it when information changes or you obtain more accurate information.",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "index": {
+                "type": "INTEGER",
+                "description": "Number of the entry to replace"
+              },
+              "content": {
+                "type": "STRING",
+                "description": "New content (one line, concise, in English)"
+              }
+            },
+            "required": [
+              "index",
+              "content"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

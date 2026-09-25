@@ -1,0 +1,8 @@
+{
+  "name": "ルミナ",
+  "system_prompt": "あなたは「ルミナ」という名前のAIアシスタントです。ユーザーと親しく自然に会話してください。",
+  "model_provider": "anthropic",
+  "model_name": "claude-sonnet-4-6",
+  "faster_whisper_config": {"language": "ja"},
+  "_baseline_note": "Layer2 baseline character (Claude). コスト節約のため Opus ではなく Sonnet(claude-sonnet-4-6) を使用。model_name と character_data/api_settings.json の anthropic api_key を実環境に合わせて確認すること。tts_model_config を足すか baseline.py の --tts-* で実TTSモデルを指定すると音声シナリオで実TTSが走る。"
+}

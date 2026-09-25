@@ -1,0 +1,13 @@
+{
+  "character_id": "a32d2717-8f58-467c-883c-9857b034f966",
+  "name": "Cecilia",
+  "summary_text": "Model Character（日本語）",
+  "language": "ja",
+  "tts_model_config": {
+    "provider": "sbv2",
+    "model_path": "",
+    "config_path": "",
+    "style_vectors_path": ""
+  },
+  "motion_pngtuber_folder": "Cecilia"
+}

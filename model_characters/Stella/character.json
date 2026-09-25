@@ -1,0 +1,11 @@
+{
+  "character_id": "b9dda90f-d985-4e2c-8434-f7d24b583975",
+  "name": "Stella",
+  "summary_text": "Model Character（English）",
+  "language": "en",
+  "tts_model_config": {
+    "provider": "kokoro",
+    "voice_name": "bf_alice"
+  },
+  "motion_pngtuber_folder": "Stella"
+}

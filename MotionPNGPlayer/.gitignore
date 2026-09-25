@@ -1,0 +1,26 @@
+# Dependencies (run `npm install` in this folder)
+node_modules/
+
+# Character assets (user data — place asset folders here). Everything under
+# Asset/ belongs to the user, except the three bundled model characters
+# (Momo / Cecilia / Stella — settings live in model_characters/ at the repo
+# root), which are tracked as-is: the full MotionPNGCreator output, nothing
+# trimmed (稜裁定 2026-09-25). main.js still creates Asset/ on first launch
+# (mkdirSync at app.whenReady) in case it is missing. In-folder README
+# removed 2026-07-30 (稜裁定: no scattered READMEs — the manual covers the
+# folder layout).
+Asset/*
+!Asset/Momo/
+!Asset/Cecilia/
+!Asset/Stella/
+
+# Legacy per-folder settings (settings now live in the OS user-data dir)
+settings.json
+
+# macOS
+.DS_Store
+
+# Launcher applet (Mac-specific, binary; the AG installer at the repo root
+# — "Install Artificial Girlfriend (Mac).command" — rebuilds it; on client
+# copies "Install MotionPNGPlayer.command" does)
+MotionPNGPlayer.app/

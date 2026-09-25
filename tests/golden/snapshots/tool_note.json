@@ -1,0 +1,304 @@
+{
+  "ollama": [
+    {
+      "type": "function",
+      "function": {
+        "name": "add_note",
+        "description": "ノートに新しい項目を追加する。ユーザーについて覚えておくべき重要な情報があるときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "追加する項目の内容（1行、簡潔に、日本語で）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "remove_note",
+        "description": "ノートから不要になった項目を削除する。古くなった情報や誤りを取り除くときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "削除する項目の番号"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "replace_note",
+        "description": "ノートの既存の項目を更新する。情報が変わったときや、より正確な情報が得られたときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "置き換える項目の番号"
+            },
+            "content": {
+              "type": "string",
+              "description": "新しい内容（1行、簡潔に、日本語で）"
+            }
+          },
+          "required": [
+            "index",
+            "content"
+          ]
+        }
+      }
+    }
+  ],
+  "openai": [
+    {
+      "type": "function",
+      "name": "add_note",
+      "description": "ノートに新しい項目を追加する。ユーザーについて覚えておくべき重要な情報があるときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "追加する項目の内容（1行、簡潔に、日本語で）"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "remove_note",
+      "description": "ノートから不要になった項目を削除する。古くなった情報や誤りを取り除くときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "削除する項目の番号"
+          }
+        },
+        "required": [
+          "index"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "replace_note",
+      "description": "ノートの既存の項目を更新する。情報が変わったときや、より正確な情報が得られたときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "置き換える項目の番号"
+          },
+          "content": {
+            "type": "string",
+            "description": "新しい内容（1行、簡潔に、日本語で）"
+          }
+        },
+        "required": [
+          "index",
+          "content"
+        ]
+      }
+    }
+  ],
+  "anthropic": [
+    {
+      "name": "add_note",
+      "description": "ノートに新しい項目を追加する。ユーザーについて覚えておくべき重要な情報があるときに使う。",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "追加する項目の内容（1行、簡潔に、日本語で）"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "remove_note",
+      "description": "ノートから不要になった項目を削除する。古くなった情報や誤りを取り除くときに使う。",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "削除する項目の番号"
+          }
+        },
+        "required": [
+          "index"
+        ]
+      }
+    },
+    {
+      "name": "replace_note",
+      "description": "ノートの既存の項目を更新する。情報が変わったときや、より正確な情報が得られたときに使う。",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "置き換える項目の番号"
+          },
+          "content": {
+            "type": "string",
+            "description": "新しい内容（1行、簡潔に、日本語で）"
+          }
+        },
+        "required": [
+          "index",
+          "content"
+        ]
+      }
+    }
+  ],
+  "xai": [
+    {
+      "type": "function",
+      "name": "add_note",
+      "description": "ノートに新しい項目を追加する。ユーザーについて覚えておくべき重要な情報があるときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "追加する項目の内容（1行、簡潔に、日本語で）"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "remove_note",
+      "description": "ノートから不要になった項目を削除する。古くなった情報や誤りを取り除くときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "削除する項目の番号"
+          }
+        },
+        "required": [
+          "index"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "replace_note",
+      "description": "ノートの既存の項目を更新する。情報が変わったときや、より正確な情報が得られたときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "置き換える項目の番号"
+          },
+          "content": {
+            "type": "string",
+            "description": "新しい内容（1行、簡潔に、日本語で）"
+          }
+        },
+        "required": [
+          "index",
+          "content"
+        ]
+      }
+    }
+  ],
+  "google": [
+    {
+      "function_declarations": [
+        {
+          "name": "add_note",
+          "description": "ノートに新しい項目を追加する。ユーザーについて覚えておくべき重要な情報があるときに使う。",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "content": {
+                "type": "STRING",
+                "description": "追加する項目の内容（1行、簡潔に、日本語で）"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "function_declarations": [
+        {
+          "name": "remove_note",
+          "description": "ノートから不要になった項目を削除する。古くなった情報や誤りを取り除くときに使う。",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "index": {
+                "type": "INTEGER",
+                "description": "削除する項目の番号"
+              }
+            },
+            "required": [
+              "index"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "function_declarations": [
+        {
+          "name": "replace_note",
+          "description": "ノートの既存の項目を更新する。情報が変わったときや、より正確な情報が得られたときに使う。",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "index": {
+                "type": "INTEGER",
+                "description": "置き換える項目の番号"
+              },
+              "content": {
+                "type": "STRING",
+                "description": "新しい内容（1行、簡潔に、日本語で）"
+              }
+            },
+            "required": [
+              "index",
+              "content"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

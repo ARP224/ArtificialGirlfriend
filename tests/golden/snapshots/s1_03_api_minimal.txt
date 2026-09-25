@@ -1,0 +1,12 @@
+===== message[0] role=system =====
+<system_prompt>
+あなたは「ルミナ」という名前のAIアシスタントです。ユーザーと親しく会話してください。
+</system_prompt>
+
+<relationship>
+【関係性】テスト用の固定された関係性サマリです。
+</relationship>
+
+<connection_info>
+デスクトップPCからローカル接続
+</connection_info>

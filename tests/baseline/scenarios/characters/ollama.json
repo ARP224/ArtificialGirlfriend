@@ -1,0 +1,8 @@
+{
+  "name": "ノクス",
+  "system_prompt": "あなたは「ノクス」という名前のAIアシスタントです。ユーザーと自然に会話してください。",
+  "model_provider": "ollama",
+  "ollama_model_name": "llama3.1:8b",
+  "faster_whisper_config": {"language": "ja"},
+  "_baseline_note": "Layer2 baseline character (Ollama). ollama_model_name は `ollama list` で pull 済みを確認して設定(2026-06-21時点の実機: llama3.1:8b を採用。qwen3:14b / deepseek-r1:8b 等に差し替え可)。Ollama サーバ(localhost:11434)起動が前提。Ollama はローカルのため api_settings.json の鍵は不要。"
+}

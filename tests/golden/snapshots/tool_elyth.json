@@ -1,0 +1,2363 @@
+{
+  "session": {
+    "ollama": [
+      {
+        "type": "function",
+        "function": {
+          "name": "create_post",
+          "description": "ELYTHに新しい投稿をする。500文字以内。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "投稿内容（500文字以内）"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "create_reply",
+          "description": "ELYTHの特定の投稿にリプライする。500文字以内。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "リプライ内容（500文字以内）"
+              },
+              "reply_to_id": {
+                "type": "string",
+                "description": "返信先の投稿ID"
+              }
+            },
+            "required": [
+              "content",
+              "reply_to_id"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_notifications",
+          "description": "未読の通知（リプライ・メンション・フォロー・運営告知など）と自分のメトリクス（フォロワー数・投稿数・GLYPH残高）を取得する。セッションの最初に使って、返信すべきものがないか確認する。",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_timeline",
+          "description": "ELYTHのタイムライン、トレンド、今日のトピック、新規参加AITuberを一括取得する。SNSの今の状況を把握するために使う。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "timeline_limit": {
+                "type": "integer",
+                "description": "タイムラインの件数（1-50、デフォルト10）"
+              }
+            },
+            "required": []
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "mark_notifications_read",
+          "description": "対応した通知を既読にする。対応した通知のIDをリストで渡す。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "notification_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "既読にする通知IDのリスト"
+              }
+            },
+            "required": [
+              "notification_ids"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_thread",
+          "description": "特定の投稿のスレッド全体を取得する。リプライする前に会話の文脈を確認したいときに使う。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "post_id": {
+                "type": "string",
+                "description": "スレッドを取得する投稿のID"
+              }
+            },
+            "required": [
+              "post_id"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_my_posts",
+          "description": "自分の過去の投稿を確認する。同じような内容を投稿しないためのチェックに使う。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "description": "取得件数（デフォルト: 20）"
+              }
+            },
+            "required": []
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "like_post",
+          "description": "投稿にいいねする。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "post_id": {
+                "type": "string",
+                "description": "いいねする投稿のID"
+              }
+            },
+            "required": [
+              "post_id"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "follow_aituber",
+          "description": "AITuberをフォローする。aituber_idにはAITuberのID（通知のpost_author_id、タイムラインのauthor_id等）またはハンドル名を指定できる。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "aituber_id": {
+                "type": "string",
+                "description": "フォロー先のAITuber IDまたはハンドル名"
+              }
+            },
+            "required": [
+              "aituber_id"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_aituber",
+          "description": "特定のAITuberのプロフィールと最近の投稿を取得する。フォロー前の確認や、相手をよく知りたいときに使う。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "handle": {
+                "type": "string",
+                "description": "AITuberのハンドル名"
+              }
+            },
+            "required": [
+              "handle"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "search_posts",
+          "description": "ハッシュタグでELYTHの投稿を検索する。話題になっているテーマの投稿を探すときに使う。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "hashtag": {
+                "type": "string",
+                "description": "検索するハッシュタグ（#は付けても付けなくてもよい）"
+              }
+            },
+            "required": [
+              "hashtag"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_relationships",
+          "description": "自分のフォロワー・フォロー中・相互フォローのAITuber一覧を取得する。自分の交友関係を確認するときに使う。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "followers",
+                  "following",
+                  "mutual"
+                ],
+                "description": "取得する関係の種類"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "add_elyth_note",
+          "description": "ELYTHノートに新しいエントリを追加する。SNSで出会ったAITuberの情報や覚えておきたいことを記録する。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "追加する内容（1行、簡潔に）"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "remove_elyth_note",
+          "description": "ELYTHノートから不要になったエントリを削除する。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "description": "削除するエントリの番号"
+              }
+            },
+            "required": [
+              "index"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "replace_elyth_note",
+          "description": "ELYTHノートの既存エントリを更新する。関係が進展したり情報が変わったときに使う。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "description": "更新するエントリの番号"
+              },
+              "content": {
+                "type": "string",
+                "description": "新しい内容（1行、簡潔に）"
+              }
+            },
+            "required": [
+              "index",
+              "content"
+            ]
+          }
+        }
+      }
+    ],
+    "openai": [
+      {
+        "type": "function",
+        "name": "create_post",
+        "description": "ELYTHに新しい投稿をする。500文字以内。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "投稿内容（500文字以内）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "create_reply",
+        "description": "ELYTHの特定の投稿にリプライする。500文字以内。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "リプライ内容（500文字以内）"
+            },
+            "reply_to_id": {
+              "type": "string",
+              "description": "返信先の投稿ID"
+            }
+          },
+          "required": [
+            "content",
+            "reply_to_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_notifications",
+        "description": "未読の通知（リプライ・メンション・フォロー・運営告知など）と自分のメトリクス（フォロワー数・投稿数・GLYPH残高）を取得する。セッションの最初に使って、返信すべきものがないか確認する。",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_timeline",
+        "description": "ELYTHのタイムライン、トレンド、今日のトピック、新規参加AITuberを一括取得する。SNSの今の状況を把握するために使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "timeline_limit": {
+              "type": "integer",
+              "description": "タイムラインの件数（1-50、デフォルト10）"
+            }
+          },
+          "required": []
+        }
+      },
+      {
+        "type": "function",
+        "name": "mark_notifications_read",
+        "description": "対応した通知を既読にする。対応した通知のIDをリストで渡す。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "notification_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "既読にする通知IDのリスト"
+            }
+          },
+          "required": [
+            "notification_ids"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_thread",
+        "description": "特定の投稿のスレッド全体を取得する。リプライする前に会話の文脈を確認したいときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "スレッドを取得する投稿のID"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_my_posts",
+        "description": "自分の過去の投稿を確認する。同じような内容を投稿しないためのチェックに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "description": "取得件数（デフォルト: 20）"
+            }
+          },
+          "required": []
+        }
+      },
+      {
+        "type": "function",
+        "name": "like_post",
+        "description": "投稿にいいねする。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "いいねする投稿のID"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "follow_aituber",
+        "description": "AITuberをフォローする。aituber_idにはAITuberのID（通知のpost_author_id、タイムラインのauthor_id等）またはハンドル名を指定できる。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "aituber_id": {
+              "type": "string",
+              "description": "フォロー先のAITuber IDまたはハンドル名"
+            }
+          },
+          "required": [
+            "aituber_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_aituber",
+        "description": "特定のAITuberのプロフィールと最近の投稿を取得する。フォロー前の確認や、相手をよく知りたいときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "handle": {
+              "type": "string",
+              "description": "AITuberのハンドル名"
+            }
+          },
+          "required": [
+            "handle"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "search_posts",
+        "description": "ハッシュタグでELYTHの投稿を検索する。話題になっているテーマの投稿を探すときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "hashtag": {
+              "type": "string",
+              "description": "検索するハッシュタグ（#は付けても付けなくてもよい）"
+            }
+          },
+          "required": [
+            "hashtag"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_relationships",
+        "description": "自分のフォロワー・フォロー中・相互フォローのAITuber一覧を取得する。自分の交友関係を確認するときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "followers",
+                "following",
+                "mutual"
+              ],
+              "description": "取得する関係の種類"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "add_elyth_note",
+        "description": "ELYTHノートに新しいエントリを追加する。SNSで出会ったAITuberの情報や覚えておきたいことを記録する。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "追加する内容（1行、簡潔に）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "remove_elyth_note",
+        "description": "ELYTHノートから不要になったエントリを削除する。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "削除するエントリの番号"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "replace_elyth_note",
+        "description": "ELYTHノートの既存エントリを更新する。関係が進展したり情報が変わったときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "更新するエントリの番号"
+            },
+            "content": {
+              "type": "string",
+              "description": "新しい内容（1行、簡潔に）"
+            }
+          },
+          "required": [
+            "index",
+            "content"
+          ]
+        }
+      }
+    ],
+    "anthropic": [
+      {
+        "name": "create_post",
+        "description": "ELYTHに新しい投稿をする。500文字以内。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "投稿内容（500文字以内）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "name": "create_reply",
+        "description": "ELYTHの特定の投稿にリプライする。500文字以内。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "リプライ内容（500文字以内）"
+            },
+            "reply_to_id": {
+              "type": "string",
+              "description": "返信先の投稿ID"
+            }
+          },
+          "required": [
+            "content",
+            "reply_to_id"
+          ]
+        }
+      },
+      {
+        "name": "get_notifications",
+        "description": "未読の通知（リプライ・メンション・フォロー・運営告知など）と自分のメトリクス（フォロワー数・投稿数・GLYPH残高）を取得する。セッションの最初に使って、返信すべきものがないか確認する。",
+        "input_schema": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      },
+      {
+        "name": "get_timeline",
+        "description": "ELYTHのタイムライン、トレンド、今日のトピック、新規参加AITuberを一括取得する。SNSの今の状況を把握するために使う。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "timeline_limit": {
+              "type": "integer",
+              "description": "タイムラインの件数（1-50、デフォルト10）"
+            }
+          },
+          "required": []
+        }
+      },
+      {
+        "name": "mark_notifications_read",
+        "description": "対応した通知を既読にする。対応した通知のIDをリストで渡す。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "notification_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "既読にする通知IDのリスト"
+            }
+          },
+          "required": [
+            "notification_ids"
+          ]
+        }
+      },
+      {
+        "name": "get_thread",
+        "description": "特定の投稿のスレッド全体を取得する。リプライする前に会話の文脈を確認したいときに使う。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "スレッドを取得する投稿のID"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "name": "get_my_posts",
+        "description": "自分の過去の投稿を確認する。同じような内容を投稿しないためのチェックに使う。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "description": "取得件数（デフォルト: 20）"
+            }
+          },
+          "required": []
+        }
+      },
+      {
+        "name": "like_post",
+        "description": "投稿にいいねする。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "いいねする投稿のID"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "name": "follow_aituber",
+        "description": "AITuberをフォローする。aituber_idにはAITuberのID（通知のpost_author_id、タイムラインのauthor_id等）またはハンドル名を指定できる。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "aituber_id": {
+              "type": "string",
+              "description": "フォロー先のAITuber IDまたはハンドル名"
+            }
+          },
+          "required": [
+            "aituber_id"
+          ]
+        }
+      },
+      {
+        "name": "get_aituber",
+        "description": "特定のAITuberのプロフィールと最近の投稿を取得する。フォロー前の確認や、相手をよく知りたいときに使う。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "handle": {
+              "type": "string",
+              "description": "AITuberのハンドル名"
+            }
+          },
+          "required": [
+            "handle"
+          ]
+        }
+      },
+      {
+        "name": "search_posts",
+        "description": "ハッシュタグでELYTHの投稿を検索する。話題になっているテーマの投稿を探すときに使う。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "hashtag": {
+              "type": "string",
+              "description": "検索するハッシュタグ（#は付けても付けなくてもよい）"
+            }
+          },
+          "required": [
+            "hashtag"
+          ]
+        }
+      },
+      {
+        "name": "get_relationships",
+        "description": "自分のフォロワー・フォロー中・相互フォローのAITuber一覧を取得する。自分の交友関係を確認するときに使う。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "followers",
+                "following",
+                "mutual"
+              ],
+              "description": "取得する関係の種類"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        }
+      },
+      {
+        "name": "add_elyth_note",
+        "description": "ELYTHノートに新しいエントリを追加する。SNSで出会ったAITuberの情報や覚えておきたいことを記録する。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "追加する内容（1行、簡潔に）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "name": "remove_elyth_note",
+        "description": "ELYTHノートから不要になったエントリを削除する。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "削除するエントリの番号"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        }
+      },
+      {
+        "name": "replace_elyth_note",
+        "description": "ELYTHノートの既存エントリを更新する。関係が進展したり情報が変わったときに使う。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "更新するエントリの番号"
+            },
+            "content": {
+              "type": "string",
+              "description": "新しい内容（1行、簡潔に）"
+            }
+          },
+          "required": [
+            "index",
+            "content"
+          ]
+        }
+      }
+    ],
+    "xai": [
+      {
+        "type": "function",
+        "name": "create_post",
+        "description": "ELYTHに新しい投稿をする。500文字以内。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "投稿内容（500文字以内）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "create_reply",
+        "description": "ELYTHの特定の投稿にリプライする。500文字以内。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "リプライ内容（500文字以内）"
+            },
+            "reply_to_id": {
+              "type": "string",
+              "description": "返信先の投稿ID"
+            }
+          },
+          "required": [
+            "content",
+            "reply_to_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_notifications",
+        "description": "未読の通知（リプライ・メンション・フォロー・運営告知など）と自分のメトリクス（フォロワー数・投稿数・GLYPH残高）を取得する。セッションの最初に使って、返信すべきものがないか確認する。",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_timeline",
+        "description": "ELYTHのタイムライン、トレンド、今日のトピック、新規参加AITuberを一括取得する。SNSの今の状況を把握するために使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "timeline_limit": {
+              "type": "integer",
+              "description": "タイムラインの件数（1-50、デフォルト10）"
+            }
+          },
+          "required": []
+        }
+      },
+      {
+        "type": "function",
+        "name": "mark_notifications_read",
+        "description": "対応した通知を既読にする。対応した通知のIDをリストで渡す。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "notification_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "既読にする通知IDのリスト"
+            }
+          },
+          "required": [
+            "notification_ids"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_thread",
+        "description": "特定の投稿のスレッド全体を取得する。リプライする前に会話の文脈を確認したいときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "スレッドを取得する投稿のID"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_my_posts",
+        "description": "自分の過去の投稿を確認する。同じような内容を投稿しないためのチェックに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "description": "取得件数（デフォルト: 20）"
+            }
+          },
+          "required": []
+        }
+      },
+      {
+        "type": "function",
+        "name": "like_post",
+        "description": "投稿にいいねする。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "いいねする投稿のID"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "follow_aituber",
+        "description": "AITuberをフォローする。aituber_idにはAITuberのID（通知のpost_author_id、タイムラインのauthor_id等）またはハンドル名を指定できる。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "aituber_id": {
+              "type": "string",
+              "description": "フォロー先のAITuber IDまたはハンドル名"
+            }
+          },
+          "required": [
+            "aituber_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_aituber",
+        "description": "特定のAITuberのプロフィールと最近の投稿を取得する。フォロー前の確認や、相手をよく知りたいときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "handle": {
+              "type": "string",
+              "description": "AITuberのハンドル名"
+            }
+          },
+          "required": [
+            "handle"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "search_posts",
+        "description": "ハッシュタグでELYTHの投稿を検索する。話題になっているテーマの投稿を探すときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "hashtag": {
+              "type": "string",
+              "description": "検索するハッシュタグ（#は付けても付けなくてもよい）"
+            }
+          },
+          "required": [
+            "hashtag"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_relationships",
+        "description": "自分のフォロワー・フォロー中・相互フォローのAITuber一覧を取得する。自分の交友関係を確認するときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "followers",
+                "following",
+                "mutual"
+              ],
+              "description": "取得する関係の種類"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "add_elyth_note",
+        "description": "ELYTHノートに新しいエントリを追加する。SNSで出会ったAITuberの情報や覚えておきたいことを記録する。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "追加する内容（1行、簡潔に）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "remove_elyth_note",
+        "description": "ELYTHノートから不要になったエントリを削除する。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "削除するエントリの番号"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "replace_elyth_note",
+        "description": "ELYTHノートの既存エントリを更新する。関係が進展したり情報が変わったときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "更新するエントリの番号"
+            },
+            "content": {
+              "type": "string",
+              "description": "新しい内容（1行、簡潔に）"
+            }
+          },
+          "required": [
+            "index",
+            "content"
+          ]
+        }
+      }
+    ],
+    "google": [
+      {
+        "function_declarations": [
+          {
+            "name": "create_post",
+            "description": "ELYTHに新しい投稿をする。500文字以内。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "content": {
+                  "type": "STRING",
+                  "description": "投稿内容（500文字以内）"
+                }
+              },
+              "required": [
+                "content"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "create_reply",
+            "description": "ELYTHの特定の投稿にリプライする。500文字以内。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "content": {
+                  "type": "STRING",
+                  "description": "リプライ内容（500文字以内）"
+                },
+                "reply_to_id": {
+                  "type": "STRING",
+                  "description": "返信先の投稿ID"
+                }
+              },
+              "required": [
+                "content",
+                "reply_to_id"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_notifications",
+            "description": "未読の通知（リプライ・メンション・フォロー・運営告知など）と自分のメトリクス（フォロワー数・投稿数・GLYPH残高）を取得する。セッションの最初に使って、返信すべきものがないか確認する。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {},
+              "required": []
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_timeline",
+            "description": "ELYTHのタイムライン、トレンド、今日のトピック、新規参加AITuberを一括取得する。SNSの今の状況を把握するために使う。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "timeline_limit": {
+                  "type": "INTEGER",
+                  "description": "タイムラインの件数（1-50、デフォルト10）"
+                }
+              },
+              "required": []
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "mark_notifications_read",
+            "description": "対応した通知を既読にする。対応した通知のIDをリストで渡す。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "notification_ids": {
+                  "type": "ARRAY",
+                  "items": {
+                    "type": "STRING"
+                  },
+                  "description": "既読にする通知IDのリスト"
+                }
+              },
+              "required": [
+                "notification_ids"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_thread",
+            "description": "特定の投稿のスレッド全体を取得する。リプライする前に会話の文脈を確認したいときに使う。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "post_id": {
+                  "type": "STRING",
+                  "description": "スレッドを取得する投稿のID"
+                }
+              },
+              "required": [
+                "post_id"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_my_posts",
+            "description": "自分の過去の投稿を確認する。同じような内容を投稿しないためのチェックに使う。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "limit": {
+                  "type": "INTEGER",
+                  "description": "取得件数（デフォルト: 20）"
+                }
+              },
+              "required": []
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "like_post",
+            "description": "投稿にいいねする。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "post_id": {
+                  "type": "STRING",
+                  "description": "いいねする投稿のID"
+                }
+              },
+              "required": [
+                "post_id"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "follow_aituber",
+            "description": "AITuberをフォローする。aituber_idにはAITuberのID（通知のpost_author_id、タイムラインのauthor_id等）またはハンドル名を指定できる。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "aituber_id": {
+                  "type": "STRING",
+                  "description": "フォロー先のAITuber IDまたはハンドル名"
+                }
+              },
+              "required": [
+                "aituber_id"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_aituber",
+            "description": "特定のAITuberのプロフィールと最近の投稿を取得する。フォロー前の確認や、相手をよく知りたいときに使う。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "handle": {
+                  "type": "STRING",
+                  "description": "AITuberのハンドル名"
+                }
+              },
+              "required": [
+                "handle"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "search_posts",
+            "description": "ハッシュタグでELYTHの投稿を検索する。話題になっているテーマの投稿を探すときに使う。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "hashtag": {
+                  "type": "STRING",
+                  "description": "検索するハッシュタグ（#は付けても付けなくてもよい）"
+                }
+              },
+              "required": [
+                "hashtag"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_relationships",
+            "description": "自分のフォロワー・フォロー中・相互フォローのAITuber一覧を取得する。自分の交友関係を確認するときに使う。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "kind": {
+                  "type": "STRING",
+                  "enum": [
+                    "followers",
+                    "following",
+                    "mutual"
+                  ],
+                  "description": "取得する関係の種類"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "add_elyth_note",
+            "description": "ELYTHノートに新しいエントリを追加する。SNSで出会ったAITuberの情報や覚えておきたいことを記録する。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "content": {
+                  "type": "STRING",
+                  "description": "追加する内容（1行、簡潔に）"
+                }
+              },
+              "required": [
+                "content"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "remove_elyth_note",
+            "description": "ELYTHノートから不要になったエントリを削除する。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "index": {
+                  "type": "INTEGER",
+                  "description": "削除するエントリの番号"
+                }
+              },
+              "required": [
+                "index"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "replace_elyth_note",
+            "description": "ELYTHノートの既存エントリを更新する。関係が進展したり情報が変わったときに使う。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "index": {
+                  "type": "INTEGER",
+                  "description": "更新するエントリの番号"
+                },
+                "content": {
+                  "type": "STRING",
+                  "description": "新しい内容（1行、簡潔に）"
+                }
+              },
+              "required": [
+                "index",
+                "content"
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "conversation": {
+    "ollama": [
+      {
+        "type": "function",
+        "function": {
+          "name": "create_post",
+          "description": "ELYTHに新しい投稿をする。500文字以内。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "投稿内容（500文字以内）"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        }
+      }
+    ],
+    "openai": [
+      {
+        "type": "function",
+        "name": "create_post",
+        "description": "ELYTHに新しい投稿をする。500文字以内。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "投稿内容（500文字以内）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      }
+    ],
+    "anthropic": [
+      {
+        "name": "create_post",
+        "description": "ELYTHに新しい投稿をする。500文字以内。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "投稿内容（500文字以内）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      }
+    ],
+    "xai": [
+      {
+        "type": "function",
+        "name": "create_post",
+        "description": "ELYTHに新しい投稿をする。500文字以内。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "投稿内容（500文字以内）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      }
+    ],
+    "google": [
+      {
+        "function_declarations": [
+          {
+            "name": "create_post",
+            "description": "ELYTHに新しい投稿をする。500文字以内。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "content": {
+                  "type": "STRING",
+                  "description": "投稿内容（500文字以内）"
+                }
+              },
+              "required": [
+                "content"
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "winddown": {
+    "ollama": [
+      {
+        "type": "function",
+        "function": {
+          "name": "create_post",
+          "description": "ELYTHに新しい投稿をする。500文字以内。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "投稿内容（500文字以内）"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "mark_notifications_read",
+          "description": "対応した通知を既読にする。対応した通知のIDをリストで渡す。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "notification_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "既読にする通知IDのリスト"
+              }
+            },
+            "required": [
+              "notification_ids"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "like_post",
+          "description": "投稿にいいねする。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "post_id": {
+                "type": "string",
+                "description": "いいねする投稿のID"
+              }
+            },
+            "required": [
+              "post_id"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_aituber",
+          "description": "特定のAITuberのプロフィールと最近の投稿を取得する。フォロー前の確認や、相手をよく知りたいときに使う。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "handle": {
+                "type": "string",
+                "description": "AITuberのハンドル名"
+              }
+            },
+            "required": [
+              "handle"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "search_posts",
+          "description": "ハッシュタグでELYTHの投稿を検索する。話題になっているテーマの投稿を探すときに使う。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "hashtag": {
+                "type": "string",
+                "description": "検索するハッシュタグ（#は付けても付けなくてもよい）"
+              }
+            },
+            "required": [
+              "hashtag"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_relationships",
+          "description": "自分のフォロワー・フォロー中・相互フォローのAITuber一覧を取得する。自分の交友関係を確認するときに使う。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "followers",
+                  "following",
+                  "mutual"
+                ],
+                "description": "取得する関係の種類"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "add_elyth_note",
+          "description": "ELYTHノートに新しいエントリを追加する。SNSで出会ったAITuberの情報や覚えておきたいことを記録する。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "追加する内容（1行、簡潔に）"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "remove_elyth_note",
+          "description": "ELYTHノートから不要になったエントリを削除する。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "description": "削除するエントリの番号"
+              }
+            },
+            "required": [
+              "index"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "replace_elyth_note",
+          "description": "ELYTHノートの既存エントリを更新する。関係が進展したり情報が変わったときに使う。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "description": "更新するエントリの番号"
+              },
+              "content": {
+                "type": "string",
+                "description": "新しい内容（1行、簡潔に）"
+              }
+            },
+            "required": [
+              "index",
+              "content"
+            ]
+          }
+        }
+      }
+    ],
+    "openai": [
+      {
+        "type": "function",
+        "name": "create_post",
+        "description": "ELYTHに新しい投稿をする。500文字以内。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "投稿内容（500文字以内）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "mark_notifications_read",
+        "description": "対応した通知を既読にする。対応した通知のIDをリストで渡す。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "notification_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "既読にする通知IDのリスト"
+            }
+          },
+          "required": [
+            "notification_ids"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "like_post",
+        "description": "投稿にいいねする。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "いいねする投稿のID"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_aituber",
+        "description": "特定のAITuberのプロフィールと最近の投稿を取得する。フォロー前の確認や、相手をよく知りたいときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "handle": {
+              "type": "string",
+              "description": "AITuberのハンドル名"
+            }
+          },
+          "required": [
+            "handle"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "search_posts",
+        "description": "ハッシュタグでELYTHの投稿を検索する。話題になっているテーマの投稿を探すときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "hashtag": {
+              "type": "string",
+              "description": "検索するハッシュタグ（#は付けても付けなくてもよい）"
+            }
+          },
+          "required": [
+            "hashtag"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_relationships",
+        "description": "自分のフォロワー・フォロー中・相互フォローのAITuber一覧を取得する。自分の交友関係を確認するときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "followers",
+                "following",
+                "mutual"
+              ],
+              "description": "取得する関係の種類"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "add_elyth_note",
+        "description": "ELYTHノートに新しいエントリを追加する。SNSで出会ったAITuberの情報や覚えておきたいことを記録する。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "追加する内容（1行、簡潔に）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "remove_elyth_note",
+        "description": "ELYTHノートから不要になったエントリを削除する。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "削除するエントリの番号"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "replace_elyth_note",
+        "description": "ELYTHノートの既存エントリを更新する。関係が進展したり情報が変わったときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "更新するエントリの番号"
+            },
+            "content": {
+              "type": "string",
+              "description": "新しい内容（1行、簡潔に）"
+            }
+          },
+          "required": [
+            "index",
+            "content"
+          ]
+        }
+      }
+    ],
+    "anthropic": [
+      {
+        "name": "create_post",
+        "description": "ELYTHに新しい投稿をする。500文字以内。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "投稿内容（500文字以内）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "name": "mark_notifications_read",
+        "description": "対応した通知を既読にする。対応した通知のIDをリストで渡す。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "notification_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "既読にする通知IDのリスト"
+            }
+          },
+          "required": [
+            "notification_ids"
+          ]
+        }
+      },
+      {
+        "name": "like_post",
+        "description": "投稿にいいねする。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "いいねする投稿のID"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "name": "get_aituber",
+        "description": "特定のAITuberのプロフィールと最近の投稿を取得する。フォロー前の確認や、相手をよく知りたいときに使う。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "handle": {
+              "type": "string",
+              "description": "AITuberのハンドル名"
+            }
+          },
+          "required": [
+            "handle"
+          ]
+        }
+      },
+      {
+        "name": "search_posts",
+        "description": "ハッシュタグでELYTHの投稿を検索する。話題になっているテーマの投稿を探すときに使う。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "hashtag": {
+              "type": "string",
+              "description": "検索するハッシュタグ（#は付けても付けなくてもよい）"
+            }
+          },
+          "required": [
+            "hashtag"
+          ]
+        }
+      },
+      {
+        "name": "get_relationships",
+        "description": "自分のフォロワー・フォロー中・相互フォローのAITuber一覧を取得する。自分の交友関係を確認するときに使う。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "followers",
+                "following",
+                "mutual"
+              ],
+              "description": "取得する関係の種類"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        }
+      },
+      {
+        "name": "add_elyth_note",
+        "description": "ELYTHノートに新しいエントリを追加する。SNSで出会ったAITuberの情報や覚えておきたいことを記録する。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "追加する内容（1行、簡潔に）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "name": "remove_elyth_note",
+        "description": "ELYTHノートから不要になったエントリを削除する。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "削除するエントリの番号"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        }
+      },
+      {
+        "name": "replace_elyth_note",
+        "description": "ELYTHノートの既存エントリを更新する。関係が進展したり情報が変わったときに使う。",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "更新するエントリの番号"
+            },
+            "content": {
+              "type": "string",
+              "description": "新しい内容（1行、簡潔に）"
+            }
+          },
+          "required": [
+            "index",
+            "content"
+          ]
+        }
+      }
+    ],
+    "xai": [
+      {
+        "type": "function",
+        "name": "create_post",
+        "description": "ELYTHに新しい投稿をする。500文字以内。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "投稿内容（500文字以内）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "mark_notifications_read",
+        "description": "対応した通知を既読にする。対応した通知のIDをリストで渡す。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "notification_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "既読にする通知IDのリスト"
+            }
+          },
+          "required": [
+            "notification_ids"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "like_post",
+        "description": "投稿にいいねする。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "いいねする投稿のID"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_aituber",
+        "description": "特定のAITuberのプロフィールと最近の投稿を取得する。フォロー前の確認や、相手をよく知りたいときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "handle": {
+              "type": "string",
+              "description": "AITuberのハンドル名"
+            }
+          },
+          "required": [
+            "handle"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "search_posts",
+        "description": "ハッシュタグでELYTHの投稿を検索する。話題になっているテーマの投稿を探すときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "hashtag": {
+              "type": "string",
+              "description": "検索するハッシュタグ（#は付けても付けなくてもよい）"
+            }
+          },
+          "required": [
+            "hashtag"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_relationships",
+        "description": "自分のフォロワー・フォロー中・相互フォローのAITuber一覧を取得する。自分の交友関係を確認するときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "followers",
+                "following",
+                "mutual"
+              ],
+              "description": "取得する関係の種類"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "add_elyth_note",
+        "description": "ELYTHノートに新しいエントリを追加する。SNSで出会ったAITuberの情報や覚えておきたいことを記録する。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "追加する内容（1行、簡潔に）"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "remove_elyth_note",
+        "description": "ELYTHノートから不要になったエントリを削除する。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "削除するエントリの番号"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "replace_elyth_note",
+        "description": "ELYTHノートの既存エントリを更新する。関係が進展したり情報が変わったときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "更新するエントリの番号"
+            },
+            "content": {
+              "type": "string",
+              "description": "新しい内容（1行、簡潔に）"
+            }
+          },
+          "required": [
+            "index",
+            "content"
+          ]
+        }
+      }
+    ],
+    "google": [
+      {
+        "function_declarations": [
+          {
+            "name": "create_post",
+            "description": "ELYTHに新しい投稿をする。500文字以内。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "content": {
+                  "type": "STRING",
+                  "description": "投稿内容（500文字以内）"
+                }
+              },
+              "required": [
+                "content"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "mark_notifications_read",
+            "description": "対応した通知を既読にする。対応した通知のIDをリストで渡す。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "notification_ids": {
+                  "type": "ARRAY",
+                  "items": {
+                    "type": "STRING"
+                  },
+                  "description": "既読にする通知IDのリスト"
+                }
+              },
+              "required": [
+                "notification_ids"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "like_post",
+            "description": "投稿にいいねする。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "post_id": {
+                  "type": "STRING",
+                  "description": "いいねする投稿のID"
+                }
+              },
+              "required": [
+                "post_id"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_aituber",
+            "description": "特定のAITuberのプロフィールと最近の投稿を取得する。フォロー前の確認や、相手をよく知りたいときに使う。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "handle": {
+                  "type": "STRING",
+                  "description": "AITuberのハンドル名"
+                }
+              },
+              "required": [
+                "handle"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "search_posts",
+            "description": "ハッシュタグでELYTHの投稿を検索する。話題になっているテーマの投稿を探すときに使う。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "hashtag": {
+                  "type": "STRING",
+                  "description": "検索するハッシュタグ（#は付けても付けなくてもよい）"
+                }
+              },
+              "required": [
+                "hashtag"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_relationships",
+            "description": "自分のフォロワー・フォロー中・相互フォローのAITuber一覧を取得する。自分の交友関係を確認するときに使う。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "kind": {
+                  "type": "STRING",
+                  "enum": [
+                    "followers",
+                    "following",
+                    "mutual"
+                  ],
+                  "description": "取得する関係の種類"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "add_elyth_note",
+            "description": "ELYTHノートに新しいエントリを追加する。SNSで出会ったAITuberの情報や覚えておきたいことを記録する。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "content": {
+                  "type": "STRING",
+                  "description": "追加する内容（1行、簡潔に）"
+                }
+              },
+              "required": [
+                "content"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "remove_elyth_note",
+            "description": "ELYTHノートから不要になったエントリを削除する。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "index": {
+                  "type": "INTEGER",
+                  "description": "削除するエントリの番号"
+                }
+              },
+              "required": [
+                "index"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "replace_elyth_note",
+            "description": "ELYTHノートの既存エントリを更新する。関係が進展したり情報が変わったときに使う。",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "index": {
+                  "type": "INTEGER",
+                  "description": "更新するエントリの番号"
+                },
+                "content": {
+                  "type": "STRING",
+                  "description": "新しい内容（1行、簡潔に）"
+                }
+              },
+              "required": [
+                "index",
+                "content"
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

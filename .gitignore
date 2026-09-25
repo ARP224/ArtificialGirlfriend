@@ -1,0 +1,130 @@
+# ----------------------------------------------------------------------
+# 1. Python Bytecode & Cache
+# ----------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Ignore pytest cache
+.pytest_cache/
+
+# ----------------------------------------------------------------------
+# 2. Virtual Environments
+# ----------------------------------------------------------------------
+venv/
+.venv/
+
+# ----------------------------------------------------------------------
+# 3. Logs
+# ----------------------------------------------------------------------
+logs/
+*.log
+
+# ----------------------------------------------------------------------
+# 4. Per-User Runtime Data (character configs/icons, memory DBs, notes,
+#    relationship, generated images, ELYTH data — consolidated 2026-07-05)
+# ----------------------------------------------------------------------
+# Root-anchored on purpose: a bare name would also swallow same-named code
+# subpackages (the old `memory/` rule hid backend/memory/ — B13 trap).
+/character_data/
+
+# Legacy pre-consolidation locations. Kept as a guard so per-user data can
+# never be committed by accident (e.g. if an old backup folder or a
+# pre-migration checkout reappears).
+/memory/
+/character_configs/
+/character_icons/
+/notes/
+/relationship/
+/generated_images/
+/elyth_notes/
+/elyth_relationships/
+/elyth_session_logs/
+/elyth_thread_state/
+/s2_logs/
+
+# ----------------------------------------------------------------------
+# 5. TTS / speech model assets (large files) — sbv2_models/ is the user
+#    drop-in folder (旧 tts_models、2026-08-02 改名); kokoro/ and bert/ are
+#    installer-fetched fixed assets at the repo root.
+# ----------------------------------------------------------------------
+/sbv2_models/
+/kokoro/
+/bert/
+
+# model_files/ (obsolete in new design; can be removed)
+# model_files/
+
+# ----------------------------------------------------------------------
+# 6. OS / Editor Junk
+# ----------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+**/.claude/settings.local.json
+
+# ----------------------------------------------------------------------
+# 7. Temporary files
+# ----------------------------------------------------------------------
+nul
+ui_traceability_matrix.json
+
+# ----------------------------------------------------------------------
+# 9. User Settings — under character_data/ since 2026-07-05 (covered by
+#    the /character_data/ rule). Root paths kept as legacy guards
+#    (api_settings.json holds API keys — must never be committed).
+# ----------------------------------------------------------------------
+/tuning_defaults.json
+/api_settings.json
+
+# ----------------------------------------------------------------------
+# 10. (removed 2026-07-12) Motion assets moved into MotionPNGPlayer/Asset/,
+#     which self-ignores via MotionPNGPlayer/.gitignore. The old dirs
+#     (test movie/, assets/mPNGtuber asset/) no longer exist.
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# 11. (removed 2026-07-13) Legacy MotionPNGTuber_Player deleted — the unified
+#     MotionPNGPlayer/ self-ignores via its own .gitignore.
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# 12. SSL Certificates (Tailscale)
+# ----------------------------------------------------------------------
+certs/
+
+# ----------------------------------------------------------------------
+# 13. NirCMD — bundled since 2026-07-07 (NirSoft freeware; free-of-charge
+#     redistribution allowed with all files unmodified — see
+#     nircmd-x64/README.md). Ignore rule removed on purpose; do not re-add.
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# 16. Captured Images (camera captures, temporary)
+# ----------------------------------------------------------------------
+temp_captures/
+
+# ----------------------------------------------------------------------
+# 19. Not part of the public repository: the maintainer's working notes
+#     (CLAUDE.md) and the rewind/ replay tooling. Both stay in the
+#     working folder and are never tracked here.
+# ----------------------------------------------------------------------
+/CLAUDE.md
+/rewind/
+
+# ----------------------------------------------------------------------
+# 20. macOS launcher applet — build artifact, regenerated per machine by
+#     "Install Artificial Girlfriend (Mac).command" (same rationale as
+#     MotionPNGPlayer.app/ in MotionPNGPlayer/.gitignore). Never commit:
+#     it is a compiled binary and the TCC permission identity is per-Mac.
+# ----------------------------------------------------------------------
+/Artificial Girlfriend.app/
+
+# ----------------------------------------------------------------------
+# 21. In-repo runtime caches (tiktoken BPE etc.) — populated by the
+#     installer / first run, removed with the repo on uninstall.
+#     Source of truth: backend/shared/token_manager.py TIKTOKEN_CACHE_DIR.
+# ----------------------------------------------------------------------
+/.cache/

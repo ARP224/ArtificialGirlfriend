@@ -1,0 +1,126 @@
+{
+  "ollama": [
+    {
+      "type": "function",
+      "function": {
+        "name": "execute_command",
+        "description": "Execute a command on the PC. Express yourself as a character through the PC — emotions, pranks, concern, affection, and so on.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "The command to execute (Windows CMD / NirCMD)"
+            },
+            "reason": {
+              "type": "string",
+              "description": "Why you want to run this command (emotion or motivation). Shown in the user confirmation UI."
+            }
+          },
+          "required": [
+            "command",
+            "reason"
+          ]
+        }
+      }
+    }
+  ],
+  "openai": [
+    {
+      "type": "function",
+      "name": "execute_command",
+      "description": "Execute a command on the PC. Express yourself as a character through the PC — emotions, pranks, concern, affection, and so on.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "The command to execute (Windows CMD / NirCMD)"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why you want to run this command (emotion or motivation). Shown in the user confirmation UI."
+          }
+        },
+        "required": [
+          "command",
+          "reason"
+        ]
+      }
+    }
+  ],
+  "anthropic": [
+    {
+      "name": "execute_command",
+      "description": "Execute a command on the PC. Express yourself as a character through the PC — emotions, pranks, concern, affection, and so on.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "The command to execute (Windows CMD / NirCMD)"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why you want to run this command (emotion or motivation). Shown in the user confirmation UI."
+          }
+        },
+        "required": [
+          "command",
+          "reason"
+        ]
+      }
+    }
+  ],
+  "xai": [
+    {
+      "type": "function",
+      "name": "execute_command",
+      "description": "Execute a command on the PC. Express yourself as a character through the PC — emotions, pranks, concern, affection, and so on.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "The command to execute (Windows CMD / NirCMD)"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why you want to run this command (emotion or motivation). Shown in the user confirmation UI."
+          }
+        },
+        "required": [
+          "command",
+          "reason"
+        ]
+      }
+    }
+  ],
+  "google": [
+    {
+      "function_declarations": [
+        {
+          "name": "execute_command",
+          "description": "Execute a command on the PC. Express yourself as a character through the PC — emotions, pranks, concern, affection, and so on.",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "command": {
+                "type": "STRING",
+                "description": "The command to execute (Windows CMD / NirCMD)"
+              },
+              "reason": {
+                "type": "STRING",
+                "description": "Why you want to run this command (emotion or motivation). Shown in the user confirmation UI."
+              }
+            },
+            "required": [
+              "command",
+              "reason"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

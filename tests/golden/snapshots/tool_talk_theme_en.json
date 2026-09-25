@@ -1,0 +1,155 @@
+{
+  "ollama": [
+    {
+      "type": "function",
+      "function": {
+        "name": "set_talk_theme",
+        "description": "Set or update the talk theme. Use it when you want to set a new topic as the conversation flows.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "theme": {
+              "type": "string",
+              "description": "The talk theme to set"
+            }
+          },
+          "required": [
+            "theme"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "clear_talk_theme",
+        "description": "Clear the current talk theme. Use it when you want to free up the topic.",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      }
+    }
+  ],
+  "openai": [
+    {
+      "type": "function",
+      "name": "set_talk_theme",
+      "description": "Set or update the talk theme. Use it when you want to set a new topic as the conversation flows.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "theme": {
+            "type": "string",
+            "description": "The talk theme to set"
+          }
+        },
+        "required": [
+          "theme"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "clear_talk_theme",
+      "description": "Clear the current talk theme. Use it when you want to free up the topic.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ],
+  "anthropic": [
+    {
+      "name": "set_talk_theme",
+      "description": "Set or update the talk theme. Use it when you want to set a new topic as the conversation flows.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "theme": {
+            "type": "string",
+            "description": "The talk theme to set"
+          }
+        },
+        "required": [
+          "theme"
+        ]
+      }
+    },
+    {
+      "name": "clear_talk_theme",
+      "description": "Clear the current talk theme. Use it when you want to free up the topic.",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ],
+  "xai": [
+    {
+      "type": "function",
+      "name": "set_talk_theme",
+      "description": "Set or update the talk theme. Use it when you want to set a new topic as the conversation flows.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "theme": {
+            "type": "string",
+            "description": "The talk theme to set"
+          }
+        },
+        "required": [
+          "theme"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "clear_talk_theme",
+      "description": "Clear the current talk theme. Use it when you want to free up the topic.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ],
+  "google": [
+    {
+      "function_declarations": [
+        {
+          "name": "set_talk_theme",
+          "description": "Set or update the talk theme. Use it when you want to set a new topic as the conversation flows.",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "theme": {
+                "type": "STRING",
+                "description": "The talk theme to set"
+              }
+            },
+            "required": [
+              "theme"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "function_declarations": [
+        {
+          "name": "clear_talk_theme",
+          "description": "Clear the current talk theme. Use it when you want to free up the topic.",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {},
+            "required": []
+          }
+        }
+      ]
+    }
+  ]
+}

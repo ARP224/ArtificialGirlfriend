@@ -1,0 +1,299 @@
+{
+  "ollama": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search_places",
+        "description": "Search for shops and places near the user's current location. Supports queries like \"ramen nearby\" or \"cafe\".",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Search query (e.g. ramen, cafe, convenience store)"
+            }
+          },
+          "required": [
+            "query"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_place_details",
+        "description": "Get reviews and an AI summary for a place obtained via search_places. Get place_id from the search_places results.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "place_id": {
+              "type": "string",
+              "description": "Place ID obtained from search_places results"
+            }
+          },
+          "required": [
+            "place_id"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_directions",
+        "description": "Give the distance, travel time, and route from the user's current location to a destination. Get place_id from the search_places results.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "place_id": {
+              "type": "string",
+              "description": "Place ID of the destination"
+            },
+            "mode": {
+              "type": "string",
+              "description": "Travel mode: walking, driving, or transit. Default is walking."
+            }
+          },
+          "required": [
+            "place_id"
+          ]
+        }
+      }
+    }
+  ],
+  "openai": [
+    {
+      "type": "function",
+      "name": "search_places",
+      "description": "Search for shops and places near the user's current location. Supports queries like \"ramen nearby\" or \"cafe\".",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query (e.g. ramen, cafe, convenience store)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "get_place_details",
+      "description": "Get reviews and an AI summary for a place obtained via search_places. Get place_id from the search_places results.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "place_id": {
+            "type": "string",
+            "description": "Place ID obtained from search_places results"
+          }
+        },
+        "required": [
+          "place_id"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "get_directions",
+      "description": "Give the distance, travel time, and route from the user's current location to a destination. Get place_id from the search_places results.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "place_id": {
+            "type": "string",
+            "description": "Place ID of the destination"
+          },
+          "mode": {
+            "type": "string",
+            "description": "Travel mode: walking, driving, or transit. Default is walking."
+          }
+        },
+        "required": [
+          "place_id"
+        ]
+      }
+    }
+  ],
+  "anthropic": [
+    {
+      "name": "search_places",
+      "description": "Search for shops and places near the user's current location. Supports queries like \"ramen nearby\" or \"cafe\".",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query (e.g. ramen, cafe, convenience store)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "get_place_details",
+      "description": "Get reviews and an AI summary for a place obtained via search_places. Get place_id from the search_places results.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "place_id": {
+            "type": "string",
+            "description": "Place ID obtained from search_places results"
+          }
+        },
+        "required": [
+          "place_id"
+        ]
+      }
+    },
+    {
+      "name": "get_directions",
+      "description": "Give the distance, travel time, and route from the user's current location to a destination. Get place_id from the search_places results.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "place_id": {
+            "type": "string",
+            "description": "Place ID of the destination"
+          },
+          "mode": {
+            "type": "string",
+            "description": "Travel mode: walking, driving, or transit. Default is walking."
+          }
+        },
+        "required": [
+          "place_id"
+        ]
+      }
+    }
+  ],
+  "xai": [
+    {
+      "type": "function",
+      "name": "search_places",
+      "description": "Search for shops and places near the user's current location. Supports queries like \"ramen nearby\" or \"cafe\".",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query (e.g. ramen, cafe, convenience store)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "get_place_details",
+      "description": "Get reviews and an AI summary for a place obtained via search_places. Get place_id from the search_places results.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "place_id": {
+            "type": "string",
+            "description": "Place ID obtained from search_places results"
+          }
+        },
+        "required": [
+          "place_id"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "get_directions",
+      "description": "Give the distance, travel time, and route from the user's current location to a destination. Get place_id from the search_places results.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "place_id": {
+            "type": "string",
+            "description": "Place ID of the destination"
+          },
+          "mode": {
+            "type": "string",
+            "description": "Travel mode: walking, driving, or transit. Default is walking."
+          }
+        },
+        "required": [
+          "place_id"
+        ]
+      }
+    }
+  ],
+  "google": [
+    {
+      "function_declarations": [
+        {
+          "name": "search_places",
+          "description": "Search for shops and places near the user's current location. Supports queries like \"ramen nearby\" or \"cafe\".",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "query": {
+                "type": "STRING",
+                "description": "Search query (e.g. ramen, cafe, convenience store)"
+              }
+            },
+            "required": [
+              "query"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "function_declarations": [
+        {
+          "name": "get_place_details",
+          "description": "Get reviews and an AI summary for a place obtained via search_places. Get place_id from the search_places results.",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "place_id": {
+                "type": "STRING",
+                "description": "Place ID obtained from search_places results"
+              }
+            },
+            "required": [
+              "place_id"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "function_declarations": [
+        {
+          "name": "get_directions",
+          "description": "Give the distance, travel time, and route from the user's current location to a destination. Get place_id from the search_places results.",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "place_id": {
+                "type": "STRING",
+                "description": "Place ID of the destination"
+              },
+              "mode": {
+                "type": "STRING",
+                "description": "Travel mode: walking, driving, or transit. Default is walking."
+              }
+            },
+            "required": [
+              "place_id"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

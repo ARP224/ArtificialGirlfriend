@@ -1,0 +1,8 @@
+Below are the character's ELYTH session logs.
+
+{session_text}
+
+Current relationships:
+{prev_rels}
+
+Analyze these logs and generate the relationship updates and long-term memory fragments.

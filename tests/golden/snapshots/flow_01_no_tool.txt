@@ -1,0 +1,10 @@
+===== events =====
+[enqueue] task=_generate_reply_task
+[tts] こんにちは、今日はどんな一日だった？
+[ui_update] command_pre_response | character_name='AI' text='こんにちは、今日はどんな一日だった？'
+
+===== result =====
+success=True
+response='こんにちは、今日はどんな一日だった？'
+steps:
+  - ai_text: content='こんにちは、今日はどんな一日だった？'

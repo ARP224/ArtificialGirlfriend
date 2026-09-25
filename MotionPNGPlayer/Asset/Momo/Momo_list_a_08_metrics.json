@@ -1,0 +1,12 @@
+{
+  "n_frames": 147,
+  "n_valid": 122,
+  "valid_rate": 0.8299319727891157,
+  "mean_conf": 1.0,
+  "p10_conf": 1.0,
+  "min_conf_threshold": 0.5,
+  "quad_width_median_px": 140.95350646972656,
+  "jitter_p95_px": 0.856252059340477,
+  "jitter_p95_over_width": 0.006074712724684004,
+  "smooth_median_size": 9
+}

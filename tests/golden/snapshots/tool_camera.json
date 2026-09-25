@@ -1,0 +1,101 @@
+{
+  "ollama": [
+    {
+      "type": "function",
+      "function": {
+        "name": "capture_camera",
+        "description": "PCのWebカメラで写真を撮影する。ユーザーの様子が見たいときや気になるときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string",
+              "description": "なぜ撮影したいか（動機や気持ち）"
+            }
+          },
+          "required": [
+            "reason"
+          ]
+        }
+      }
+    }
+  ],
+  "openai": [
+    {
+      "type": "function",
+      "name": "capture_camera",
+      "description": "PCのWebカメラで写真を撮影する。ユーザーの様子が見たいときや気になるときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "なぜ撮影したいか（動機や気持ち）"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      }
+    }
+  ],
+  "anthropic": [
+    {
+      "name": "capture_camera",
+      "description": "PCのWebカメラで写真を撮影する。ユーザーの様子が見たいときや気になるときに使う。",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "なぜ撮影したいか（動機や気持ち）"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      }
+    }
+  ],
+  "xai": [
+    {
+      "type": "function",
+      "name": "capture_camera",
+      "description": "PCのWebカメラで写真を撮影する。ユーザーの様子が見たいときや気になるときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "なぜ撮影したいか（動機や気持ち）"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      }
+    }
+  ],
+  "google": [
+    {
+      "function_declarations": [
+        {
+          "name": "capture_camera",
+          "description": "PCのWebカメラで写真を撮影する。ユーザーの様子が見たいときや気になるときに使う。",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "reason": {
+                "type": "STRING",
+                "description": "なぜ撮影したいか（動機や気持ち）"
+              }
+            },
+            "required": [
+              "reason"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

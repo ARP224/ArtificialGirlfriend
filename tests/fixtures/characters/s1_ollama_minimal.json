@@ -1,0 +1,6 @@
+{
+  "system_prompt": "あなたは「ノクス」という名前のAIアシスタントです。ユーザーと自然に会話してください。",
+  "model_provider": "ollama",
+  "ollama_model_name": "llama3",
+  "faster_whisper_config": {"language": "ja"}
+}

@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotionPNGPlayer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: transparent;
+            /* Removed -webkit-app-region: drag to allow custom context menu */
+        }
+
+        /* Vertical layout: [bubble band?] [stage(flex)] [input band?].
+           Band heights must match BUBBLE_BAND_H / INPUT_BAND_H in main.js —
+           the window is enlarged by exactly that much when a band is on. */
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stage {
+            position: relative;
+            width: 100%;
+            flex: 1 1 auto;
+            min-height: 0;
+            background: transparent;
+        }
+
+        /* Speech bubble band (above the character) */
+        #bubble-band {
+            height: 150px;
+            flex: 0 0 auto;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 6px 10px;
+        }
+
+        #bubble-band.visible {
+            display: flex;
+        }
+
+        .speech-bubble {
+            display: none;
+            max-width: 100%;
+            max-height: 100%;
+            overflow-y: auto;
+            background: rgba(25, 25, 30, 0.85);
+            color: #fff;
+            font-family: sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 10px 14px;
+            border-radius: 12px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .speech-bubble.visible {
+            display: block;
+        }
+
+        /* Prompt input band (below the character) */
+        #input-band {
+            height: 48px;
+            flex: 0 0 auto;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 8px;
+        }
+
+        #input-band.visible {
+            display: flex;
+        }
+
+        #prompt-input {
+            flex: 1;
+            height: 34px;
+            min-width: 0;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 17px;
+            background: rgba(25, 25, 30, 0.85);
+            color: #fff;
+            padding: 0 14px;
+            font-family: sans-serif;
+            font-size: 14px;
+            outline: none;
+        }
+
+        #prompt-input:disabled {
+            opacity: 0.5;
+        }
+
+        #prompt-send {
+            height: 34px;
+            padding: 0 14px;
+            border: none;
+            border-radius: 17px;
+            background: #4CAF50;
+            color: white;
+            font-family: sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        #prompt-send:hover {
+            background: #66BB6A;
+        }
+
+        #prompt-send:disabled {
+            background: rgba(255, 255, 255, 0.2);
+            cursor: default;
+        }
+
+        /* video要素は表示に使わない(デコード専用)。表示は#video-canvasへの
+           転写に一本化: 透過ウィンドウ上のvideo合成サーフェスは状態遷移で壊れるため。
+           !important でJS側のインラインvisibility操作(遷移処理の名残)にも勝たせる */
+        #base-video, #back-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: transparent;
+            pointer-events: none;
+            visibility: hidden !important;
+        }
+
+        #video-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Same box and same object-fit as #video-canvas: both canvases share the
+           video's pixel size, so the mouth stays on the face even if the stage
+           ever gets a different aspect ratio than the video */
+        #mouth-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Loading indicator */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255, 255, 255, 0.8);
+            font-family: sans-serif;
+            font-size: 14px;
+            text-align: center;
+            pointer-events: none;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .loading.hidden {
+            display: none;
+        }
+
+        /* Error message */
+        .error-message {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-family: sans-serif;
+            font-size: 12px;
+            pointer-events: none;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        /* Debug info (hidden by default) */
+        .debug-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #0f0;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 10px;
+            pointer-events: none;
+            display: none;
+        }
+
+        .debug-info.visible {
+            display: block;
+        }
+
+        /* Resize slider */
+        .resize-slider-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+            -webkit-app-region: no-drag;
+        }
+
+        .resize-slider-container.visible {
+            display: flex;
+        }
+
+        .resize-slider-container label {
+            color: white;
+            font-family: sans-serif;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .resize-slider {
+            width: 120px;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .resize-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #4CAF50;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .resize-slider::-webkit-slider-thumb:hover {
+            background: #66BB6A;
+        }
+
+        .resize-value {
+            color: white;
+            font-family: monospace;
+            font-size: 12px;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .resize-close-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 0 4px;
+            margin-left: 5px;
+        }
+
+        .resize-close-btn:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="bubble-band">
+        <div class="speech-bubble no-window-drag" id="speech-bubble"></div>
+    </div>
+    <div class="stage" id="stage">
+        <video id="base-video" playsinline muted></video>
+        <video id="back-video" playsinline muted></video>
+        <canvas id="video-canvas"></canvas>
+        <canvas id="mouth-canvas"></canvas>
+        <div class="loading" id="loading">Loading...</div>
+        <div class="error-message" id="error-message"></div>
+        <div class="debug-info" id="debug-info"></div>
+        <div class="resize-slider-container no-window-drag" id="resize-slider-container">
+            <label>Size:</label>
+            <input type="range" class="resize-slider" id="resize-slider" min="30" max="200" value="100">
+            <span class="resize-value" id="resize-value">100%</span>
+            <button class="resize-close-btn" id="resize-close-btn" title="Close">&#x2715;</button>
+        </div>
+    </div>
+    <div id="input-band">
+        <input type="text" class="no-window-drag" id="prompt-input" maxlength="2000">
+        <button class="no-window-drag" id="prompt-send"></button>
+    </div>
+
+    <!-- audio-worklet.js is loaded via audioContext.audioWorklet.addModule() in ws-audio.js -->
+    <script src="lipsync.js"></script>
+    <script src="ws-audio.js"></script>
+    <script src="multi-motion.js"></script>
+    <script>
+    /**
+     * MotionPNGPlayer - Electron Renderer Entry Point
+     */
+    (function() {
+        'use strict';
+
+        // DOM Elements
+        const stageEl = document.getElementById('stage');
+        const videoEl = document.getElementById('base-video');
+        const videoCanvasEl = document.getElementById('video-canvas');
+        const canvasEl = document.getElementById('mouth-canvas');
+        const loadingEl = document.getElementById('loading');
+        const errorEl = document.getElementById('error-message');
+        const debugEl = document.getElementById('debug-info');
+        const resizeSliderContainer = document.getElementById('resize-slider-container');
+        const resizeSlider = document.getElementById('resize-slider');
+        const resizeValue = document.getElementById('resize-value');
+        const resizeCloseBtn = document.getElementById('resize-close-btn');
+        const bubbleBand = document.getElementById('bubble-band');
+        const bubbleEl = document.getElementById('speech-bubble');
+        const inputBand = document.getElementById('input-band');
+        const promptInput = document.getElementById('prompt-input');
+        const promptSend = document.getElementById('prompt-send');
+
+        // State
+        let lipsyncEngine = null;
+        let multiMotionManager = null;
+        let wsAudioPlayer = null;
+        let isInitialized = false;
+        let resizeSliderVisible = false;
+        let loadGeneration = 0;
+
+        // i18n: dictionary arrives in the init payload from the main process
+        let L = {};
+        function t(key, ...args) {
+            const template = L[key] || key;
+            return template.replace(/\{(\d+)\}/g, (m, i) => (args[i] !== undefined ? args[i] : m));
+        }
+
+        // Show/hide loading
+        function setLoading(show, message = 'Loading...') {
+            loadingEl.textContent = message;
+            loadingEl.classList.toggle('hidden', !show);
+        }
+
+        // Show error
+        function showError(message) {
+            errorEl.textContent = message;
+            errorEl.classList.add('visible');
+            setTimeout(() => errorEl.classList.remove('visible'), 5000);
+        }
+
+        // Update debug info
+        function updateDebug(info) {
+            debugEl.textContent = info;
+        }
+
+        // Right-click handler
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            if (window.electronAPI) {
+                window.electronAPI.showContextMenu();
+            }
+        });
+
+        // Resize slider handlers
+        // Use 'input' for visual feedback only, 'change' for actual resize
+        resizeSlider.addEventListener('input', (e) => {
+            const scalePercent = parseInt(e.target.value);
+            resizeValue.textContent = scalePercent + '%';
+        });
+
+        resizeSlider.addEventListener('change', (e) => {
+            const scalePercent = parseInt(e.target.value);
+            const scale = scalePercent / 100;
+            if (window.electronAPI) {
+                window.electronAPI.setScale(scale);
+            }
+        });
+
+        // Close button for resize slider
+        resizeCloseBtn.addEventListener('click', () => {
+            resizeSliderVisible = false;
+            resizeSliderContainer.classList.remove('visible');
+        });
+
+        // --- Speech bubble (band above the character) ---
+        let bubbleTimer = null;
+
+        function showBubble(text, durationMs) {
+            if (!bubbleBand.classList.contains('visible')) return;
+            bubbleEl.textContent = text;
+            bubbleEl.classList.add('visible');
+            bubbleEl.scrollTop = 0;
+            if (bubbleTimer) clearTimeout(bubbleTimer);
+            // 稜裁定: 読み上げ終了(受信+duration_ms)から10秒で消す
+            bubbleTimer = setTimeout(hideBubble, (durationMs || 0) + 10000);
+        }
+
+        function hideBubble() {
+            bubbleEl.classList.remove('visible');
+            if (bubbleTimer) {
+                clearTimeout(bubbleTimer);
+                bubbleTimer = null;
+            }
+        }
+
+        // --- Prompt input (band below the character) ---
+        // Disabled while ANY client is generating (server broadcast) or while
+        // our own send awaits its text_prompt_response.
+        let generating = false;
+        let pendingSend = false;
+        let pendingTimer = null;
+        let lastSentText = null;
+
+        function updateInputEnabled() {
+            const disabled = generating || pendingSend;
+            promptInput.disabled = disabled;
+            promptSend.disabled = disabled;
+        }
+
+        function sendPrompt() {
+            const text = promptInput.value.trim();
+            if (!text || generating || pendingSend) return;
+            if (!wsAudioPlayer || !wsAudioPlayer.isConnected()) {
+                showError(t('input.notConnected'));
+                return;
+            }
+            wsAudioPlayer.sendMessage({ action: 'text_prompt', text: text });
+            lastSentText = text;
+            promptInput.value = '';
+            pendingSend = true;
+            updateInputEnabled();
+            // Response-lost safety: re-enable after 15s if no text_prompt_response
+            if (pendingTimer) clearTimeout(pendingTimer);
+            pendingTimer = setTimeout(() => {
+                pendingSend = false;
+                updateInputEnabled();
+            }, 15000);
+        }
+
+        promptSend.addEventListener('click', sendPrompt);
+        promptInput.addEventListener('keydown', (e) => {
+            // isComposing: 日本語IMEの変換確定Enterでは送信しない
+            if (e.key === 'Enter' && !e.isComposing) sendPrompt();
+        });
+
+        // Band visibility (from init payload and context-menu toggles)
+        function setBands(bands) {
+            bubbleBand.classList.toggle('visible', !!(bands && bands.bubble));
+            inputBand.classList.toggle('visible', !!(bands && bands.input));
+            if (!(bands && bands.bubble)) hideBubble();
+        }
+
+        // Server events surfaced by ws-audio.js
+        function handleServerEvent(data) {
+            if (data.action === 'tts_audio') {
+                if (data.data && data.data.text) {
+                    showBubble(data.data.text, data.data.duration_ms || 0);
+                }
+            } else if (data.action === 'is_generating_update') {
+                generating = !!(data.data && data.data.is_generating);
+                updateInputEnabled();
+            } else if (data.action === 'text_prompt_response') {
+                pendingSend = false;
+                if (pendingTimer) {
+                    clearTimeout(pendingTimer);
+                    pendingTimer = null;
+                }
+                if (!data.success) {
+                    showError(data.message || 'Error');
+                    // 拒否時は入力を復元(送信済みに見えて消えるのを防ぐ)
+                    if (lastSentText && !promptInput.value) promptInput.value = lastSentText;
+                }
+                lastSentText = null;
+                updateInputEnabled();
+            }
+        }
+
+        // Toggle resize slider from menu
+        if (window.electronAPI) {
+            window.electronAPI.onToggleResizeSlider((scale) => {
+                resizeSliderVisible = !resizeSliderVisible;
+                resizeSliderContainer.classList.toggle('visible', resizeSliderVisible);
+                if (resizeSliderVisible) {
+                    const scalePercent = Math.round(scale * 100);
+                    resizeSlider.value = scalePercent;
+                    resizeValue.textContent = scalePercent + '%';
+                }
+            });
+
+            window.electronAPI.onScaleChanged((scale) => {
+                const scalePercent = Math.round(scale * 100);
+                resizeSlider.value = scalePercent;
+                resizeValue.textContent = scalePercent + '%';
+            });
+
+            window.electronAPI.onSetBandVisibility(setBands);
+        }
+
+        // Scroll wheel handler for resizing
+        document.addEventListener('wheel', (e) => {
+            // Interactive elements (speech bubble scroll, input) keep native wheel
+            if (e.target.closest('.no-window-drag')) return;
+            e.preventDefault();
+            if (window.electronAPI) {
+                const delta = e.deltaY > 0 ? -0.05 : 0.05;
+                window.electronAPI.resizeWindow(delta);
+            }
+        }, { passive: false });
+
+        // Window drag handler (left-click + drag)
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+
+        document.addEventListener('mousedown', (e) => {
+            // Only left-click, and not on interactive elements
+            if (e.button === 0 && !e.target.closest('.no-window-drag')) {
+                isDragging = true;
+                dragStartX = e.screenX;
+                dragStartY = e.screenY;
+                if (window.electronAPI) {
+                    window.electronAPI.startDrag();
+                }
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging && window.electronAPI) {
+                const deltaX = e.screenX - dragStartX;
+                const deltaY = e.screenY - dragStartY;
+                window.electronAPI.dragWindow(deltaX, deltaY);
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        document.addEventListener('mouseleave', () => {
+            isDragging = false;
+        });
+
+        // Remote mode state
+        let appeared = false;
+
+        // Create LipsyncEngine instance (shared by both modes)
+        function createLipsyncEngine() {
+            return new LipsyncEngine({
+                elements: {
+                    video: videoEl,
+                    mouthCanvas: canvasEl,
+                    stage: stageEl,
+                    videoCanvas: videoCanvasEl
+                },
+                callbacks: {
+                    onLog: (msg) => console.log('[Lipsync]', msg),
+                    onFileStatus: (status, msg) => {
+                        console.log('[Lipsync Status]', status, msg);
+                        if (status === 'error') showError(msg);
+                    },
+                    onVolumeChange: (vol) => {},
+                    onPlayStateChange: (isPlaying) => {
+                        console.log('[Lipsync] Playing:', isPlaying);
+                    },
+                    onError: (msg) => showError(msg)
+                },
+                options: {
+                    debug: false,
+                    hqAudioEnabled: true,
+                    sensitivity: 50
+                }
+            });
+        }
+
+        // Playback watchdog state (see checkPlaybackStall below)
+        let currentCharacterPath = null;   // what loadAndStartMotions last started
+        let stallRecoveries = [];          // timestamps of automatic recoveries
+        let stallGaveUp = false;
+
+        // Load motions and set up window size (with generation guard for concurrent calls)
+        async function loadAndStartMotions(characterPath, fromWatchdog = false) {
+            const myGen = ++loadGeneration;
+
+            // A real command (Appear / character change) starts with a clean slate
+            if (!fromWatchdog) {
+                stallRecoveries = [];
+                stallGaveUp = false;
+            }
+
+            const result = await window.electronAPI.loadCharacterFolder(characterPath);
+
+            // Superseded by a newer load request
+            if (myGen !== loadGeneration) {
+                console.log('[App] Load superseded by newer request, aborting');
+                return;
+            }
+
+            if (result.error) {
+                throw new Error(result.error);
+            }
+            if (!result.motions || result.motions.length === 0) {
+                throw new Error('No valid motions found in character folder');
+            }
+
+            console.log('[App] Loaded motions:', result.motions.length);
+
+            if (!lipsyncEngine) {
+                lipsyncEngine = createLipsyncEngine();
+            }
+
+            // Replace the MultiMotionManager. cleanup() marks the old one as
+            // disposed, so its pending async work (a transition or an initial
+            // load still in flight) can never touch the shared engine / video
+            // elements again (see multi-motion.js)
+            if (multiMotionManager) {
+                multiMotionManager.cleanup();
+            }
+            const manager = new MultiMotionManager(lipsyncEngine);
+            multiMotionManager = manager;
+            await manager.init(result.motions);
+
+            // Re-check after async init. A newer load owns the engine now and has
+            // already disposed this manager. Do NOT stop anything here: the shared
+            // variable points at the newer manager, which may already be playing
+            if (myGen !== loadGeneration) {
+                console.log('[App] Load superseded during init, aborting');
+                return;
+            }
+
+            // Set window size based on video dimensions
+            const trackData = manager.getCurrentTrackData();
+            if (trackData && trackData.width && trackData.height) {
+                let width = trackData.width;
+                let height = trackData.height;
+                const maxHeight = 800;
+                if (height > maxHeight) {
+                    const ratio = maxHeight / height;
+                    width = Math.round(width * ratio);
+                    height = maxHeight;
+                }
+                window.electronAPI.setBaseSize(width, height);
+            }
+
+            manager.startPlaying();
+            currentCharacterPath = characterPath;
+        }
+
+        // --- Playback watchdog (safety net) ---
+        // If playback should be running but the video time has not advanced for
+        // STALL_MS, reload the current character's motions. init() rebuilds the
+        // whole double-buffer state from the DOM, so a reload is a true reset.
+        // This does not replace fixing causes: every recovery is logged.
+        const STALL_CHECK_MS = 2000;
+        const STALL_MS = 10000;               // longer than a transition's 5 s preload wait
+        const STALL_MAX_RECOVERIES = 3;       // within STALL_WINDOW_MS, then give up
+        const STALL_WINDOW_MS = 5 * 60 * 1000;
+        let stallLastTime = -1;
+        let stallSince = 0;
+        let stallLastCheck = 0;
+        let stallRecovering = false;
+
+        function checkPlaybackStall() {
+            const now = performance.now();
+            // Timers were suspended (system sleep, debugger): not a playback stall
+            const resumed = now - stallLastCheck > STALL_CHECK_MS * 3;
+            stallLastCheck = now;
+
+            // Minimized or fully covered window: Chromium pauses the muted video by
+            // itself after ~10 s and resumes it when the window is shown again.
+            // That is not a stall (reloading there would burn all the recoveries
+            // and switch the watchdog off)
+            const hidden = document.visibilityState === 'hidden';
+
+            const manager = multiMotionManager;
+            const video = lipsyncEngine && lipsyncEngine.video;
+            const watching = manager && manager.isPlaying && video &&
+                             currentCharacterPath !== null && !stallRecovering && !stallGaveUp;
+            if (!watching || resumed || hidden || video.currentTime !== stallLastTime) {
+                stallLastTime = video ? video.currentTime : -1;
+                stallSince = now;
+                return;
+            }
+            if (now - stallSince < STALL_MS) return;
+
+            stallRecoveries = stallRecoveries.filter(ts => now - ts < STALL_WINDOW_MS);
+            if (stallRecoveries.length >= STALL_MAX_RECOVERIES) {
+                stallGaveUp = true;
+                console.error('[App] Playback keeps stalling: giving up automatic recovery after',
+                    STALL_MAX_RECOVERIES, 'attempts');
+                return;
+            }
+            stallRecoveries.push(now);
+            stallSince = now;
+            stallRecovering = true;
+            console.warn('[App] Playback stalled for', Math.round(STALL_MS / 1000) + 's at',
+                video.currentTime.toFixed(2) + 's, reloading motions (recovery',
+                stallRecoveries.length + '/' + STALL_MAX_RECOVERIES + ')');
+            loadAndStartMotions(currentCharacterPath, true)
+                .catch(error => console.error('[App] Stall recovery failed:', error))
+                .finally(() => { stallRecovering = false; });
+        }
+        setInterval(checkPlaybackStall, STALL_CHECK_MS);
+        // --- end of playback watchdog ---
+
+        // --- Local mode initialization ---
+        async function initLocal(wsPort, characterPath) {
+            console.log('[App] Initializing LOCAL mode, port:', wsPort, 'folder:', characterPath);
+            setLoading(true, t('player.loadingCharacter'));
+
+            lipsyncEngine = createLipsyncEngine();
+
+            // Local mode: Appear / Disappear are the process start / exit, so the
+            // only command is character_changed (AG switched the active character
+            // while the player is shown). Same reload as remote mode.
+            async function handleLocalCommand(data) {
+                if (data.action !== 'character_changed') return;
+                try {
+                    const result = await window.electronAPI.handleWsCommand({
+                        action: 'character_changed',
+                        folder_name: data.folder_name
+                    });
+                    if (!result.success) throw new Error(result.error);
+                    // Two characters may share one Motion folder: nothing to reload
+                    if (result.characterPath === currentCharacterPath) return;
+                    await loadAndStartMotions(result.characterPath);
+                    console.log('[App] Character changed to:', data.folder_name);
+                } catch (error) {
+                    // AG checks the folder before sending. If it still fails, exit:
+                    // AG's process monitor then resets the Appear button (no
+                    // half-alive hidden window)
+                    console.error('[App] character_changed failed, closing:', error);
+                    window.close();
+                }
+            }
+
+            // Connect first so a TTS message arriving during load is not missed
+            wsAudioPlayer = new WebSocketAudioPlayer({
+                mode: 'local',
+                wsPort: wsPort,
+                wsHost: 'localhost',
+                lipsyncEngine: lipsyncEngine,
+                onCommand: handleLocalCommand,
+                onEvent: handleServerEvent
+            });
+            wsAudioPlayer.connect();
+
+            try {
+                await loadAndStartMotions(characterPath);
+                wsAudioPlayer.lipsyncEnabled = true;
+                setLoading(false);
+                isInitialized = true;
+                console.log('[App] Local initialization complete');
+            } catch (error) {
+                console.error('[App] Local init failed:', error);
+                setLoading(false);
+                showError(t('player.loadFailed', error.message));
+            }
+        }
+
+        // --- Remote mode initialization ---
+        async function initRemote(wsPort, wsHost) {
+            console.log('[App] Initializing REMOTE mode, host:', wsHost, 'port:', wsPort);
+            setLoading(true, t('player.connecting'));
+
+            // Create LipsyncEngine (needed for lipsync_frames)
+            lipsyncEngine = createLipsyncEngine();
+
+            // Handle remote commands from server
+            async function handleRemoteCommand(data) {
+                console.log('[App] Remote command:', data.action);
+
+                if (data.action === 'character_appear') {
+                    try {
+                        const result = await window.electronAPI.handleWsCommand({
+                            action: 'character_appear',
+                            folder_name: data.folder_name
+                        });
+
+                        if (!result.success) {
+                            wsAudioPlayer.sendMessage({
+                                action: 'appear_response',
+                                success: false,
+                                error: result.error
+                            });
+                            return;
+                        }
+
+                        // Load motions from the character path
+                        await loadAndStartMotions(result.characterPath);
+
+                        appeared = true;
+                        wsAudioPlayer.lipsyncEnabled = true;
+                        setLoading(false);
+
+                        wsAudioPlayer.sendMessage({
+                            action: 'appear_response',
+                            success: true
+                        });
+                        console.log('[App] Character appeared');
+
+                    } catch (error) {
+                        console.error('[App] character_appear failed:', error);
+                        wsAudioPlayer.sendMessage({
+                            action: 'appear_response',
+                            success: false,
+                            error: error.message
+                        });
+                    }
+
+                } else if (data.action === 'character_disappear') {
+                    try {
+                        await window.electronAPI.handleWsCommand({
+                            action: 'character_disappear'
+                        });
+
+                        appeared = false;
+                        wsAudioPlayer.lipsyncEnabled = false;
+                        if (multiMotionManager) {
+                            multiMotionManager.stopPlaying();
+                        }
+                        setLoading(true, t('player.waitingAppear'));
+
+                        wsAudioPlayer.sendMessage({
+                            action: 'disappear_response',
+                            success: true
+                        });
+                        console.log('[App] Character disappeared');
+
+                    } catch (error) {
+                        console.error('[App] character_disappear failed:', error);
+                    }
+
+                } else if (data.action === 'character_changed') {
+                    if (!appeared) return;
+
+                    try {
+                        const result = await window.electronAPI.handleWsCommand({
+                            action: 'character_changed',
+                            folder_name: data.folder_name
+                        });
+
+                        if (!result.success) {
+                            // Asset folder not found → hide window, notify server
+                            appeared = false;
+                            wsAudioPlayer.lipsyncEnabled = false;
+                            if (multiMotionManager) {
+                                multiMotionManager.stopPlaying();
+                            }
+                            setLoading(true, t('player.waitingAppear'));
+
+                            wsAudioPlayer.sendMessage({
+                                action: 'character_change_error',
+                                error: result.error
+                            });
+                            return;
+                        }
+
+                        // Reload motions with new character
+                        await loadAndStartMotions(result.characterPath);
+                        console.log('[App] Character changed to:', data.folder_name);
+
+                    } catch (error) {
+                        console.error('[App] character_changed failed:', error);
+                        wsAudioPlayer.sendMessage({
+                            action: 'character_change_error',
+                            error: error.message
+                        });
+                    }
+                }
+            }
+
+            // Initialize WebSocket Audio Player
+            wsAudioPlayer = new WebSocketAudioPlayer({
+                mode: 'remote',
+                wsPort: wsPort,
+                wsHost: wsHost,
+                lipsyncEngine: lipsyncEngine,
+                onCommand: handleRemoteCommand,
+                onEvent: handleServerEvent
+            });
+            wsAudioPlayer.connect();
+
+            setLoading(false);
+            setLoading(true, t('player.waitingAppear'));
+            isInitialized = true;
+            console.log('[App] Remote initialization complete, waiting for commands');
+        }
+
+        // Wait for electronAPI to be ready
+        if (window.electronAPI) {
+            window.electronAPI.onInit((data) => {
+                console.log('[App] Received init data:', data);
+                L = data.strings || {};
+                document.querySelector('#resize-slider-container label').textContent = t('player.sizeLabel');
+                promptInput.placeholder = t('input.placeholder');
+                promptSend.textContent = t('input.send');
+                setBands(data.bands);
+                if (data.mode === 'local') {
+                    initLocal(data.wsPort, data.characterPath);
+                } else {
+                    initRemote(data.wsPort, data.wsHost);
+                }
+            });
+        } else {
+            console.error('[App] electronAPI not available');
+            showError('Electron API not available');
+        }
+
+        // Keyboard shortcuts for debugging
+        document.addEventListener('keydown', (e) => {
+            // Never hijack keys while typing in the prompt input
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            // D key: Toggle debug info
+            if (e.key === 'd' || e.key === 'D') {
+                debugEl.classList.toggle('visible');
+            }
+            // R key: Reload
+            if (e.key === 'r' || e.key === 'R') {
+                location.reload();
+            }
+        });
+
+        // Global error handler for debugging
+        window.onerror = (msg, url, line, col, error) => {
+            console.error('[Global Error]', msg, 'at', url, 'line', line);
+            showError('Error: ' + msg);
+            return false;
+        };
+
+        window.onunhandledrejection = (event) => {
+            console.error('[Unhandled Rejection]', event.reason);
+            showError('Async Error: ' + event.reason);
+        };
+    })();
+    </script>
+</body>
+</html>

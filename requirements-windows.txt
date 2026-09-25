@@ -1,0 +1,267 @@
+# Fully pinned snapshot of the verified working environment (2026-07-06).
+# Regenerated from `pip freeze` after the venv rebuild incident: unpinned
+# transitive deps drifted (pydantic/fastapi/starlette) and broke gradio 5.15.
+# To rebuild: python -m venv venv && venv\Scripts\python -m pip install -r requirements-windows.txt
+# Keep comments ASCII-only: pip decodes this file with the locale codec (cp932).
+
+# Use the PyTorch wheels for CUDA 12.6
+--index-url https://download.pytorch.org/whl/cu126
+--extra-index-url https://pypi.org/simple
+
+# PyTorch wheels for CUDA 12.6 (served from the index above)
+torch==2.6.0+cu126
+torchvision==0.21.0+cu126
+torchaudio==2.6.0+cu126
+
+# STT (faster-whisper) + TTS (Style-Bert-VITS2)
+faster-whisper==1.1.1
+style-bert-vits2==2.5.0
+
+# LangChain & local LLM usage
+langchain==0.3.25
+langchain-ollama==0.3.0
+langchain-community==0.3.23
+langgraph==0.3.21
+langgraph-checkpoint-sqlite==2.0.6
+
+# UI framework
+gradio==5.15.0
+
+# Audio, hotkey, and system monitoring
+sounddevice==0.5.1
+pynput==1.7.7
+psutil==7.0.0
+pywin32==311
+pystray==0.19.5
+
+# Image processing
+pillow==11.3.0
+opencv-python==4.11.0.86
+
+# Testing
+pytest==8.3.4
+
+# ABI-sensitive pins
+numpy==1.26.4
+packaging==24.2
+
+# Token counting
+tiktoken==0.12.0
+
+# Server mode (FastAPI + uvicorn + SSL)
+fastapi==0.116.1
+uvicorn==0.35.0
+cryptography==46.0.5
+
+# TTS audio AAC encoding (Phase 1B - replaces WAV base64 over WebSocket)
+av==14.1.0
+
+# Deep Search (web search + page text extraction)
+ddgs==9.11.3
+trafilatura==2.0.0
+
+# --- Transitive and manually-added dependencies (exact pins) ---
+# Everything below is part of the same verified snapshot. Do not remove
+# entries just because nothing imports them directly.
+aiofiles==23.2.1
+aiohappyeyeballs==2.4.4
+aiohttp==3.11.12
+aiosignal==1.3.2
+aiosqlite==0.21.0
+altgraph==0.17.4
+annotated-types==0.7.0
+anyio==4.9.0
+async-timeout==4.0.3
+attrs==25.1.0
+babel==2.18.0
+certifi==2025.7.14
+cffi==2.0.0
+charset-normalizer==3.4.2
+click==8.2.1
+cmudict==1.0.32
+cn2an==0.5.23
+colorama==0.4.6
+coloredlogs==15.0.1
+contourpy==1.3.2
+courlan==1.3.2
+ctranslate2==4.5.0
+cycler==0.12.1
+dataclasses-json==0.6.7
+dateparser==1.3.0
+Distance==0.1.3
+docopt==0.6.2
+duckduckgo_search==8.1.1
+exceptiongroup==1.3.0
+ffmpy==0.6.0
+filelock==3.18.0
+flatbuffers==25.1.24
+fonttools==4.59.0
+frozenlist==1.5.0
+fsspec==2025.7.0
+g2p-en==2.1.0
+gradio_client==1.7.0
+greenlet==3.1.1
+h11==0.16.0
+htmldate==1.9.4
+httpcore==1.0.9
+httpx==0.28.1
+httpx-sse==0.4.0
+huggingface-hub==0.33.4
+humanfriendly==10.0
+idna==3.10
+importlib_metadata==8.6.1
+importlib_resources==6.5.2
+inflect==7.5.0
+iniconfig==2.0.0
+jieba==0.42.1
+Jinja2==3.1.6
+joblib==1.4.2
+jsonpatch==1.33
+jsonpointer==3.0.0
+jusText==3.0.2
+kiwisolver==1.4.8
+langchain-core==0.3.58
+langchain-text-splitters==0.3.8
+langgraph-checkpoint==2.0.23
+langgraph-prebuilt==0.1.7
+langgraph-sdk==0.1.60
+langsmith==0.3.6
+llvmlite==0.44.0
+loguru==0.7.3
+lxml==6.0.2
+lxml_html_clean==0.4.4
+markdown-it-py==3.0.0
+MarkupSafe==2.1.5
+marshmallow==3.26.1
+matplotlib==3.10.3
+mdurl==0.1.2
+more-itertools==10.6.0
+mpmath==1.3.0
+mss==10.1.0
+multidict==6.1.0
+mypy_extensions==1.1.0
+networkx==3.4.2
+nltk==3.9.1
+num2words==0.5.14
+numba==0.61.2
+ollama==0.4.7
+onnxruntime==1.20.1
+orjson==3.11.0
+ormsgpack==1.9.1
+pandas==2.3.1
+pefile==2023.2.7
+pluggy==1.5.0
+primp==1.1.3
+proces==0.1.7
+propcache==0.2.1
+protobuf==5.29.3
+pycparser==2.22
+pydantic==2.11.7
+pydantic_core==2.33.2
+pydantic-settings==2.9.1
+pydub==0.25.1
+Pygments==2.19.2
+pyinstaller==6.15.0
+pyinstaller-hooks-contrib==2025.8
+pyopenjtalk-dict==0.3.4.dev2
+pyparsing==3.2.3
+pypinyin==0.53.0
+pyreadline3==3.5.4
+python-dateutil==2.9.0.post0
+python-dotenv==1.1.0
+python-multipart==0.0.20
+pytz==2025.2
+pywin32-ctypes==0.2.3
+pyworld-prebuilt==0.3.5.post1
+PyYAML==6.0.2
+regex==2024.11.6
+requests==2.32.4
+requests-toolbelt==1.0.0
+rich==14.0.0
+ruff==0.12.4
+safehttpx==0.1.6
+safetensors==0.5.2
+scipy==1.15.3
+semantic-version==2.10.0
+sentencepiece==0.2.0
+shellingham==1.5.4
+six==1.17.0
+sniffio==1.3.1
+SQLAlchemy==2.0.37
+starlette==0.47.2
+sympy==1.13.1
+tenacity==9.0.0
+tld==0.13.2
+tokenizers==0.21.0
+tomli==2.2.1
+tomlkit==0.13.3
+tqdm==4.67.1
+transformers==4.48.2
+typeguard==4.4.1
+typer==0.16.0
+typing_extensions==4.14.1
+typing-inspect==0.9.0
+typing-inspection==0.4.1
+tzdata==2025.2
+tzlocal==5.3.1
+urllib3==2.5.0
+vulture==2.16
+websockets==14.2
+win32_setctime==1.2.0
+xxhash==3.5.0
+yarl==1.18.3
+zipp==3.21.0
+zstandard==0.23.0
+
+# YouTube comment auto-reply: OAuth 2.0 (google-auth + google-auth-oauthlib)
+# and their transitive deps, pinned from pip freeze (added 2026-07-11).
+google-auth==2.55.2
+google-auth-oauthlib==1.4.0
+oauthlib==3.3.1
+pyasn1==0.6.4
+pyasn1-modules==0.4.2
+requests-oauthlib==2.0.0
+
+# Kokoro TTS (English local TTS engine), pinned from pip freeze after the
+# 2026-07-26 verification (Windows + M1 both PASS with these exact versions).
+# en-core-web-sm is URL-pinned so the first English G2P call never downloads
+# anything at runtime (misaki[en] would otherwise pip-install it on the fly).
+kokoro==0.9.4
+misaki==0.9.4
+espeakng-loader==0.2.4
+phonemizer-fork==3.3.2
+spacy==3.8.14
+spacy-curated-transformers==0.3.1
+spacy-legacy==3.0.12
+spacy-loggers==1.0.5
+thinc==8.3.13
+blis==1.3.3
+soundfile==0.14.0
+addict==2.4.0
+catalogue==2.0.10
+cloudpathlib==0.24.0
+confection==1.3.3
+csvw==4.1.0
+curated-tokenizers==0.0.9
+curated-transformers==0.1.1
+cymem==2.0.13
+dlinfo==2.0.0
+isodate==0.7.2
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+language-tags==1.3.1
+murmurhash==1.0.15
+preshed==3.0.13
+rdflib==7.6.0
+referencing==0.37.0
+rfc3986==1.5.0
+rpds-py==0.30.0
+segments==2.4.0
+smart_open==8.0.1
+srsly==2.5.3
+termcolor==3.3.0
+uritemplate==4.2.0
+wasabi==1.1.3
+weasel==1.0.0
+wrapt==2.2.2
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl

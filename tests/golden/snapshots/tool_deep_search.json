@@ -1,0 +1,190 @@
+{
+  "ollama": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search_web",
+        "description": "インターネットでキーワード検索を行い、検索結果の一覧を取得する。詳しく調べたいとき、最新情報が必要なとき、ユーザーの質問に正確に答えるために使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "検索クエリ"
+            }
+          },
+          "required": [
+            "query"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read_webpage",
+        "description": "指定されたURLのWebページにアクセスし、本文テキストを取得する。検索結果から気になる記事を読むとき、またはユーザーが共有したURLの内容を確認するときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "読み取るWebページのURL"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      }
+    }
+  ],
+  "openai": [
+    {
+      "type": "function",
+      "name": "search_web",
+      "description": "インターネットでキーワード検索を行い、検索結果の一覧を取得する。詳しく調べたいとき、最新情報が必要なとき、ユーザーの質問に正確に答えるために使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "検索クエリ"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "read_webpage",
+      "description": "指定されたURLのWebページにアクセスし、本文テキストを取得する。検索結果から気になる記事を読むとき、またはユーザーが共有したURLの内容を確認するときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "読み取るWebページのURL"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ],
+  "anthropic": [
+    {
+      "name": "search_web",
+      "description": "インターネットでキーワード検索を行い、検索結果の一覧を取得する。詳しく調べたいとき、最新情報が必要なとき、ユーザーの質問に正確に答えるために使う。",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "検索クエリ"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "read_webpage",
+      "description": "指定されたURLのWebページにアクセスし、本文テキストを取得する。検索結果から気になる記事を読むとき、またはユーザーが共有したURLの内容を確認するときに使う。",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "読み取るWebページのURL"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ],
+  "xai": [
+    {
+      "type": "function",
+      "name": "search_web",
+      "description": "インターネットでキーワード検索を行い、検索結果の一覧を取得する。詳しく調べたいとき、最新情報が必要なとき、ユーザーの質問に正確に答えるために使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "検索クエリ"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "read_webpage",
+      "description": "指定されたURLのWebページにアクセスし、本文テキストを取得する。検索結果から気になる記事を読むとき、またはユーザーが共有したURLの内容を確認するときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "読み取るWebページのURL"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ],
+  "google": [
+    {
+      "function_declarations": [
+        {
+          "name": "search_web",
+          "description": "インターネットでキーワード検索を行い、検索結果の一覧を取得する。詳しく調べたいとき、最新情報が必要なとき、ユーザーの質問に正確に答えるために使う。",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "query": {
+                "type": "STRING",
+                "description": "検索クエリ"
+              }
+            },
+            "required": [
+              "query"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "function_declarations": [
+        {
+          "name": "read_webpage",
+          "description": "指定されたURLのWebページにアクセスし、本文テキストを取得する。検索結果から気になる記事を読むとき、またはユーザーが共有したURLの内容を確認するときに使う。",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "url": {
+                "type": "STRING",
+                "description": "読み取るWebページのURL"
+              }
+            },
+            "required": [
+              "url"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+===== events =====
+[enqueue] task=_generate_reply_task
+[tts] テーマを決めるね。
+[ui_update] command_pre_response | character_name='AI' text='テーマを決めるね。'
+[ui_update] talk_theme_block | action='set_talk_theme' theme='宇宙旅行'
+[ui_update] command_loop_spinner | 
+[tts] じゃあ宇宙旅行の話をしようか！
+[ui_update] command_pre_response | character_name='AI' text='じゃあ宇宙旅行の話をしようか！'
+
+===== result =====
+success=True
+response='じゃあ宇宙旅行の話をしようか！'
+steps:
+  - ai_text: content='テーマを決めるね。'
+  - talk_theme: action='set_talk_theme' result='トークテーマを「宇宙旅行」に設定しました。' theme='宇宙旅行'
+  - ai_text: content='じゃあ宇宙旅行の話をしようか！'

@@ -1,0 +1,15 @@
+{
+  "name": "ag-client-addon",
+  "productName": "AG Client Addon",
+  "version": "1.0.0",
+  "description": "Client-side companion for Artificial Girlfriend server mode: global recording hotkeys via tray/menu-bar app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "28.3.3"
+  },
+  "author": "Ryo (ARP224)",
+  "license": "MIT"
+}

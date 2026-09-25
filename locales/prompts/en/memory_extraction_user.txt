@@ -1,0 +1,19 @@
+Extract important facts from the following conversation between User and Character.
+
+{existing_memories_section}
+
+[New Conversation]
+{conversation}
+
+Output a JSON object with "additions" (new facts) and "updates" (corrections to existing memories).
+Each entry needs "content" (the fact) and "category" (one of: user_fact, user_preference, character_relationship, shared_experience, user_opinion).
+
+Rules:
+- Extract specific facts, not conversation summaries
+- If a new fact contradicts an existing memory, put it in "updates" with the existing memory's "id"
+- If it's a completely new fact, put it in "additions"
+- Write in English, even when parts of the conversation are in another language
+- If there are no facts to extract, return {{"additions": [], "updates": []}}
+
+Example output:
+{{"additions": [{{"content": "Works as an engineer at an IT company", "category": "user_fact"}}], "updates": [{{"id": "mem_3", "content": "Now prefers tea over coffee", "category": "user_preference"}}]}}

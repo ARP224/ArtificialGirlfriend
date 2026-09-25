@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="574" viewBox="0 0 1280 574" font-family="system-ui,-apple-system,'Segoe UI',sans-serif">
+  <title>Conversation flow</title>
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8a817c"/>
+    </marker>
+  </defs>
+
+  <!-- Background (painted for dark-mode safety) -->
+  <rect x="0.5" y="0.5" width="1279" height="573" fill="#ffffff" stroke="#e8e2de"/>
+
+  <g stroke="#7a6f68" stroke-width="2" fill="none">
+    <path d="M448 29 a8 8 0 0 1 14 -8"/>
+    <path d="M464 25 a8 8 0 0 1 -14 8"/>
+  </g>
+  <path d="M459.5 17.5 L466.5 21 L461 24.5 z" fill="#7a6f68"/>
+  <path d="M452.5 36.5 L445.5 33 L451 29.5 z" fill="#7a6f68"/>
+  <text x="474" y="34" font-size="13.5" fill="#7a6f68" font-weight="bold">Conversation flow ── one turn, from input to playback and memory</text>
+
+  <!-- Loop to the next turn -->
+  <polyline points="1155,92 1155,56 140,56 140,92" fill="none" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+  <text x="300" y="48" font-size="11.5" fill="#7a6f68" text-anchor="middle">to the next turn (repeats as long as the conversation lasts)</text>
+
+  <!-- ============ 1 Input ============ -->
+  <rect x="36" y="96" width="208" height="206" rx="10" fill="#ffffff" stroke="#a99e97" stroke-width="2"/>
+  <circle cx="58" cy="118" r="11" fill="#c65b84"/>
+  <text x="58" y="122.5" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">1</text>
+  <text x="76" y="123" font-size="15" fill="#3f3833" font-weight="bold">Input</text>
+  <text x="56" y="152" font-size="11.5" fill="#5a5049">Voice input (mic recording)</text>
+  <text x="56" y="172" font-size="11.5" fill="#5a5049">→ speech-to-text via</text>
+  <text x="66" y="192" font-size="11.5" fill="#7a6f68">・faster-whisper (local)</text>
+  <text x="66" y="212" font-size="11.5" fill="#7a6f68">・Whisper API (cloud)</text>
+  <text x="56" y="238" font-size="11.5" fill="#5a5049">Text input</text>
+  <text x="56" y="264" font-size="11.5" fill="#5a5049">Auto Prompt</text>
+  <text x="56" y="284" font-size="11.5" fill="#7a6f68">(she speaks up after idle time)</text>
+
+  <line x1="244" y1="124" x2="272" y2="124" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+
+  <!-- ============ 2 Prompt assembly ============ -->
+  <rect x="278" y="96" width="266" height="454" rx="10" fill="#fbeef3" stroke="#d98cab" stroke-width="2"/>
+  <circle cx="300" cy="118" r="11" fill="#c65b84"/>
+  <text x="300" y="122.5" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">2</text>
+  <text x="318" y="123" font-size="15" fill="#8c3a5c" font-weight="bold">Prompt assembly</text>
+
+  <text x="298" y="152" font-size="11.5" fill="#8c3a5c" font-weight="bold">System part (joined in this order)</text>
+  <text x="298" y="174" font-size="11" fill="#5a5049">Character profile (system prompt)</text>
+  <text x="298" y="194" font-size="11" fill="#5a5049">Notes</text>
+  <text x="298" y="214" font-size="11" fill="#5a5049">Relationship</text>
+  <text x="298" y="234" font-size="11" fill="#5a5049">Talk Theme</text>
+  <text x="298" y="254" font-size="11" fill="#5a5049">PC status (windows, Chrome tabs)</text>
+  <text x="298" y="274" font-size="11" fill="#5a5049">Camera frame note</text>
+  <text x="298" y="294" font-size="11" fill="#5a5049">Location / connection info</text>
+  <text x="298" y="314" font-size="11" fill="#5a5049">Per-feature tool instructions (Command,</text>
+  <text x="308" y="332" font-size="11" fill="#5a5049">ImageGen, Camera, DeepSearch, Map, ELYTH)</text>
+  <text x="298" y="352" font-size="11" fill="#5a5049">ELYTH Notes</text>
+  <text x="298" y="372" font-size="11" fill="#5a5049">Long-term memory (similar entries only)</text>
+  <text x="298" y="376" font-size="10" fill="#9a8f88" visibility="hidden">.</text>
+  <text x="298" y="400" font-size="11.5" fill="#8c3a5c" font-weight="bold">Conversation part</text>
+  <text x="298" y="422" font-size="11" fill="#5a5049">Last 20 conversation messages</text>
+  <text x="298" y="442" font-size="11" fill="#5a5049">This turn's message (with attachments;</text>
+  <text x="308" y="460" font-size="11" fill="#5a5049">current time prepended)</text>
+  <text x="298" y="486" font-size="11.5" fill="#8c3a5c" font-weight="bold">Sent along with the prompt</text>
+  <text x="298" y="506" font-size="11" fill="#5a5049">Tool definitions (schemas of enabled features)</text>
+  <text x="298" y="528" font-size="10" fill="#9a8f88">Over budget? Trimmed in order: long-term memory</text>
+  <text x="298" y="542" font-size="10" fill="#9a8f88">→ location → PC status → Talk Theme → Notes</text>
+
+  <line x1="544" y1="124" x2="572" y2="124" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+
+  <!-- ============ 3 Response generation (tool loop) ============ -->
+  <rect x="578" y="96" width="234" height="374" rx="10" fill="#ffffff" stroke="#a99e97" stroke-width="2"/>
+  <circle cx="600" cy="118" r="11" fill="#c65b84"/>
+  <text x="600" y="122.5" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">3</text>
+  <text x="618" y="123" font-size="15" fill="#3f3833" font-weight="bold">Response generation</text>
+
+  <rect x="598" y="140" width="194" height="64" rx="8" fill="#f6f1ee" stroke="#cbc1ba" stroke-width="1.5"/>
+  <text x="695" y="164" font-size="13" fill="#5a5049" text-anchor="middle" font-weight="bold">LLM</text>
+  <text x="695" y="188" font-size="10.5" fill="#7a6f68" text-anchor="middle">Ollama / ChatGPT / Claude / Grok / Gemini</text>
+
+  <line x1="660" y1="204" x2="660" y2="242" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+  <line x1="730" y1="244" x2="730" y2="206" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+  <text x="650" y="228" font-size="10.5" fill="#7a6f68" text-anchor="end">Tool Call</text>
+  <text x="740" y="228" font-size="10.5" fill="#7a6f68">result</text>
+  <text x="695" y="228" font-size="10" fill="#b0a69f" text-anchor="middle" font-style="italic">tool loop</text>
+
+  <rect x="598" y="248" width="194" height="178" rx="8" fill="#f6f1ee" stroke="#cbc1ba" stroke-width="1.5"/>
+  <text x="695" y="270" font-size="12.5" fill="#5a5049" text-anchor="middle" font-weight="bold">AG backend ─ tool execution</text>
+  <text x="612" y="292" font-size="10.5" fill="#7a6f68">Web search &amp; page reading</text>
+  <text x="612" y="312" font-size="10.5" fill="#7a6f68">Image generation, camera shots</text>
+  <text x="612" y="332" font-size="10.5" fill="#7a6f68">Command execution (allowlist + approval)</text>
+  <text x="612" y="352" font-size="10.5" fill="#7a6f68">Map search, location</text>
+  <text x="612" y="372" font-size="10.5" fill="#7a6f68">ELYTH posting, note editing</text>
+  <text x="612" y="392" font-size="10.5" fill="#7a6f68">Talk Theme setting</text>
+  <text x="612" y="412" font-size="10" fill="#9a8f88">Results return to the LLM (+ images)</text>
+
+  <text x="695" y="450" font-size="10.5" fill="#9a8f88" text-anchor="middle">Loops up to 10 times, then final reply</text>
+
+  <line x1="812" y1="124" x2="840" y2="124" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+
+  <!-- ============ 4 Speech synthesis ============ -->
+  <rect x="846" y="96" width="178" height="190" rx="10" fill="#ffffff" stroke="#a99e97" stroke-width="2"/>
+  <circle cx="868" cy="118" r="11" fill="#c65b84"/>
+  <text x="868" y="122.5" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">4</text>
+  <text x="886" y="123" font-size="15" fill="#3f3833" font-weight="bold">Speech synthesis</text>
+  <text x="860" y="152" font-size="11" fill="#5a5049">Kokoro (English)</text>
+  <text x="860" y="172" font-size="11" fill="#5a5049">Style-Bert-VITS2 (Japanese)</text>
+  <text x="860" y="192" font-size="11" fill="#5a5049">ElevenLabs (cloud API)</text>
+  <text x="860" y="218" font-size="11" fill="#7a6f68">AAC encoding</text>
+  <text x="860" y="238" font-size="11" fill="#7a6f68">Computes lip-sync mouth</text>
+  <text x="860" y="256" font-size="11" fill="#7a6f68">frames (60 fps)</text>
+
+  <line x1="1024" y1="124" x2="1054" y2="124" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+
+  <!-- ============ 5 Playback & display ============ -->
+  <rect x="1058" y="96" width="194" height="204" rx="10" fill="#ffffff" stroke="#a99e97" stroke-width="2"/>
+  <circle cx="1080" cy="118" r="11" fill="#c65b84"/>
+  <text x="1080" y="122.5" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">5</text>
+  <text x="1098" y="123" font-size="15" fill="#3f3833" font-weight="bold">Playback &amp; display</text>
+  <text x="1076" y="152" font-size="11" fill="#5a5049">Audio + lip-sync data</text>
+  <text x="1076" y="170" font-size="11" fill="#5a5049">delivered over WebSocket</text>
+  <text x="1076" y="194" font-size="11" fill="#5a5049">Browser plays the audio</text>
+  <text x="1076" y="212" font-size="11" fill="#7a6f68">(waits for playback-done ACK)</text>
+  <text x="1076" y="236" font-size="11" fill="#5a5049">MotionPNGPlayer gets</text>
+  <text x="1076" y="254" font-size="11" fill="#5a5049">lip-sync only (no audio)</text>
+  <text x="1076" y="280" font-size="11" fill="#5a5049">Text shown after playback</text>
+
+  <!-- ============ 6 Save to memory ============ -->
+  <line x1="1155" y1="300" x2="1155" y2="336" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+  <rect x="1006" y="340" width="246" height="180" rx="10" fill="#ffffff" stroke="#a99e97" stroke-width="2"/>
+  <circle cx="1028" cy="362" r="11" fill="#c65b84"/>
+  <text x="1028" y="366.5" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">6</text>
+  <text x="1046" y="367" font-size="15" fill="#3f3833" font-weight="bold">Save to memory</text>
+  <text x="1024" y="396" font-size="11" fill="#5a5049">Messages saved to short-term memory</text>
+  <text x="1024" y="414" font-size="11" fill="#7a6f68">(with embeddings)</text>
+  <text x="1024" y="438" font-size="11" fill="#5a5049">At 50 unprocessed (Ollama) / 100 (API),</text>
+  <text x="1024" y="456" font-size="11" fill="#5a5049">long-term memory extracted in background</text>
+  <text x="1024" y="480" font-size="11" fill="#5a5049">Relationship auto-updated at extraction</text>
+  <text x="1024" y="506" font-size="10.5" fill="#9a8f88">Details: see the Memory structure figure</text>
+  <text x="258" y="142" font-size="10.5" fill="#8b7f78" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">message text</text>
+  <text x="558" y="142" font-size="10.5" fill="#8b7f78" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">prompt + tool definitions</text>
+  <text x="826" y="142" font-size="10.5" fill="#8b7f78" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">reply text</text>
+  <text x="1039" y="142" font-size="10.5" fill="#8b7f78" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">audio + lip-sync</text>
+</svg>

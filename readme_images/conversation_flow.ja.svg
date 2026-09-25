@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="574" viewBox="0 0 1280 574" font-family="'Hiragino Sans','Yu Gothic UI',Meiryo,system-ui,sans-serif">
+  <title>会話フロー</title>
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8a817c"/>
+    </marker>
+  </defs>
+
+  <!-- 背景（塗り込み・ダークモード対策） -->
+  <rect x="0.5" y="0.5" width="1279" height="573" fill="#ffffff" stroke="#e8e2de"/>
+
+  <g stroke="#7a6f68" stroke-width="2" fill="none">
+    <path d="M448 29 a8 8 0 0 1 14 -8"/>
+    <path d="M464 25 a8 8 0 0 1 -14 8"/>
+  </g>
+  <path d="M459.5 17.5 L466.5 21 L461 24.5 z" fill="#7a6f68"/>
+  <path d="M452.5 36.5 L445.5 33 L451 29.5 z" fill="#7a6f68"/>
+  <text x="474" y="34" font-size="13.5" fill="#7a6f68" font-weight="bold">会話フロー ── 入力から再生・記憶保存までの1ターン</text>
+
+  <!-- 次ターンへのループ -->
+  <polyline points="1155,92 1155,56 140,56 140,92" fill="none" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+  <text x="300" y="48" font-size="11.5" fill="#7a6f68" text-anchor="middle">次のターンへ（会話が続く限り繰り返し）</text>
+
+  <!-- ============ ① 入力 ============ -->
+  <rect x="36" y="96" width="208" height="206" rx="10" fill="#ffffff" stroke="#a99e97" stroke-width="2"/>
+  <circle cx="58" cy="118" r="11" fill="#c65b84"/>
+  <text x="58" y="122.5" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">1</text>
+  <text x="76" y="123" font-size="15" fill="#3f3833" font-weight="bold">入力</text>
+  <text x="56" y="152" font-size="11.5" fill="#5a5049">音声入力（マイク録音）</text>
+  <text x="56" y="172" font-size="11.5" fill="#5a5049">→ 音声認識でテキスト化</text>
+  <text x="66" y="192" font-size="11.5" fill="#7a6f68">・faster-whisper（ローカル）</text>
+  <text x="66" y="212" font-size="11.5" fill="#7a6f68">・Whisper API（クラウド）</text>
+  <text x="56" y="238" font-size="11.5" fill="#5a5049">テキスト入力</text>
+  <text x="56" y="264" font-size="11.5" fill="#5a5049">自動プロンプト</text>
+  <text x="56" y="284" font-size="11.5" fill="#7a6f68">（無操作が続くと彼女から）</text>
+
+  <line x1="244" y1="124" x2="272" y2="124" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+
+  <!-- ============ ② プロンプト組み立て ============ -->
+  <rect x="278" y="96" width="266" height="454" rx="10" fill="#fbeef3" stroke="#d98cab" stroke-width="2"/>
+  <circle cx="300" cy="118" r="11" fill="#c65b84"/>
+  <text x="300" y="122.5" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">2</text>
+  <text x="318" y="123" font-size="15" fill="#8c3a5c" font-weight="bold">プロンプト組み立て</text>
+
+  <text x="298" y="152" font-size="11.5" fill="#8c3a5c" font-weight="bold">プロンプトのシステム部（この順に連結）</text>
+  <text x="298" y="174" font-size="11" fill="#5a5049">キャラクター設定（system prompt）</text>
+  <text x="298" y="194" font-size="11" fill="#5a5049">ノート</text>
+  <text x="298" y="214" font-size="11" fill="#5a5049">関係性</text>
+  <text x="298" y="234" font-size="11" fill="#5a5049">トークテーマ</text>
+  <text x="298" y="254" font-size="11" fill="#5a5049">PC状況（ウィンドウ・Chromeタブ）</text>
+  <text x="298" y="274" font-size="11" fill="#5a5049">カメラのフレーム注記</text>
+  <text x="298" y="294" font-size="11" fill="#5a5049">位置情報／接続情報</text>
+  <text x="298" y="314" font-size="11" fill="#5a5049">機能別ツール指示文（コマンド・画像</text>
+  <text x="308" y="332" font-size="11" fill="#5a5049">生成・カメラ・DeepSearch・Map・ELYTH）</text>
+  <text x="298" y="352" font-size="11" fill="#5a5049">ELYTHノート</text>
+  <text x="298" y="372" font-size="11" fill="#5a5049">長期記憶（類似検索で関連分のみ）</text>
+  <text x="298" y="376" font-size="10" fill="#9a8f88" visibility="hidden">.</text>
+  <text x="298" y="400" font-size="11.5" fill="#8c3a5c" font-weight="bold">プロンプトの会話部</text>
+  <text x="298" y="422" font-size="11" fill="#5a5049">直近の会話 20件</text>
+  <text x="298" y="442" font-size="11" fill="#5a5049">今回の発話（添付画像・文書つき／</text>
+  <text x="308" y="460" font-size="11" fill="#5a5049">先頭に現在時刻を前置）</text>
+  <text x="298" y="486" font-size="11.5" fill="#8c3a5c" font-weight="bold">プロンプトと同送</text>
+  <text x="298" y="506" font-size="11" fill="#5a5049">ツール定義（有効な機能ぶんのスキーマ）</text>
+  <text x="298" y="528" font-size="10" fill="#9a8f88">予算超過時は 長期記憶→位置情報→PC状況</text>
+  <text x="298" y="542" font-size="10" fill="#9a8f88">→トークテーマ→ノート の順に削減</text>
+
+  <line x1="544" y1="124" x2="572" y2="124" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+
+  <!-- ============ ③ 応答生成（ツールループ） ============ -->
+  <rect x="578" y="96" width="234" height="374" rx="10" fill="#ffffff" stroke="#a99e97" stroke-width="2"/>
+  <circle cx="600" cy="118" r="11" fill="#c65b84"/>
+  <text x="600" y="122.5" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">3</text>
+  <text x="618" y="123" font-size="14.5" fill="#3f3833" font-weight="bold">応答生成（ツールループ）</text>
+
+  <rect x="598" y="140" width="194" height="64" rx="8" fill="#f6f1ee" stroke="#cbc1ba" stroke-width="1.5"/>
+  <text x="695" y="164" font-size="13" fill="#5a5049" text-anchor="middle" font-weight="bold">LLM</text>
+  <text x="695" y="188" font-size="10.5" fill="#7a6f68" text-anchor="middle">Ollama／ChatGPT／Claude／Grok／Gemini</text>
+
+  <line x1="660" y1="204" x2="660" y2="242" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+  <line x1="730" y1="244" x2="730" y2="206" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+  <text x="650" y="228" font-size="10.5" fill="#7a6f68" text-anchor="end">Tool Call</text>
+  <text x="740" y="228" font-size="10.5" fill="#7a6f68">実行結果</text>
+
+  <rect x="598" y="248" width="194" height="178" rx="8" fill="#f6f1ee" stroke="#cbc1ba" stroke-width="1.5"/>
+  <text x="695" y="270" font-size="12.5" fill="#5a5049" text-anchor="middle" font-weight="bold">AGバックエンド ─ ツール実行</text>
+  <text x="612" y="292" font-size="10.5" fill="#7a6f68">Web検索・Webページ閲覧</text>
+  <text x="612" y="312" font-size="10.5" fill="#7a6f68">画像生成・カメラ撮影</text>
+  <text x="612" y="332" font-size="10.5" fill="#7a6f68">コマンド実行（許可リスト・承認制）</text>
+  <text x="612" y="352" font-size="10.5" fill="#7a6f68">Map検索・位置情報</text>
+  <text x="612" y="372" font-size="10.5" fill="#7a6f68">ELYTH投稿・ノート編集</text>
+  <text x="612" y="392" font-size="10.5" fill="#7a6f68">トークテーマ設定</text>
+  <text x="612" y="412" font-size="10" fill="#9a8f88">実行結果はLLMへ戻る（画像は再注入）</text>
+
+  <text x="695" y="450" font-size="10.5" fill="#9a8f88" text-anchor="middle">最大10回繰り返し、最終応答を出力</text>
+
+  <line x1="812" y1="124" x2="840" y2="124" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+
+  <!-- ============ ④ 音声合成 ============ -->
+  <rect x="846" y="96" width="178" height="190" rx="10" fill="#ffffff" stroke="#a99e97" stroke-width="2"/>
+  <circle cx="868" cy="118" r="11" fill="#c65b84"/>
+  <text x="868" y="122.5" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">4</text>
+  <text x="886" y="123" font-size="15" fill="#3f3833" font-weight="bold">音声合成</text>
+  <text x="860" y="152" font-size="11" fill="#5a5049">Style-Bert-VITS2（日本語）</text>
+  <text x="860" y="172" font-size="11" fill="#5a5049">Kokoro（英語）</text>
+  <text x="860" y="192" font-size="11" fill="#5a5049">ElevenLabs（クラウドAPI）</text>
+  <text x="860" y="218" font-size="11" fill="#7a6f68">AACエンコード</text>
+  <text x="860" y="238" font-size="11" fill="#7a6f68">リップシンク用の口パク</text>
+  <text x="860" y="256" font-size="11" fill="#7a6f68">フレームを計算（60fps）</text>
+
+  <line x1="1024" y1="124" x2="1054" y2="124" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+
+  <!-- ============ ⑤ 再生・表示 ============ -->
+  <rect x="1058" y="96" width="194" height="204" rx="10" fill="#ffffff" stroke="#a99e97" stroke-width="2"/>
+  <circle cx="1080" cy="118" r="11" fill="#c65b84"/>
+  <text x="1080" y="122.5" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">5</text>
+  <text x="1098" y="123" font-size="15" fill="#3f3833" font-weight="bold">再生・表示</text>
+  <text x="1076" y="152" font-size="11" fill="#5a5049">WebSocketで音声＋</text>
+  <text x="1076" y="170" font-size="11" fill="#5a5049">口パクデータを配信</text>
+  <text x="1076" y="194" font-size="11" fill="#5a5049">ブラウザが音声を再生</text>
+  <text x="1076" y="212" font-size="11" fill="#7a6f68">（再生完了ACKを待つ）</text>
+  <text x="1076" y="236" font-size="11" fill="#5a5049">MotionPNGPlayerは</text>
+  <text x="1076" y="254" font-size="11" fill="#5a5049">口パクのみ（音は出さない）</text>
+  <text x="1076" y="280" font-size="11" fill="#5a5049">再生後にテキスト表示</text>
+
+  <!-- ============ ⑥ 記憶へ保存 ============ -->
+  <line x1="1155" y1="300" x2="1155" y2="336" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+  <rect x="1006" y="340" width="246" height="180" rx="10" fill="#ffffff" stroke="#a99e97" stroke-width="2"/>
+  <circle cx="1028" cy="362" r="11" fill="#c65b84"/>
+  <text x="1028" y="366.5" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">6</text>
+  <text x="1046" y="367" font-size="15" fill="#3f3833" font-weight="bold">記憶へ保存</text>
+  <text x="1024" y="396" font-size="11" fill="#5a5049">発言を短期記憶へ保存</text>
+  <text x="1024" y="414" font-size="11" fill="#7a6f68">（埋め込み付き）</text>
+  <text x="1024" y="438" font-size="11" fill="#5a5049">未処理50件(Ollama)／100件(API)で</text>
+  <text x="1024" y="456" font-size="11" fill="#5a5049">長期記憶をバックグラウンド抽出</text>
+  <text x="1024" y="480" font-size="11" fill="#5a5049">抽出と同時に関係性を自動更新</text>
+  <text x="1024" y="506" font-size="10.5" fill="#9a8f88">詳細は「記憶構造」の図へ</text>
+  <text x="258" y="142" font-size="10.5" fill="#8b7f78" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">発話テキスト</text>
+  <text x="558" y="142" font-size="10.5" fill="#8b7f78" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">プロンプト＋ツール定義</text>
+  <text x="826" y="142" font-size="10.5" fill="#8b7f78" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">応答テキスト</text>
+  <text x="1039" y="142" font-size="10.5" fill="#8b7f78" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">音声＋口パク</text>
+</svg>

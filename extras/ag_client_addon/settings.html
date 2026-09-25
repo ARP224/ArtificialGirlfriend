@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; connect-src ws: wss:;">
+  <title>AG Client Addon</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      font-family: "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: #1a1a2e; color: #eaeaea;
+      margin: 0; padding: 20px 24px;
+    }
+    h1 { font-size: 18px; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
+    h1 img { width: 28px; height: 28px; }
+    .status-row { display: flex; align-items: center; gap: 8px; margin: 10px 0 18px; font-size: 13px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #888; flex: none; }
+    .dot.connected { background: #4caf50; }
+    .dot.connecting { background: #ffb300; }
+    .dot.disconnected { background: #e53935; }
+    .section { margin-bottom: 18px; }
+    label { display: block; font-size: 12px; color: #9aa; margin-bottom: 4px; }
+    input[type=text], select {
+      width: 100%; box-sizing: border-box; padding: 8px 10px;
+      background: #12122a; color: #eaeaea; border: 1px solid #3a3a5a; border-radius: 6px;
+      font-size: 13px;
+    }
+    input[readonly] { cursor: pointer; }
+    input.capturing {
+      outline: 2px solid #4a5cff;
+      border-color: #4a5cff;
+      background: #1a1a3e;
+    }
+    .key-row { display: flex; align-items: center; gap: 10px; }
+    .key-row .mod {
+      display: flex; align-items: center; gap: 3px;
+      font-size: 12px; color: #bcd; white-space: nowrap; cursor: pointer;
+    }
+    .key-row .mod input { width: auto; }
+    .key-row .plus { color: #9aa; font-size: 14px; font-weight: bold; }
+    .key-row .key-base { flex: 0 1 110px; min-width: 70px; text-align: center; }
+    .hint { font-size: 11px; color: #778; margin-top: 4px; }
+    .row2 { display: flex; gap: 12px; }
+    .row2 > div { flex: 1; }
+    .checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+    .checkbox-row input { width: auto; }
+    button.primary {
+      background: #4a5cff; color: #fff; border: none; border-radius: 6px;
+      padding: 9px 22px; font-size: 13px; cursor: pointer;
+    }
+    button.primary:hover { background: #5a6cff; }
+    #save-result { font-size: 12px; margin-left: 10px; }
+    #save-result.ok { color: #4caf50; }
+    #save-result.err { color: #ff7043; }
+    #event-log {
+      margin-top: 16px; padding: 10px; background: #12122a; border-radius: 6px;
+      font-size: 12px; color: #9ab; min-height: 3.6em; white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <h1><img src="icons/icon48.png" alt=""><span data-i18n="app.title">AG Client Addon</span></h1>
+  <div class="status-row">
+    <span id="ws-dot" class="dot disconnected"></span>
+    <span id="ws-status-text"></span>
+  </div>
+
+  <div class="section">
+    <label for="ag-url" data-i18n="settings.ag_url">AG URL</label>
+    <input type="text" id="ag-url" placeholder="https://... / ws://...">
+    <div class="hint" data-i18n="settings.ag_url_hint"></div>
+  </div>
+
+  <div class="section">
+    <div class="checkbox-row">
+      <input type="checkbox" id="addon-enabled">
+      <label for="addon-enabled" style="margin:0" data-i18n="settings.enabled"></label>
+    </div>
+    <div class="hint" data-i18n="settings.enabled_hint"></div>
+  </div>
+
+  <div class="section">
+    <label data-i18n="settings.start_key"></label>
+    <div class="key-row">
+      <label class="mod"><input type="checkbox" id="start-mod-ctrl">Ctrl</label>
+      <label class="mod"><input type="checkbox" id="start-mod-cmd">Cmd</label>
+      <label class="mod"><input type="checkbox" id="start-mod-alt">Alt</label>
+      <label class="mod"><input type="checkbox" id="start-mod-shift">Shift</label>
+      <span class="plus">＋</span>
+      <input type="text" id="start-key" class="key-base" readonly>
+    </div>
+  </div>
+  <div class="section">
+    <label data-i18n="settings.stop_key"></label>
+    <div class="key-row">
+      <label class="mod"><input type="checkbox" id="stop-mod-ctrl">Ctrl</label>
+      <label class="mod"><input type="checkbox" id="stop-mod-cmd">Cmd</label>
+      <label class="mod"><input type="checkbox" id="stop-mod-alt">Alt</label>
+      <label class="mod"><input type="checkbox" id="stop-mod-shift">Shift</label>
+      <span class="plus">＋</span>
+      <input type="text" id="stop-key" class="key-base" readonly>
+    </div>
+  </div>
+  <div class="hint" data-i18n="settings.key_hint"></div>
+
+  <div class="section" style="margin-top:18px">
+    <label for="language" data-i18n="settings.language"></label>
+    <select id="language"></select>
+  </div>
+
+  <div class="section">
+    <button class="primary" id="save-btn" data-i18n="settings.save"></button>
+    <button class="primary" id="connect-btn" data-i18n="settings.connect"
+            style="background:#37474f;border:1px solid #607d8b;margin-left:8px"></button>
+    <span id="save-result"></span>
+  </div>
+
+  <label style="margin-top:16px" data-i18n="log.title"></label>
+  <div id="event-log" style="margin-top:4px"></div>
+
+  <script src="settings.js"></script>
+</body>
+</html>

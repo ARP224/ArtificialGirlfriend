@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="1078" viewBox="0 0 980 1078" font-family="'Hiragino Sans','Yu Gothic UI',Meiryo,system-ui,sans-serif">
+  <title>ネットワーク</title>
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8a817c"/>
+    </marker>
+    <marker id="ahb" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#7f9dbb"/>
+    </marker>
+  </defs>
+
+  <!-- 背景（塗り込み・ダークモード対策） -->
+  <rect x="0.5" y="0.5" width="979" height="1077" fill="#ffffff" stroke="#e8e2de"/>
+  <g stroke="#7a6f68" stroke-width="2" fill="none">
+    <circle cx="307" cy="17" r="3.5"/>
+    <circle cx="299" cy="31" r="3.5"/>
+    <circle cx="315" cy="31" r="3.5"/>
+    <line x1="305" y1="20" x2="301" y2="28"/>
+    <line x1="309" y1="20" x2="313" y2="28"/>
+    <line x1="302.5" y1="31" x2="311.5" y2="31"/>
+  </g>
+  <text x="326" y="30" font-size="13.5" fill="#7a6f68" font-weight="bold">ネットワーク構成 ── ローカルモード／サーバーモード</text>
+  <g transform="translate(0,32)">
+
+  <!-- ==================== ローカルモード ==================== -->
+  <rect x="20" y="20" width="940" height="490" rx="14" fill="#fbfaf8" stroke="#ddd6d0" stroke-width="1.5"/>
+  <text x="40" y="50" font-size="16" fill="#3f3833" font-weight="bold">ローカルモード（既定）</text>
+
+  <!-- クラウドAPI -->
+  <path d="M520 84 a13 13 0 0 1 8 -22 a16 16 0 0 1 30 -4 a13 13 0 0 1 12 26 z" fill="none" stroke="#b9c9d8" stroke-width="2"/>
+  <text x="590" y="42" font-size="11.5" fill="#8b9db0">選んだクラウドAPIだけ（構成・機能による）</text>
+  <text x="590" y="59" font-size="10" fill="#9dabb8">構成: LLM各社／Whisper API／ElevenLabs／埋め込み</text>
+  <text x="590" y="76" font-size="10" fill="#9dabb8">機能ON時: ELYTH／YouTube／Google Maps</text>
+  <text x="590" y="93" font-size="10" fill="#9dabb8">画像生成（Gemini）／DeepSearch（DuckDuckGo検索・ページ取得）</text>
+
+  <!-- あなたのPC -->
+  <rect x="40" y="100" width="900" height="330" rx="12" fill="#ffffff" stroke="#b9b0aa" stroke-width="2"/>
+  <text x="56" y="122" font-size="12.5" fill="#8b7f78">あなたのPC</text>
+
+  <!-- Chrome（フロント） -->
+  <rect x="64" y="136" width="236" height="180" rx="10" fill="#ffffff" stroke="#a99e97" stroke-width="2"/>
+  <text x="78" y="158" font-size="13" fill="#3f3833" font-weight="bold">Chrome（フロントエンド）</text>
+  <text x="78" y="184" font-size="11" fill="#5a5049">Gradio UIを表示</text>
+  <text x="78" y="204" font-size="11" fill="#7a6f68">http://127.0.0.1:7860</text>
+  <text x="78" y="228" font-size="11" fill="#5a5049">音声を再生（WS受信・</text>
+  <text x="78" y="246" font-size="11" fill="#5a5049">再生完了ACKを返す）</text>
+  <text x="78" y="268" font-size="11" fill="#5a5049">テキスト入力・操作</text>
+  <text x="78" y="288" font-size="10.5" fill="#7a6f68">AG Tab Reporter拡張 → WS :5002</text>
+  <text x="78" y="306" font-size="10.5" fill="#7a6f68">（PCステータスON時にタブ名を送信）</text>
+
+  <!-- Chrome↔backend -->
+  <line x1="300" y1="170" x2="356" y2="170" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+  <line x1="360" y1="208" x2="304" y2="208" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+
+  <!-- AGバックエンド -->
+  <rect x="360" y="126" width="320" height="214" rx="10" fill="#fdeef4" stroke="#dfa4bd" stroke-width="2"/>
+  <text x="376" y="150" font-size="13.5" fill="#8c3a5c" font-weight="bold">AGバックエンド（Python）</text>
+  <text x="376" y="176" font-size="11" fill="#5a5049">Gradioサーバー :7860／WSサーバー :8765</text>
+  <text x="376" y="198" font-size="11" fill="#5a5049">会話エンジン（プロンプト合成・ツール実行）</text>
+  <text x="376" y="220" font-size="11" fill="#5a5049">記憶・キャラクターデータ（character_data/）</text>
+  <text x="376" y="242" font-size="11" fill="#5a5049">マイク録音（ローカルデバイス）</text>
+  <text x="376" y="264" font-size="11" fill="#5a5049">STT: faster-whisper（プロセス内）</text>
+  <text x="376" y="286" font-size="11" fill="#5a5049">TTS: Style-Bert-VITS2／Kokoro（プロセス内）</text>
+  <text x="376" y="312" font-size="10.5" fill="#9a7c8a">外部への通信はすべてここが起点</text>
+
+  <!-- Ollama -->
+  <rect x="64" y="322" width="236" height="100" rx="10" fill="#f6f1ee" stroke="#cbc1ba" stroke-width="1.5"/>
+  <text x="78" y="346" font-size="12.5" fill="#5a5049" font-weight="bold">Ollama（別プロセス・任意）</text>
+  <text x="78" y="370" font-size="11" fill="#7a6f68">127.0.0.1:11434</text>
+  <text x="78" y="392" font-size="11" fill="#7a6f68">LLM応答・埋め込み生成</text>
+  <polyline points="420,340 420,376 304,376" fill="none" stroke="#8a817c" stroke-width="2" marker-start="url(#ah)" marker-end="url(#ah)"/>
+  <text x="366" y="368" font-size="10.5" fill="#8b7f78" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">HTTP</text>
+
+  <!-- MotionPNGPlayer -->
+  <rect x="706" y="136" width="220" height="182" rx="10" fill="#ffffff" stroke="#a99e97" stroke-width="2"/>
+  <text x="722" y="160" font-size="13" fill="#3f3833" font-weight="bold">MotionPNGPlayer</text>
+  <text x="722" y="178" font-size="10.5" fill="#9a8f88">Electronで駆動・AGとは別アプリ</text>
+  <text x="722" y="204" font-size="11" fill="#5a5049">キャラクター動画を表示</text>
+  <text x="722" y="222" font-size="11" fill="#7a6f68">（動画素材はローカルフォルダ）</text>
+  <text x="722" y="246" font-size="11" fill="#5a5049">WSで口パクタイミング受信</text>
+  <text x="722" y="270" font-size="11" fill="#5a5049">音声は再生しない（二重再生防止）</text>
+  <text x="722" y="294" font-size="11" fill="#5a5049">テキスト入力を送信（入力欄ON時）</text>
+  <line x1="681" y1="192" x2="702" y2="192" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+  <line x1="705" y1="206" x2="684" y2="206" stroke="#8a817c" stroke-width="2" marker-end="url(#ah)"/>
+  <text x="693" y="182" font-size="10" fill="#8b7f78" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">WS</text>
+
+  <!-- 遮断キャプション -->
+  <g stroke="#c0392b" stroke-width="3" stroke-linecap="round">
+    <line x1="50" y1="462" x2="62" y2="474"/>
+    <line x1="62" y1="462" x2="50" y2="474"/>
+  </g>
+  <text x="74" y="473" font-size="12.5" fill="#5a5049">他の端末からはアクセス不可 ─ 待受はすべて127.0.0.1（LANに公開しない）</text>
+
+  <!-- ==================== サーバーモード ==================== -->
+  <rect x="20" y="530" width="940" height="494" rx="14" fill="#fbfaf8" stroke="#ddd6d0" stroke-width="1.5"/>
+  <text x="40" y="560" font-size="16" fill="#3f3833" font-weight="bold">サーバーモード</text>
+
+  <!-- クラウドAPI -->
+  <path d="M176 620 a13 13 0 0 1 8 -22 a16 16 0 0 1 30 -4 a13 13 0 0 1 12 26 z" fill="none" stroke="#b9c9d8" stroke-width="2"/>
+  <text x="240" y="596" font-size="11.5" fill="#8b9db0">選んだクラウドAPIだけ（構成・機能による）</text>
+  <text x="240" y="614" font-size="10.5" fill="#9dabb8">接続の起点はAGバックエンド ─ ローカルモードと同じ</text>
+
+  <!-- Tailscaleゾーン -->
+  <rect x="40" y="634" width="900" height="326" rx="12" fill="#edf3f8" stroke="#b9cbdb" stroke-width="1.5"/>
+  <text x="896" y="662" font-size="13.5" fill="#55708a" text-anchor="end" font-weight="bold">Tailscale プライベートネットワーク</text>
+  <path d="M912 644 l10 4 v8 q0 8 -10 12 q-10 -4 -10 -12 v-8 z" fill="none" stroke="#55708a" stroke-width="2"/>
+
+  <!-- AGサーバー -->
+  <rect x="64" y="684" width="496" height="260" rx="10" fill="#ffffff" stroke="#9fb4c6" stroke-width="2"/>
+  <text x="312" y="708" font-size="14" fill="#3f3833" text-anchor="middle" font-weight="bold">あなたのPC（AGサーバー）</text>
+
+  <rect x="84" y="722" width="232" height="204" rx="8" fill="#fdeef4" stroke="#dfa4bd" stroke-width="1.5"/>
+  <text x="98" y="744" font-size="12.5" fill="#8c3a5c" font-weight="bold">AGバックエンド</text>
+  <text x="98" y="768" font-size="10.5" fill="#5a5049">会話エンジン・記憶・STT/TTS</text>
+  <text x="98" y="786" font-size="10.5" fill="#7a6f68">（処理はローカルモードと同一）</text>
+  <text x="98" y="812" font-size="10.5" fill="#5a5049">クラウドAPI・Ollamaへの接続も</text>
+  <text x="98" y="830" font-size="10.5" fill="#5a5049">ここが起点（↑上の雲へ）</text>
+
+  <rect x="336" y="722" width="204" height="204" rx="8" fill="#f4f8fb" stroke="#9fb4c6" stroke-width="1.5"/>
+  <text x="350" y="744" font-size="12" fill="#3f3833" font-weight="bold">Webサーバー（uvicorn+FastAPI）</text>
+  <text x="350" y="768" font-size="10.5" fill="#5a5049">Tailscale IP:7860・HTTPS</text>
+  <text x="350" y="786" font-size="10.5" fill="#7a6f68">（証明書は自動取得）</text>
+  <text x="350" y="810" font-size="10.5" fill="#5a5049">配信する画面:</text>
+  <text x="360" y="828" font-size="10.5" fill="#5a5049">/　デスクトップUI</text>
+  <text x="360" y="846" font-size="10.5" fill="#5a5049">/mobile　モバイルUI</text>
+  <text x="360" y="864" font-size="10.5" fill="#5a5049">/admin　管理画面</text>
+  <text x="360" y="888" font-size="10.5" fill="#5a5049">/ws　WebSocket</text>
+  <text x="370" y="906" font-size="10.5" fill="#7a6f68">（音声・口パク・UI更新）</text>
+
+  <line x1="318" y1="800" x2="334" y2="800" stroke="#8a817c" stroke-width="2.5"/>
+
+  <!-- クライアント端末（スマホ） -->
+  <rect x="600" y="684" width="320" height="116" rx="10" fill="#ffffff" stroke="#9fb4c6" stroke-width="1.5"/>
+  <text x="616" y="706" font-size="12.5" fill="#3f3833" font-weight="bold">クライアント端末（スマホ・タブレット）</text>
+  <rect x="616" y="718" width="288" height="70" rx="7" fill="#f4f8fb" stroke="#c6d5e2" stroke-width="1.5"/>
+  <text x="630" y="738" font-size="11.5" fill="#3f3833" font-weight="bold">ブラウザ ─ モバイルUI</text>
+  <text x="630" y="760" font-size="10.5" fill="#5a5049">上り: テキスト・マイク音声・カメラ画像</text>
+  <text x="630" y="778" font-size="10.5" fill="#5a5049">下り: 応答・合成音声・口パク・UI更新</text>
+
+  <!-- クライアント端末（PC） -->
+  <rect x="600" y="820" width="320" height="124" rx="10" fill="#ffffff" stroke="#9fb4c6" stroke-width="1.5"/>
+  <text x="616" y="842" font-size="12.5" fill="#3f3833" font-weight="bold">クライアント端末（外出先のPCなど）</text>
+  <text x="616" y="868" font-size="10.5" fill="#5a5049">ブラウザ ─ デスクトップUI／管理画面</text>
+  <text x="616" y="890" font-size="10.5" fill="#5a5049">AG Client Addon ─ 常駐・ホットキーで呼出</text>
+  <text x="616" y="912" font-size="10.5" fill="#5a5049">MotionPNGPlayer ─ 音声・口パクデータのみ受信</text>
+
+  <!-- 接続 -->
+  <line x1="544" y1="760" x2="596" y2="742" stroke="#7f9dbb" stroke-width="2" marker-start="url(#ahb)" marker-end="url(#ahb)"/>
+  <line x1="544" y1="850" x2="596" y2="866" stroke="#7f9dbb" stroke-width="2" marker-start="url(#ahb)" marker-end="url(#ahb)"/>
+  <text x="568" y="812" font-size="10.5" fill="#55708a" text-anchor="middle" paint-order="stroke" stroke="#edf3f8" stroke-width="5" stroke-linejoin="round">HTTPS＋WSS /ws</text>
+
+  <!-- 遮断・認証キャプション -->
+  <g stroke="#c0392b" stroke-width="3" stroke-linecap="round">
+    <line x1="316" y1="978" x2="328" y2="990"/>
+    <line x1="328" y1="978" x2="316" y2="990"/>
+  </g>
+  <text x="340" y="989" font-size="12.5" fill="#5a5049">インターネットからは到達不可 ─ ポート開放なし</text>
+  <text x="340" y="1012" font-size="11.5" fill="#8b7f78">追加のログイン認証はなし ─ アクセス制御はtailnetの参加管理</text>
+  <line x1="545" y1="126" x2="545" y2="90" stroke="#8a817c" stroke-width="2" marker-start="url(#ah)" marker-end="url(#ah)"/>
+  <line x1="200" y1="722" x2="200" y2="626" stroke="#8a817c" stroke-width="2" marker-start="url(#ah)" marker-end="url(#ah)"/>
+  <text x="328" y="158" font-size="10.5" fill="#8b7f78" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">HTTP（UI操作）</text>
+  <text x="330" y="226" font-size="10.5" fill="#8b7f78" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">WS 8765</text>
+  <text x="330" y="242" font-size="10.5" fill="#8b7f78" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">音声・口パク</text>
+  <text x="557" y="112" font-size="10.5" fill="#8b7f78" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">HTTPS</text>
+  <text x="212" y="688" font-size="10.5" fill="#8b7f78" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">HTTPS</text>
+  </g>
+</svg>

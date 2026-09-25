@@ -1,0 +1,29 @@
+{
+  "extName": {
+    "message": "AG Tab Reporter"
+  },
+  "extDescription": {
+    "message": "Provides Chrome tab information to Artificial Girlfriend"
+  },
+  "connectionStatus": {
+    "message": "Connection Status"
+  },
+  "connected": {
+    "message": "Connected"
+  },
+  "disconnected": {
+    "message": "Disconnected"
+  },
+  "serverLabel": {
+    "message": "Server"
+  },
+  "reconnect": {
+    "message": "Reconnect"
+  },
+  "reconnecting": {
+    "message": "Reconnecting..."
+  },
+  "footer": {
+    "message": "Artificial Girlfriend Chrome Extension"
+  }
+}

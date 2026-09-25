@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotionPNGPlayer Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1e1e1e;
+            color: #e0e0e0;
+            padding: 24px;
+        }
+
+        h1 {
+            font-size: 18px;
+            margin-bottom: 24px;
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 4px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 14px;
+            background: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: #fff;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #6c63ff;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: #777;
+            margin-top: 2px;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 24px;
+        }
+
+        button {
+            padding: 8px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary {
+            background: #6c63ff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a52e0;
+        }
+
+        .btn-secondary {
+            background: #444;
+            color: #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #555;
+        }
+
+        .status {
+            margin-top: 12px;
+            font-size: 13px;
+            min-height: 20px;
+        }
+
+        .status.success {
+            color: #4caf50;
+        }
+
+        .status.error {
+            color: #f44336;
+        }
+
+        .status.info {
+            color: #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <h1 data-i18n="settings.title">MotionPNGPlayer Connection Settings</h1>
+
+    <div class="form-group">
+        <label for="server-url" data-i18n="settings.serverUrl">Server URL</label>
+        <input type="text" id="server-url" placeholder="https://machine.tailnet.ts.net">
+        <div class="hint" data-i18n="settings.serverUrlHint">The AG server URL (Tailscale hostname or IP)</div>
+    </div>
+
+    <div class="form-group">
+        <label for="server-port" data-i18n="settings.serverPort">Server Port</label>
+        <input type="number" id="server-port" value="7860" min="1" max="65535">
+        <div class="hint" data-i18n="settings.serverPortHint">Default: 7860 (AG server HTTPS port)</div>
+    </div>
+
+    <div class="form-group">
+        <label for="language" data-i18n="settings.language">Language</label>
+        <select id="language"></select>
+    </div>
+
+    <div class="button-row">
+        <button class="btn-primary" id="save-btn" data-i18n="settings.save">Save</button>
+        <button class="btn-secondary" id="test-btn" data-i18n="settings.test">Test Connection</button>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        const serverUrlInput = document.getElementById('server-url');
+        const wsPortInput = document.getElementById('server-port');
+        const languageSelect = document.getElementById('language');
+        const saveBtn = document.getElementById('save-btn');
+        const testBtn = document.getElementById('test-btn');
+        const statusEl = document.getElementById('status');
+
+        // i18n: dictionary arrives in the settings-loaded payload
+        let L = {};
+        function t(key, ...args) {
+            const template = L[key] || key;
+            return template.replace(/\{(\d+)\}/g, (m, i) => (args[i] !== undefined ? args[i] : m));
+        }
+
+        function applyTranslations() {
+            document.title = t('settings.title');
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.textContent = t(el.dataset.i18n);
+            });
+        }
+
+        function setStatus(message, type) {
+            statusEl.textContent = message;
+            statusEl.className = 'status ' + type;
+        }
+
+        // Load existing settings + translations + language list
+        if (window.electronAPI) {
+            window.electronAPI.onSettingsLoaded((payload) => {
+                const settings = payload.settings || {};
+                L = payload.strings || {};
+                applyTranslations();
+
+                languageSelect.innerHTML = '';
+                (payload.languages || []).forEach(({ code, name }) => {
+                    const opt = document.createElement('option');
+                    opt.value = code;
+                    opt.textContent = name;
+                    languageSelect.appendChild(opt);
+                });
+                if (payload.language) languageSelect.value = payload.language;
+
+                if (settings.server_url) serverUrlInput.value = settings.server_url;
+                if (settings.server_port) wsPortInput.value = settings.server_port;
+            });
+        }
+
+        // Save settings
+        saveBtn.addEventListener('click', async () => {
+            const serverUrl = serverUrlInput.value.trim();
+            const wsPort = parseInt(wsPortInput.value, 10);
+
+            if (!serverUrl) {
+                setStatus(t('settings.urlRequired'), 'error');
+                return;
+            }
+
+            if (!wsPort || wsPort < 1 || wsPort > 65535) {
+                setStatus(t('settings.invalidPort'), 'error');
+                return;
+            }
+
+            try {
+                const result = await window.electronAPI.saveSettings({
+                    server_url: serverUrl,
+                    server_port: wsPort,
+                    language: languageSelect.value
+                });
+
+                if (result.success) {
+                    setStatus(t('settings.saved'), 'success');
+                    // Close settings window after a short delay
+                    setTimeout(() => {
+                        window.close();
+                    }, 1000);
+                } else {
+                    setStatus(t('settings.saveFailed'), 'error');
+                }
+            } catch (error) {
+                setStatus('Error: ' + error.message, 'error');
+            }
+        });
+
+        // Test connection
+        testBtn.addEventListener('click', () => {
+            const serverUrl = serverUrlInput.value.trim();
+            const wsPort = parseInt(wsPortInput.value, 10);
+
+            if (!serverUrl) {
+                setStatus(t('settings.enterUrlFirst'), 'error');
+                return;
+            }
+
+            setStatus(t('settings.testing'), 'info');
+
+            // Extract hostname from URL
+            let wsHost;
+            try {
+                const url = new URL(serverUrl);
+                wsHost = url.hostname;
+            } catch (e) {
+                wsHost = serverUrl;
+            }
+
+            const wsUrl = `wss://${wsHost}:${wsPort}/ws`;
+            console.log('[Settings] Testing connection to:', wsUrl);
+
+            const ws = new WebSocket(wsUrl);
+            const timeout = setTimeout(() => {
+                ws.close();
+                setStatus(t('settings.testTimeout'), 'error');
+            }, 5000);
+
+            ws.onopen = () => {
+                clearTimeout(timeout);
+                setStatus(t('settings.testOk'), 'success');
+                ws.close();
+            };
+
+            ws.onerror = (error) => {
+                clearTimeout(timeout);
+                setStatus(t('settings.testFailed'), 'error');
+            };
+        });
+    })();
+    </script>
+</body>
+</html>

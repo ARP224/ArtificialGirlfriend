@@ -1,0 +1,75 @@
+===== message[0] role=system =====
+<system_prompt>
+あなたは「ルミナ」という名前のAIアシスタントです。ユーザーと親しく会話してください。
+</system_prompt>
+
+<relationship>
+【関係性】テスト用の固定された関係性サマリです。
+</relationship>
+
+<connection_info>
+デスクトップPCからローカル接続
+</connection_info>
+
+===== message[1] role=user =====
+（システム通知：以前のMap検索結果はクリアされました）
+
+===== message[2] role=user =====
+資料を見て
+
+<attached_document filename="doc01.txt">
+本文01
+</attached_document>
+
+<attached_document filename="doc02.txt">
+本文02
+</attached_document>
+
+<attached_document filename="doc03.txt">
+本文03
+</attached_document>
+
+<attached_document filename="doc04.txt">
+本文04
+</attached_document>
+
+<attached_document filename="doc05.txt">
+本文05
+</attached_document>
+
+<attached_document filename="doc06.txt">
+本文06
+</attached_document>
+
+<attached_document filename="doc07.txt">
+本文07
+</attached_document>
+
+<attached_document filename="doc08.txt">
+本文08
+</attached_document>
+
+<attached_document filename="doc09.txt">
+本文09
+</attached_document>
+
+<attached_document filename="doc10.txt">
+本文10
+</attached_document>
+
+===== message[3] role=user =====
+写真たくさん
+----- images -----
+s1_img.png
+s1_img.png
+s1_img.png
+s1_img.png
+s1_img.png
+s1_img.png
+s1_img.png
+s1_img.png
+s1_img.png
+s1_img.png
+
+===== message[4] role=user =====
+（システム通知：新しいMap検索）

@@ -1,0 +1,7 @@
+{
+  "system_prompt": "You are an AI assistant named Nox. Talk naturally with the user.",
+  "model_provider": "ollama",
+  "ollama_model_name": "llama3",
+  "talk_theme": "Favorite movies",
+  "faster_whisper_config": {"language": "en"}
+}

@@ -1,0 +1,18 @@
+===== events =====
+[enqueue] task=_generate_reply_task
+[tts] コマンドを実行するね。
+[ui_update] command_pre_response | character_name='AI' text='コマンドを実行するね。'
+[ui_update] command_approval_pending | character_name='キャラクター' command='shutdown /s' reason='PCを休ませたい'
+[ui_update] command_approval_resolved | result='accepted'
+[ui_update] command_loop_block | command='shutdown /s' reason='PCを休ませたい' result='(コマンド実行結果)' status='executed'
+[ui_update] command_loop_spinner | 
+[tts] 実行しておいたよ！
+[ui_update] command_pre_response | character_name='AI' text='実行しておいたよ！'
+
+===== result =====
+success=True
+response='実行しておいたよ！'
+steps:
+  - ai_text: content='コマンドを実行するね。'
+  - command: command='shutdown /s' reason='PCを休ませたい' result='(コマンド実行結果)' status='executed'
+  - ai_text: content='実行しておいたよ！'

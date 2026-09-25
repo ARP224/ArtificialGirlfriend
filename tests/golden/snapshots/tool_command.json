@@ -1,0 +1,126 @@
+{
+  "ollama": [
+    {
+      "type": "function",
+      "function": {
+        "name": "execute_command",
+        "description": "PCに対してコマンドを実行する。感情の表現、イタズラ、心配、甘えなど、キャラクターとしての行動をPCを通じて表す。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "実行するコマンド（Windows CMD / NirCMD）"
+            },
+            "reason": {
+              "type": "string",
+              "description": "なぜこのコマンドを実行したいか（感情や動機）。ユーザー確認UIで表示される。"
+            }
+          },
+          "required": [
+            "command",
+            "reason"
+          ]
+        }
+      }
+    }
+  ],
+  "openai": [
+    {
+      "type": "function",
+      "name": "execute_command",
+      "description": "PCに対してコマンドを実行する。感情の表現、イタズラ、心配、甘えなど、キャラクターとしての行動をPCを通じて表す。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "実行するコマンド（Windows CMD / NirCMD）"
+          },
+          "reason": {
+            "type": "string",
+            "description": "なぜこのコマンドを実行したいか（感情や動機）。ユーザー確認UIで表示される。"
+          }
+        },
+        "required": [
+          "command",
+          "reason"
+        ]
+      }
+    }
+  ],
+  "anthropic": [
+    {
+      "name": "execute_command",
+      "description": "PCに対してコマンドを実行する。感情の表現、イタズラ、心配、甘えなど、キャラクターとしての行動をPCを通じて表す。",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "実行するコマンド（Windows CMD / NirCMD）"
+          },
+          "reason": {
+            "type": "string",
+            "description": "なぜこのコマンドを実行したいか（感情や動機）。ユーザー確認UIで表示される。"
+          }
+        },
+        "required": [
+          "command",
+          "reason"
+        ]
+      }
+    }
+  ],
+  "xai": [
+    {
+      "type": "function",
+      "name": "execute_command",
+      "description": "PCに対してコマンドを実行する。感情の表現、イタズラ、心配、甘えなど、キャラクターとしての行動をPCを通じて表す。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "実行するコマンド（Windows CMD / NirCMD）"
+          },
+          "reason": {
+            "type": "string",
+            "description": "なぜこのコマンドを実行したいか（感情や動機）。ユーザー確認UIで表示される。"
+          }
+        },
+        "required": [
+          "command",
+          "reason"
+        ]
+      }
+    }
+  ],
+  "google": [
+    {
+      "function_declarations": [
+        {
+          "name": "execute_command",
+          "description": "PCに対してコマンドを実行する。感情の表現、イタズラ、心配、甘えなど、キャラクターとしての行動をPCを通じて表す。",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "command": {
+                "type": "STRING",
+                "description": "実行するコマンド（Windows CMD / NirCMD）"
+              },
+              "reason": {
+                "type": "STRING",
+                "description": "なぜこのコマンドを実行したいか（感情や動機）。ユーザー確認UIで表示される。"
+              }
+            },
+            "required": [
+              "command",
+              "reason"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

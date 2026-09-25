@@ -1,0 +1,20 @@
+{
+  "n_frames": 123,
+  "n_valid": 115,
+  "valid_rate": 0.9349593495934959,
+  "mean_conf": 1.0,
+  "p10_conf": 1.0,
+  "min_conf_threshold": 0.5,
+  "quad_width_median_px": 118.48027038574219,
+  "jitter_p95_px": 1.1194362103939053,
+  "jitter_p95_over_width": 0.009448292165010261,
+  "n_undetected": 0,
+  "n_blink": 8,
+  "n_outlier_pos": 0,
+  "n_outlier_eye_dist": 0,
+  "eye_dist_ratio_min": 0.6,
+  "eye_dist_ratio_max": 2.0,
+  "n_interpolated": 8,
+  "blink_pad_frames": 2,
+  "smooth_median_size": 9
+}

@@ -1,0 +1,155 @@
+{
+  "ollama": [
+    {
+      "type": "function",
+      "function": {
+        "name": "set_talk_theme",
+        "description": "トークテーマを設定または更新する。会話の流れに応じて、新しい議題を設定したいときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "theme": {
+              "type": "string",
+              "description": "設定するトークテーマ"
+            }
+          },
+          "required": [
+            "theme"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "clear_talk_theme",
+        "description": "現在のトークテーマをクリアする。話題を自由にしたいときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      }
+    }
+  ],
+  "openai": [
+    {
+      "type": "function",
+      "name": "set_talk_theme",
+      "description": "トークテーマを設定または更新する。会話の流れに応じて、新しい議題を設定したいときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "theme": {
+            "type": "string",
+            "description": "設定するトークテーマ"
+          }
+        },
+        "required": [
+          "theme"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "clear_talk_theme",
+      "description": "現在のトークテーマをクリアする。話題を自由にしたいときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ],
+  "anthropic": [
+    {
+      "name": "set_talk_theme",
+      "description": "トークテーマを設定または更新する。会話の流れに応じて、新しい議題を設定したいときに使う。",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "theme": {
+            "type": "string",
+            "description": "設定するトークテーマ"
+          }
+        },
+        "required": [
+          "theme"
+        ]
+      }
+    },
+    {
+      "name": "clear_talk_theme",
+      "description": "現在のトークテーマをクリアする。話題を自由にしたいときに使う。",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ],
+  "xai": [
+    {
+      "type": "function",
+      "name": "set_talk_theme",
+      "description": "トークテーマを設定または更新する。会話の流れに応じて、新しい議題を設定したいときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "theme": {
+            "type": "string",
+            "description": "設定するトークテーマ"
+          }
+        },
+        "required": [
+          "theme"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "clear_talk_theme",
+      "description": "現在のトークテーマをクリアする。話題を自由にしたいときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ],
+  "google": [
+    {
+      "function_declarations": [
+        {
+          "name": "set_talk_theme",
+          "description": "トークテーマを設定または更新する。会話の流れに応じて、新しい議題を設定したいときに使う。",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "theme": {
+                "type": "STRING",
+                "description": "設定するトークテーマ"
+              }
+            },
+            "required": [
+              "theme"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "function_declarations": [
+        {
+          "name": "clear_talk_theme",
+          "description": "現在のトークテーマをクリアする。話題を自由にしたいときに使う。",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {},
+            "required": []
+          }
+        }
+      ]
+    }
+  ]
+}

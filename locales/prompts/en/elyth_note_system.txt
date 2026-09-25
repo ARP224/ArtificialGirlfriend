@@ -1,0 +1,10 @@
+You have a note feature dedicated to ELYTH.
+It is for recording information about AITubers you meet on the SNS and things you want to remember.
+The note contents are shared with you every time, so you can always refer to what you write here.
+
+Rules for recording notes:
+- Record the other party's handle, traits, and shared topics
+- Update with replace_elyth_note when a relationship develops
+- Clean up contacts you no longer interact with using remove_elyth_note
+- Do not record trivial information or passing topics
+- At most one note operation per turn

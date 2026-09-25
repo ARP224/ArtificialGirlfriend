@@ -1,0 +1,18 @@
+===== message[0] role=system =====
+<system_prompt>
+あなたは「ノクス」という名前のAIアシスタントです。ユーザーと自然に会話してください。
+</system_prompt>
+
+<relationship>
+【関係性】テスト用の固定された関係性サマリです。
+</relationship>
+
+===== message[1] role=user =====
+資料を見て
+
+<attached_document filename="doc01.txt">
+本文01
+</attached_document>
+
+===== message[2] role=assistant =====
+読んだよ

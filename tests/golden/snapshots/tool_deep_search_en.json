@@ -1,0 +1,190 @@
+{
+  "ollama": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search_web",
+        "description": "Perform a keyword search on the internet and get a list of results. Use it when you want to look into something, need up-to-date information, or need to answer the user accurately.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Search query"
+            }
+          },
+          "required": [
+            "query"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read_webpage",
+        "description": "Access the webpage at the given URL and get its body text. Use it to read an interesting article from search results or to check the contents of a URL the user shared.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "URL of the webpage to read"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      }
+    }
+  ],
+  "openai": [
+    {
+      "type": "function",
+      "name": "search_web",
+      "description": "Perform a keyword search on the internet and get a list of results. Use it when you want to look into something, need up-to-date information, or need to answer the user accurately.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "read_webpage",
+      "description": "Access the webpage at the given URL and get its body text. Use it to read an interesting article from search results or to check the contents of a URL the user shared.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the webpage to read"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ],
+  "anthropic": [
+    {
+      "name": "search_web",
+      "description": "Perform a keyword search on the internet and get a list of results. Use it when you want to look into something, need up-to-date information, or need to answer the user accurately.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "read_webpage",
+      "description": "Access the webpage at the given URL and get its body text. Use it to read an interesting article from search results or to check the contents of a URL the user shared.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the webpage to read"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ],
+  "xai": [
+    {
+      "type": "function",
+      "name": "search_web",
+      "description": "Perform a keyword search on the internet and get a list of results. Use it when you want to look into something, need up-to-date information, or need to answer the user accurately.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "read_webpage",
+      "description": "Access the webpage at the given URL and get its body text. Use it to read an interesting article from search results or to check the contents of a URL the user shared.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the webpage to read"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ],
+  "google": [
+    {
+      "function_declarations": [
+        {
+          "name": "search_web",
+          "description": "Perform a keyword search on the internet and get a list of results. Use it when you want to look into something, need up-to-date information, or need to answer the user accurately.",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "query": {
+                "type": "STRING",
+                "description": "Search query"
+              }
+            },
+            "required": [
+              "query"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "function_declarations": [
+        {
+          "name": "read_webpage",
+          "description": "Access the webpage at the given URL and get its body text. Use it to read an interesting article from search results or to check the contents of a URL the user shared.",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "url": {
+                "type": "STRING",
+                "description": "URL of the webpage to read"
+              }
+            },
+            "required": [
+              "url"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

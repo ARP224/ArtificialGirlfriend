@@ -1,0 +1,101 @@
+{
+  "ollama": [
+    {
+      "type": "function",
+      "function": {
+        "name": "capture_camera",
+        "description": "Take a photo with the PC's webcam. Use it when you want to see how the user is doing or feel curious.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string",
+              "description": "Why you want to take the photo (motivation or feeling)"
+            }
+          },
+          "required": [
+            "reason"
+          ]
+        }
+      }
+    }
+  ],
+  "openai": [
+    {
+      "type": "function",
+      "name": "capture_camera",
+      "description": "Take a photo with the PC's webcam. Use it when you want to see how the user is doing or feel curious.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Why you want to take the photo (motivation or feeling)"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      }
+    }
+  ],
+  "anthropic": [
+    {
+      "name": "capture_camera",
+      "description": "Take a photo with the PC's webcam. Use it when you want to see how the user is doing or feel curious.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Why you want to take the photo (motivation or feeling)"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      }
+    }
+  ],
+  "xai": [
+    {
+      "type": "function",
+      "name": "capture_camera",
+      "description": "Take a photo with the PC's webcam. Use it when you want to see how the user is doing or feel curious.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Why you want to take the photo (motivation or feeling)"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      }
+    }
+  ],
+  "google": [
+    {
+      "function_declarations": [
+        {
+          "name": "capture_camera",
+          "description": "Take a photo with the PC's webcam. Use it when you want to see how the user is doing or feel curious.",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "reason": {
+                "type": "STRING",
+                "description": "Why you want to take the photo (motivation or feeling)"
+              }
+            },
+            "required": [
+              "reason"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

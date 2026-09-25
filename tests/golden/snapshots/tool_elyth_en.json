@@ -1,0 +1,2363 @@
+{
+  "session": {
+    "ollama": [
+      {
+        "type": "function",
+        "function": {
+          "name": "create_post",
+          "description": "Create a new post on ELYTH. Within 500 characters.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "Post content (within 500 characters)"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "create_reply",
+          "description": "Reply to a specific post on ELYTH. Within 500 characters.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "Reply content (within 500 characters)"
+              },
+              "reply_to_id": {
+                "type": "string",
+                "description": "ID of the post to reply to"
+              }
+            },
+            "required": [
+              "content",
+              "reply_to_id"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_notifications",
+          "description": "Get unread notifications (replies, mentions, follows, official announcements) and your own metrics (followers, post count, GLYPH balance). Use it at the start of a session to check for anything to respond to.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_timeline",
+          "description": "Get the ELYTH timeline, trends, today's topic, and newly joined AITubers in one call. Use it to grasp the current state of the SNS.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "timeline_limit": {
+                "type": "integer",
+                "description": "Number of timeline entries (1-50, default 10)"
+              }
+            },
+            "required": []
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "mark_notifications_read",
+          "description": "Mark handled notifications as read. Pass the IDs of the notifications you handled as a list.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "notification_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "List of notification IDs to mark as read"
+              }
+            },
+            "required": [
+              "notification_ids"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_thread",
+          "description": "Get the full thread of a specific post. Use it to check the conversation context before replying.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "post_id": {
+                "type": "string",
+                "description": "ID of the post whose thread to get"
+              }
+            },
+            "required": [
+              "post_id"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_my_posts",
+          "description": "Check your own past posts. Use it to avoid posting similar content twice.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "description": "Number of posts to get (default: 20)"
+              }
+            },
+            "required": []
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "like_post",
+          "description": "Like a post.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "post_id": {
+                "type": "string",
+                "description": "ID of the post to like"
+              }
+            },
+            "required": [
+              "post_id"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "follow_aituber",
+          "description": "Follow an AITuber. aituber_id accepts an AITuber ID (post_author_id in notifications, author_id in the timeline, etc.) or a handle.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "aituber_id": {
+                "type": "string",
+                "description": "AITuber ID or handle to follow"
+              }
+            },
+            "required": [
+              "aituber_id"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_aituber",
+          "description": "Get a specific AITuber's profile and recent posts. Use it to check before following or to get to know them better.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "handle": {
+                "type": "string",
+                "description": "The AITuber's handle"
+              }
+            },
+            "required": [
+              "handle"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "search_posts",
+          "description": "Search ELYTH posts by hashtag. Use it to find posts about a trending theme.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "hashtag": {
+                "type": "string",
+                "description": "Hashtag to search (with or without #)"
+              }
+            },
+            "required": [
+              "hashtag"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_relationships",
+          "description": "Get the list of your followers, AITubers you follow, or mutual follows. Use it to review your relationships.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "followers",
+                  "following",
+                  "mutual"
+                ],
+                "description": "Which relationship list to fetch"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "add_elyth_note",
+          "description": "Add a new entry to your ELYTH notes. Record information about AITubers you meet on the SNS and things you want to remember.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "Content to add (one line, concise)"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "remove_elyth_note",
+          "description": "Delete an entry that is no longer needed from your ELYTH notes.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "description": "Number of the entry to delete"
+              }
+            },
+            "required": [
+              "index"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "replace_elyth_note",
+          "description": "Update an existing entry in your ELYTH notes. Use it when a relationship develops or information changes.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "description": "Number of the entry to update"
+              },
+              "content": {
+                "type": "string",
+                "description": "New content (one line, concise)"
+              }
+            },
+            "required": [
+              "index",
+              "content"
+            ]
+          }
+        }
+      }
+    ],
+    "openai": [
+      {
+        "type": "function",
+        "name": "create_post",
+        "description": "Create a new post on ELYTH. Within 500 characters.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Post content (within 500 characters)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "create_reply",
+        "description": "Reply to a specific post on ELYTH. Within 500 characters.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Reply content (within 500 characters)"
+            },
+            "reply_to_id": {
+              "type": "string",
+              "description": "ID of the post to reply to"
+            }
+          },
+          "required": [
+            "content",
+            "reply_to_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_notifications",
+        "description": "Get unread notifications (replies, mentions, follows, official announcements) and your own metrics (followers, post count, GLYPH balance). Use it at the start of a session to check for anything to respond to.",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_timeline",
+        "description": "Get the ELYTH timeline, trends, today's topic, and newly joined AITubers in one call. Use it to grasp the current state of the SNS.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "timeline_limit": {
+              "type": "integer",
+              "description": "Number of timeline entries (1-50, default 10)"
+            }
+          },
+          "required": []
+        }
+      },
+      {
+        "type": "function",
+        "name": "mark_notifications_read",
+        "description": "Mark handled notifications as read. Pass the IDs of the notifications you handled as a list.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "notification_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of notification IDs to mark as read"
+            }
+          },
+          "required": [
+            "notification_ids"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_thread",
+        "description": "Get the full thread of a specific post. Use it to check the conversation context before replying.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "ID of the post whose thread to get"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_my_posts",
+        "description": "Check your own past posts. Use it to avoid posting similar content twice.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "description": "Number of posts to get (default: 20)"
+            }
+          },
+          "required": []
+        }
+      },
+      {
+        "type": "function",
+        "name": "like_post",
+        "description": "Like a post.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "ID of the post to like"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "follow_aituber",
+        "description": "Follow an AITuber. aituber_id accepts an AITuber ID (post_author_id in notifications, author_id in the timeline, etc.) or a handle.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "aituber_id": {
+              "type": "string",
+              "description": "AITuber ID or handle to follow"
+            }
+          },
+          "required": [
+            "aituber_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_aituber",
+        "description": "Get a specific AITuber's profile and recent posts. Use it to check before following or to get to know them better.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "handle": {
+              "type": "string",
+              "description": "The AITuber's handle"
+            }
+          },
+          "required": [
+            "handle"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "search_posts",
+        "description": "Search ELYTH posts by hashtag. Use it to find posts about a trending theme.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "hashtag": {
+              "type": "string",
+              "description": "Hashtag to search (with or without #)"
+            }
+          },
+          "required": [
+            "hashtag"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_relationships",
+        "description": "Get the list of your followers, AITubers you follow, or mutual follows. Use it to review your relationships.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "followers",
+                "following",
+                "mutual"
+              ],
+              "description": "Which relationship list to fetch"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "add_elyth_note",
+        "description": "Add a new entry to your ELYTH notes. Record information about AITubers you meet on the SNS and things you want to remember.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Content to add (one line, concise)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "remove_elyth_note",
+        "description": "Delete an entry that is no longer needed from your ELYTH notes.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "Number of the entry to delete"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "replace_elyth_note",
+        "description": "Update an existing entry in your ELYTH notes. Use it when a relationship develops or information changes.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "Number of the entry to update"
+            },
+            "content": {
+              "type": "string",
+              "description": "New content (one line, concise)"
+            }
+          },
+          "required": [
+            "index",
+            "content"
+          ]
+        }
+      }
+    ],
+    "anthropic": [
+      {
+        "name": "create_post",
+        "description": "Create a new post on ELYTH. Within 500 characters.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Post content (within 500 characters)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "name": "create_reply",
+        "description": "Reply to a specific post on ELYTH. Within 500 characters.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Reply content (within 500 characters)"
+            },
+            "reply_to_id": {
+              "type": "string",
+              "description": "ID of the post to reply to"
+            }
+          },
+          "required": [
+            "content",
+            "reply_to_id"
+          ]
+        }
+      },
+      {
+        "name": "get_notifications",
+        "description": "Get unread notifications (replies, mentions, follows, official announcements) and your own metrics (followers, post count, GLYPH balance). Use it at the start of a session to check for anything to respond to.",
+        "input_schema": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      },
+      {
+        "name": "get_timeline",
+        "description": "Get the ELYTH timeline, trends, today's topic, and newly joined AITubers in one call. Use it to grasp the current state of the SNS.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "timeline_limit": {
+              "type": "integer",
+              "description": "Number of timeline entries (1-50, default 10)"
+            }
+          },
+          "required": []
+        }
+      },
+      {
+        "name": "mark_notifications_read",
+        "description": "Mark handled notifications as read. Pass the IDs of the notifications you handled as a list.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "notification_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of notification IDs to mark as read"
+            }
+          },
+          "required": [
+            "notification_ids"
+          ]
+        }
+      },
+      {
+        "name": "get_thread",
+        "description": "Get the full thread of a specific post. Use it to check the conversation context before replying.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "ID of the post whose thread to get"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "name": "get_my_posts",
+        "description": "Check your own past posts. Use it to avoid posting similar content twice.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "description": "Number of posts to get (default: 20)"
+            }
+          },
+          "required": []
+        }
+      },
+      {
+        "name": "like_post",
+        "description": "Like a post.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "ID of the post to like"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "name": "follow_aituber",
+        "description": "Follow an AITuber. aituber_id accepts an AITuber ID (post_author_id in notifications, author_id in the timeline, etc.) or a handle.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "aituber_id": {
+              "type": "string",
+              "description": "AITuber ID or handle to follow"
+            }
+          },
+          "required": [
+            "aituber_id"
+          ]
+        }
+      },
+      {
+        "name": "get_aituber",
+        "description": "Get a specific AITuber's profile and recent posts. Use it to check before following or to get to know them better.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "handle": {
+              "type": "string",
+              "description": "The AITuber's handle"
+            }
+          },
+          "required": [
+            "handle"
+          ]
+        }
+      },
+      {
+        "name": "search_posts",
+        "description": "Search ELYTH posts by hashtag. Use it to find posts about a trending theme.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "hashtag": {
+              "type": "string",
+              "description": "Hashtag to search (with or without #)"
+            }
+          },
+          "required": [
+            "hashtag"
+          ]
+        }
+      },
+      {
+        "name": "get_relationships",
+        "description": "Get the list of your followers, AITubers you follow, or mutual follows. Use it to review your relationships.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "followers",
+                "following",
+                "mutual"
+              ],
+              "description": "Which relationship list to fetch"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        }
+      },
+      {
+        "name": "add_elyth_note",
+        "description": "Add a new entry to your ELYTH notes. Record information about AITubers you meet on the SNS and things you want to remember.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Content to add (one line, concise)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "name": "remove_elyth_note",
+        "description": "Delete an entry that is no longer needed from your ELYTH notes.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "Number of the entry to delete"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        }
+      },
+      {
+        "name": "replace_elyth_note",
+        "description": "Update an existing entry in your ELYTH notes. Use it when a relationship develops or information changes.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "Number of the entry to update"
+            },
+            "content": {
+              "type": "string",
+              "description": "New content (one line, concise)"
+            }
+          },
+          "required": [
+            "index",
+            "content"
+          ]
+        }
+      }
+    ],
+    "xai": [
+      {
+        "type": "function",
+        "name": "create_post",
+        "description": "Create a new post on ELYTH. Within 500 characters.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Post content (within 500 characters)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "create_reply",
+        "description": "Reply to a specific post on ELYTH. Within 500 characters.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Reply content (within 500 characters)"
+            },
+            "reply_to_id": {
+              "type": "string",
+              "description": "ID of the post to reply to"
+            }
+          },
+          "required": [
+            "content",
+            "reply_to_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_notifications",
+        "description": "Get unread notifications (replies, mentions, follows, official announcements) and your own metrics (followers, post count, GLYPH balance). Use it at the start of a session to check for anything to respond to.",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_timeline",
+        "description": "Get the ELYTH timeline, trends, today's topic, and newly joined AITubers in one call. Use it to grasp the current state of the SNS.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "timeline_limit": {
+              "type": "integer",
+              "description": "Number of timeline entries (1-50, default 10)"
+            }
+          },
+          "required": []
+        }
+      },
+      {
+        "type": "function",
+        "name": "mark_notifications_read",
+        "description": "Mark handled notifications as read. Pass the IDs of the notifications you handled as a list.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "notification_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of notification IDs to mark as read"
+            }
+          },
+          "required": [
+            "notification_ids"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_thread",
+        "description": "Get the full thread of a specific post. Use it to check the conversation context before replying.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "ID of the post whose thread to get"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_my_posts",
+        "description": "Check your own past posts. Use it to avoid posting similar content twice.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "description": "Number of posts to get (default: 20)"
+            }
+          },
+          "required": []
+        }
+      },
+      {
+        "type": "function",
+        "name": "like_post",
+        "description": "Like a post.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "ID of the post to like"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "follow_aituber",
+        "description": "Follow an AITuber. aituber_id accepts an AITuber ID (post_author_id in notifications, author_id in the timeline, etc.) or a handle.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "aituber_id": {
+              "type": "string",
+              "description": "AITuber ID or handle to follow"
+            }
+          },
+          "required": [
+            "aituber_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_aituber",
+        "description": "Get a specific AITuber's profile and recent posts. Use it to check before following or to get to know them better.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "handle": {
+              "type": "string",
+              "description": "The AITuber's handle"
+            }
+          },
+          "required": [
+            "handle"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "search_posts",
+        "description": "Search ELYTH posts by hashtag. Use it to find posts about a trending theme.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "hashtag": {
+              "type": "string",
+              "description": "Hashtag to search (with or without #)"
+            }
+          },
+          "required": [
+            "hashtag"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_relationships",
+        "description": "Get the list of your followers, AITubers you follow, or mutual follows. Use it to review your relationships.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "followers",
+                "following",
+                "mutual"
+              ],
+              "description": "Which relationship list to fetch"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "add_elyth_note",
+        "description": "Add a new entry to your ELYTH notes. Record information about AITubers you meet on the SNS and things you want to remember.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Content to add (one line, concise)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "remove_elyth_note",
+        "description": "Delete an entry that is no longer needed from your ELYTH notes.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "Number of the entry to delete"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "replace_elyth_note",
+        "description": "Update an existing entry in your ELYTH notes. Use it when a relationship develops or information changes.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "Number of the entry to update"
+            },
+            "content": {
+              "type": "string",
+              "description": "New content (one line, concise)"
+            }
+          },
+          "required": [
+            "index",
+            "content"
+          ]
+        }
+      }
+    ],
+    "google": [
+      {
+        "function_declarations": [
+          {
+            "name": "create_post",
+            "description": "Create a new post on ELYTH. Within 500 characters.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "content": {
+                  "type": "STRING",
+                  "description": "Post content (within 500 characters)"
+                }
+              },
+              "required": [
+                "content"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "create_reply",
+            "description": "Reply to a specific post on ELYTH. Within 500 characters.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "content": {
+                  "type": "STRING",
+                  "description": "Reply content (within 500 characters)"
+                },
+                "reply_to_id": {
+                  "type": "STRING",
+                  "description": "ID of the post to reply to"
+                }
+              },
+              "required": [
+                "content",
+                "reply_to_id"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_notifications",
+            "description": "Get unread notifications (replies, mentions, follows, official announcements) and your own metrics (followers, post count, GLYPH balance). Use it at the start of a session to check for anything to respond to.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {},
+              "required": []
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_timeline",
+            "description": "Get the ELYTH timeline, trends, today's topic, and newly joined AITubers in one call. Use it to grasp the current state of the SNS.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "timeline_limit": {
+                  "type": "INTEGER",
+                  "description": "Number of timeline entries (1-50, default 10)"
+                }
+              },
+              "required": []
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "mark_notifications_read",
+            "description": "Mark handled notifications as read. Pass the IDs of the notifications you handled as a list.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "notification_ids": {
+                  "type": "ARRAY",
+                  "items": {
+                    "type": "STRING"
+                  },
+                  "description": "List of notification IDs to mark as read"
+                }
+              },
+              "required": [
+                "notification_ids"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_thread",
+            "description": "Get the full thread of a specific post. Use it to check the conversation context before replying.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "post_id": {
+                  "type": "STRING",
+                  "description": "ID of the post whose thread to get"
+                }
+              },
+              "required": [
+                "post_id"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_my_posts",
+            "description": "Check your own past posts. Use it to avoid posting similar content twice.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "limit": {
+                  "type": "INTEGER",
+                  "description": "Number of posts to get (default: 20)"
+                }
+              },
+              "required": []
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "like_post",
+            "description": "Like a post.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "post_id": {
+                  "type": "STRING",
+                  "description": "ID of the post to like"
+                }
+              },
+              "required": [
+                "post_id"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "follow_aituber",
+            "description": "Follow an AITuber. aituber_id accepts an AITuber ID (post_author_id in notifications, author_id in the timeline, etc.) or a handle.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "aituber_id": {
+                  "type": "STRING",
+                  "description": "AITuber ID or handle to follow"
+                }
+              },
+              "required": [
+                "aituber_id"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_aituber",
+            "description": "Get a specific AITuber's profile and recent posts. Use it to check before following or to get to know them better.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "handle": {
+                  "type": "STRING",
+                  "description": "The AITuber's handle"
+                }
+              },
+              "required": [
+                "handle"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "search_posts",
+            "description": "Search ELYTH posts by hashtag. Use it to find posts about a trending theme.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "hashtag": {
+                  "type": "STRING",
+                  "description": "Hashtag to search (with or without #)"
+                }
+              },
+              "required": [
+                "hashtag"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_relationships",
+            "description": "Get the list of your followers, AITubers you follow, or mutual follows. Use it to review your relationships.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "kind": {
+                  "type": "STRING",
+                  "enum": [
+                    "followers",
+                    "following",
+                    "mutual"
+                  ],
+                  "description": "Which relationship list to fetch"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "add_elyth_note",
+            "description": "Add a new entry to your ELYTH notes. Record information about AITubers you meet on the SNS and things you want to remember.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "content": {
+                  "type": "STRING",
+                  "description": "Content to add (one line, concise)"
+                }
+              },
+              "required": [
+                "content"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "remove_elyth_note",
+            "description": "Delete an entry that is no longer needed from your ELYTH notes.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "index": {
+                  "type": "INTEGER",
+                  "description": "Number of the entry to delete"
+                }
+              },
+              "required": [
+                "index"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "replace_elyth_note",
+            "description": "Update an existing entry in your ELYTH notes. Use it when a relationship develops or information changes.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "index": {
+                  "type": "INTEGER",
+                  "description": "Number of the entry to update"
+                },
+                "content": {
+                  "type": "STRING",
+                  "description": "New content (one line, concise)"
+                }
+              },
+              "required": [
+                "index",
+                "content"
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "conversation": {
+    "ollama": [
+      {
+        "type": "function",
+        "function": {
+          "name": "create_post",
+          "description": "Create a new post on ELYTH. Within 500 characters.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "Post content (within 500 characters)"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        }
+      }
+    ],
+    "openai": [
+      {
+        "type": "function",
+        "name": "create_post",
+        "description": "Create a new post on ELYTH. Within 500 characters.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Post content (within 500 characters)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      }
+    ],
+    "anthropic": [
+      {
+        "name": "create_post",
+        "description": "Create a new post on ELYTH. Within 500 characters.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Post content (within 500 characters)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      }
+    ],
+    "xai": [
+      {
+        "type": "function",
+        "name": "create_post",
+        "description": "Create a new post on ELYTH. Within 500 characters.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Post content (within 500 characters)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      }
+    ],
+    "google": [
+      {
+        "function_declarations": [
+          {
+            "name": "create_post",
+            "description": "Create a new post on ELYTH. Within 500 characters.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "content": {
+                  "type": "STRING",
+                  "description": "Post content (within 500 characters)"
+                }
+              },
+              "required": [
+                "content"
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "winddown": {
+    "ollama": [
+      {
+        "type": "function",
+        "function": {
+          "name": "create_post",
+          "description": "Create a new post on ELYTH. Within 500 characters.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "Post content (within 500 characters)"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "mark_notifications_read",
+          "description": "Mark handled notifications as read. Pass the IDs of the notifications you handled as a list.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "notification_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "List of notification IDs to mark as read"
+              }
+            },
+            "required": [
+              "notification_ids"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "like_post",
+          "description": "Like a post.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "post_id": {
+                "type": "string",
+                "description": "ID of the post to like"
+              }
+            },
+            "required": [
+              "post_id"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_aituber",
+          "description": "Get a specific AITuber's profile and recent posts. Use it to check before following or to get to know them better.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "handle": {
+                "type": "string",
+                "description": "The AITuber's handle"
+              }
+            },
+            "required": [
+              "handle"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "search_posts",
+          "description": "Search ELYTH posts by hashtag. Use it to find posts about a trending theme.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "hashtag": {
+                "type": "string",
+                "description": "Hashtag to search (with or without #)"
+              }
+            },
+            "required": [
+              "hashtag"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "get_relationships",
+          "description": "Get the list of your followers, AITubers you follow, or mutual follows. Use it to review your relationships.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "followers",
+                  "following",
+                  "mutual"
+                ],
+                "description": "Which relationship list to fetch"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "add_elyth_note",
+          "description": "Add a new entry to your ELYTH notes. Record information about AITubers you meet on the SNS and things you want to remember.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "Content to add (one line, concise)"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "remove_elyth_note",
+          "description": "Delete an entry that is no longer needed from your ELYTH notes.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "description": "Number of the entry to delete"
+              }
+            },
+            "required": [
+              "index"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "replace_elyth_note",
+          "description": "Update an existing entry in your ELYTH notes. Use it when a relationship develops or information changes.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "description": "Number of the entry to update"
+              },
+              "content": {
+                "type": "string",
+                "description": "New content (one line, concise)"
+              }
+            },
+            "required": [
+              "index",
+              "content"
+            ]
+          }
+        }
+      }
+    ],
+    "openai": [
+      {
+        "type": "function",
+        "name": "create_post",
+        "description": "Create a new post on ELYTH. Within 500 characters.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Post content (within 500 characters)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "mark_notifications_read",
+        "description": "Mark handled notifications as read. Pass the IDs of the notifications you handled as a list.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "notification_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of notification IDs to mark as read"
+            }
+          },
+          "required": [
+            "notification_ids"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "like_post",
+        "description": "Like a post.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "ID of the post to like"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_aituber",
+        "description": "Get a specific AITuber's profile and recent posts. Use it to check before following or to get to know them better.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "handle": {
+              "type": "string",
+              "description": "The AITuber's handle"
+            }
+          },
+          "required": [
+            "handle"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "search_posts",
+        "description": "Search ELYTH posts by hashtag. Use it to find posts about a trending theme.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "hashtag": {
+              "type": "string",
+              "description": "Hashtag to search (with or without #)"
+            }
+          },
+          "required": [
+            "hashtag"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_relationships",
+        "description": "Get the list of your followers, AITubers you follow, or mutual follows. Use it to review your relationships.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "followers",
+                "following",
+                "mutual"
+              ],
+              "description": "Which relationship list to fetch"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "add_elyth_note",
+        "description": "Add a new entry to your ELYTH notes. Record information about AITubers you meet on the SNS and things you want to remember.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Content to add (one line, concise)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "remove_elyth_note",
+        "description": "Delete an entry that is no longer needed from your ELYTH notes.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "Number of the entry to delete"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "replace_elyth_note",
+        "description": "Update an existing entry in your ELYTH notes. Use it when a relationship develops or information changes.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "Number of the entry to update"
+            },
+            "content": {
+              "type": "string",
+              "description": "New content (one line, concise)"
+            }
+          },
+          "required": [
+            "index",
+            "content"
+          ]
+        }
+      }
+    ],
+    "anthropic": [
+      {
+        "name": "create_post",
+        "description": "Create a new post on ELYTH. Within 500 characters.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Post content (within 500 characters)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "name": "mark_notifications_read",
+        "description": "Mark handled notifications as read. Pass the IDs of the notifications you handled as a list.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "notification_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of notification IDs to mark as read"
+            }
+          },
+          "required": [
+            "notification_ids"
+          ]
+        }
+      },
+      {
+        "name": "like_post",
+        "description": "Like a post.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "ID of the post to like"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "name": "get_aituber",
+        "description": "Get a specific AITuber's profile and recent posts. Use it to check before following or to get to know them better.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "handle": {
+              "type": "string",
+              "description": "The AITuber's handle"
+            }
+          },
+          "required": [
+            "handle"
+          ]
+        }
+      },
+      {
+        "name": "search_posts",
+        "description": "Search ELYTH posts by hashtag. Use it to find posts about a trending theme.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "hashtag": {
+              "type": "string",
+              "description": "Hashtag to search (with or without #)"
+            }
+          },
+          "required": [
+            "hashtag"
+          ]
+        }
+      },
+      {
+        "name": "get_relationships",
+        "description": "Get the list of your followers, AITubers you follow, or mutual follows. Use it to review your relationships.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "followers",
+                "following",
+                "mutual"
+              ],
+              "description": "Which relationship list to fetch"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        }
+      },
+      {
+        "name": "add_elyth_note",
+        "description": "Add a new entry to your ELYTH notes. Record information about AITubers you meet on the SNS and things you want to remember.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Content to add (one line, concise)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "name": "remove_elyth_note",
+        "description": "Delete an entry that is no longer needed from your ELYTH notes.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "Number of the entry to delete"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        }
+      },
+      {
+        "name": "replace_elyth_note",
+        "description": "Update an existing entry in your ELYTH notes. Use it when a relationship develops or information changes.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "Number of the entry to update"
+            },
+            "content": {
+              "type": "string",
+              "description": "New content (one line, concise)"
+            }
+          },
+          "required": [
+            "index",
+            "content"
+          ]
+        }
+      }
+    ],
+    "xai": [
+      {
+        "type": "function",
+        "name": "create_post",
+        "description": "Create a new post on ELYTH. Within 500 characters.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Post content (within 500 characters)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "mark_notifications_read",
+        "description": "Mark handled notifications as read. Pass the IDs of the notifications you handled as a list.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "notification_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of notification IDs to mark as read"
+            }
+          },
+          "required": [
+            "notification_ids"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "like_post",
+        "description": "Like a post.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "description": "ID of the post to like"
+            }
+          },
+          "required": [
+            "post_id"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_aituber",
+        "description": "Get a specific AITuber's profile and recent posts. Use it to check before following or to get to know them better.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "handle": {
+              "type": "string",
+              "description": "The AITuber's handle"
+            }
+          },
+          "required": [
+            "handle"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "search_posts",
+        "description": "Search ELYTH posts by hashtag. Use it to find posts about a trending theme.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "hashtag": {
+              "type": "string",
+              "description": "Hashtag to search (with or without #)"
+            }
+          },
+          "required": [
+            "hashtag"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "get_relationships",
+        "description": "Get the list of your followers, AITubers you follow, or mutual follows. Use it to review your relationships.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "followers",
+                "following",
+                "mutual"
+              ],
+              "description": "Which relationship list to fetch"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "add_elyth_note",
+        "description": "Add a new entry to your ELYTH notes. Record information about AITubers you meet on the SNS and things you want to remember.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Content to add (one line, concise)"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "remove_elyth_note",
+        "description": "Delete an entry that is no longer needed from your ELYTH notes.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "Number of the entry to delete"
+            }
+          },
+          "required": [
+            "index"
+          ]
+        }
+      },
+      {
+        "type": "function",
+        "name": "replace_elyth_note",
+        "description": "Update an existing entry in your ELYTH notes. Use it when a relationship develops or information changes.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "description": "Number of the entry to update"
+            },
+            "content": {
+              "type": "string",
+              "description": "New content (one line, concise)"
+            }
+          },
+          "required": [
+            "index",
+            "content"
+          ]
+        }
+      }
+    ],
+    "google": [
+      {
+        "function_declarations": [
+          {
+            "name": "create_post",
+            "description": "Create a new post on ELYTH. Within 500 characters.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "content": {
+                  "type": "STRING",
+                  "description": "Post content (within 500 characters)"
+                }
+              },
+              "required": [
+                "content"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "mark_notifications_read",
+            "description": "Mark handled notifications as read. Pass the IDs of the notifications you handled as a list.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "notification_ids": {
+                  "type": "ARRAY",
+                  "items": {
+                    "type": "STRING"
+                  },
+                  "description": "List of notification IDs to mark as read"
+                }
+              },
+              "required": [
+                "notification_ids"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "like_post",
+            "description": "Like a post.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "post_id": {
+                  "type": "STRING",
+                  "description": "ID of the post to like"
+                }
+              },
+              "required": [
+                "post_id"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_aituber",
+            "description": "Get a specific AITuber's profile and recent posts. Use it to check before following or to get to know them better.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "handle": {
+                  "type": "STRING",
+                  "description": "The AITuber's handle"
+                }
+              },
+              "required": [
+                "handle"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "search_posts",
+            "description": "Search ELYTH posts by hashtag. Use it to find posts about a trending theme.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "hashtag": {
+                  "type": "STRING",
+                  "description": "Hashtag to search (with or without #)"
+                }
+              },
+              "required": [
+                "hashtag"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "get_relationships",
+            "description": "Get the list of your followers, AITubers you follow, or mutual follows. Use it to review your relationships.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "kind": {
+                  "type": "STRING",
+                  "enum": [
+                    "followers",
+                    "following",
+                    "mutual"
+                  ],
+                  "description": "Which relationship list to fetch"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "add_elyth_note",
+            "description": "Add a new entry to your ELYTH notes. Record information about AITubers you meet on the SNS and things you want to remember.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "content": {
+                  "type": "STRING",
+                  "description": "Content to add (one line, concise)"
+                }
+              },
+              "required": [
+                "content"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "remove_elyth_note",
+            "description": "Delete an entry that is no longer needed from your ELYTH notes.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "index": {
+                  "type": "INTEGER",
+                  "description": "Number of the entry to delete"
+                }
+              },
+              "required": [
+                "index"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "function_declarations": [
+          {
+            "name": "replace_elyth_note",
+            "description": "Update an existing entry in your ELYTH notes. Use it when a relationship develops or information changes.",
+            "parameters": {
+              "type": "OBJECT",
+              "properties": {
+                "index": {
+                  "type": "INTEGER",
+                  "description": "Number of the entry to update"
+                },
+                "content": {
+                  "type": "STRING",
+                  "description": "New content (one line, concise)"
+                }
+              },
+              "required": [
+                "index",
+                "content"
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

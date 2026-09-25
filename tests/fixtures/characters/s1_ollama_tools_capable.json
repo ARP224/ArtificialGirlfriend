@@ -1,0 +1,7 @@
+{
+  "system_prompt": "あなたは「ノクス」という名前のAIアシスタントです。ユーザーと自然に会話してください。",
+  "model_provider": "ollama",
+  "model_name": "qwen-tools-test:latest",
+  "talk_theme": "好きな映画について",
+  "faster_whisper_config": {"language": "ja"}
+}

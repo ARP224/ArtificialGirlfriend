@@ -1,0 +1,22 @@
+Based on the following information, summarize the relationship with the user from the character's first-person perspective.
+
+<character_profile>
+{system_prompt}
+</character_profile>
+
+{notes_section}{memories_section}<previous_relationship>
+{previous_relationship}
+</previous_relationship>
+
+<recent_conversation>
+{conversation}
+</recent_conversation>
+
+Based on the above, write the following 3 sections with the bracketed [ ] headers shown below, within 1000 characters total.
+Reflect the character's personality and speech style, as if the character is writing in their own words.
+If there is a previous relationship text, use it as reference while updating it to reflect the latest conversation.
+Always write the body in English (keep the [ ] header format unchanged).
+
+[Impression of the user]
+[Feelings toward the user]
+[How I want to interact going forward]

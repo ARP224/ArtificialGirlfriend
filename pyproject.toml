@@ -1,0 +1,62 @@
+# Project config — pytest / ruff / mypy for this repo.
+# Scope is deliberately narrow: make pytest run; lint/type checking stay lenient.
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+# Repo root on sys.path so tests can `import backend.*` / `import ui.*`
+# without an installed package (no src/ layout).
+pythonpath = ["."]
+# --capture=no is REQUIRED, not cosmetic: somewhere in the memory/prompt path
+# the app closes a stdio file descriptor, which crashes pytest's stdout/stderr
+# capture (both fd- and sys-level) with "I/O operation on closed file" on the
+# *next* test's teardown. Disabling capture sidesteps it without editing the
+# load-bearing files. App logs are silenced in conftest (logging.disable) so
+# output stays readable. (The fd-closing app smell is out of S1 scope.)
+addopts = "-ra --capture=no"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+# ---------------------------------------------------------------------------
+# ruff — deliberately permissive: pyflakes-level errors only, no repo-wide
+# reformat. The three legacy load-bearing files are excluded from format/lint
+# churn on purpose (their historical formatting/EOL is intentional; EOL churn
+# kills diffs — never reformat them).
+# ---------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = [
+    "ui/app.py",
+    "backend/conversation_manager.py",
+    "backend/backend.py",
+]
+
+[tool.ruff.lint]
+# pyflakes (F) + a few unambiguous pycodestyle errors.
+select = ["F", "E4", "E7", "E9"]
+ignore = [
+    "F401",  # unused imports — abundant pre-existing; cleaned up opportunistically
+    "F841",  # unused locals — ditto
+]
+
+[tool.ruff.format]
+quote-style = "preserve"
+
+# ---------------------------------------------------------------------------
+# mypy — lenient defaults so an incidental run is advisory, never a wall.
+# (mypy itself is not installed; config kept for optional future adoption.)
+# ---------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+follow_imports = "silent"
+warn_unused_ignores = false
+disallow_untyped_defs = false
+check_untyped_defs = false
+exclude = [
+    "ui/app\\.py$",
+    "backend/conversation_manager\\.py$",
+    "backend/backend\\.py$",
+]

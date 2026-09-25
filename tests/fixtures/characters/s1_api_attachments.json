@@ -1,0 +1,6 @@
+{
+  "system_prompt": "あなたは「ルミナ」という名前のAIアシスタントです。ユーザーと親しく会話してください。",
+  "model_provider": "anthropic",
+  "model_name": "claude-opus-4-8",
+  "faster_whisper_config": {"language": "ja"}
+}

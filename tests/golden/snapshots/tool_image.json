@@ -1,0 +1,101 @@
+{
+  "ollama": [
+    {
+      "type": "function",
+      "function": {
+        "name": "generate_image",
+        "description": "画像を生成する。自己表現や図解など、画像で表現するのが望ましいときに使う。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "prompt": {
+              "type": "string",
+              "description": "生成したい画像の詳細な説明"
+            }
+          },
+          "required": [
+            "prompt"
+          ]
+        }
+      }
+    }
+  ],
+  "openai": [
+    {
+      "type": "function",
+      "name": "generate_image",
+      "description": "画像を生成する。自己表現や図解など、画像で表現するのが望ましいときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "生成したい画像の詳細な説明"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    }
+  ],
+  "anthropic": [
+    {
+      "name": "generate_image",
+      "description": "画像を生成する。自己表現や図解など、画像で表現するのが望ましいときに使う。",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "生成したい画像の詳細な説明"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    }
+  ],
+  "xai": [
+    {
+      "type": "function",
+      "name": "generate_image",
+      "description": "画像を生成する。自己表現や図解など、画像で表現するのが望ましいときに使う。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "生成したい画像の詳細な説明"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    }
+  ],
+  "google": [
+    {
+      "function_declarations": [
+        {
+          "name": "generate_image",
+          "description": "画像を生成する。自己表現や図解など、画像で表現するのが望ましいときに使う。",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "prompt": {
+                "type": "STRING",
+                "description": "生成したい画像の詳細な説明"
+              }
+            },
+            "required": [
+              "prompt"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

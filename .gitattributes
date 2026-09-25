@@ -1,0 +1,21 @@
+# プロンプトカタログはbyte契約(tests/golden)の一部。checkout時のCRLF化で
+# LLMに届く文字列が変わるのを防ぐため、EOLをLFに固定する。
+# それ以外のファイルはEOL現状維持の方針のため意図的にルールなし。
+locales/prompts/** text eol=lf
+
+# 配布スクリプトのEOLは実行契約: .commandはLF必須(CRLFだとMacで bad interpreter)、
+# .batはCRLF維持。Git for Windows既定(core.autocrlf=true)のclone時変換で
+# .commandが壊れる事故の恒久対策(2026-08-01 サブOSclone→Samba→Mac転送で実踏)。
+*.command text eol=lf
+# .batはバイト凍結: blob=配布バイトとなり、変換機構の実装差に依らず
+# clone/GitHub ZIP/git archive全経路でCRLFのまま届く。
+# git側の自動矯正が無い代償は tests/meta/test_script_eol.py がguardする。
+*.bat -text
+
+# 同梱モデルキャラクター(Momo/Cecilia/Stella)の Motion 素材はバイト凍結:
+# 位置データ .json も含め、変換なしで原本と同一バイトのまま届ける。
+MotionPNGPlayer/Asset/** -text
+# 同梱キャラのシステムプロンプト/設定は LLM に届く文字列 → LF に固定
+# (locales/prompts と同じ理由)。icon.png はバイナリ自動判定に任せる。
+model_characters/**/*.txt text eol=lf
+model_characters/**/*.json text eol=lf

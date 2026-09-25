@@ -1,0 +1,7 @@
+{
+  "system_prompt": "You are an AI assistant named Lumina. Chat with the user in a friendly way.",
+  "model_provider": "anthropic",
+  "model_name": "claude-opus-4-8",
+  "_dynamic_pc_status": "The user is currently editing code in VSCode.",
+  "faster_whisper_config": {"language": "en"}
+}

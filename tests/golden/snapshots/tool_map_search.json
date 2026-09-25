@@ -1,0 +1,299 @@
+{
+  "ollama": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search_places",
+        "description": "ユーザーの現在地付近のお店や場所を検索する。「近くのラーメン」「カフェ」のような検索ができる。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "検索クエリ（例: ラーメン、カフェ、コンビニ）"
+            }
+          },
+          "required": [
+            "query"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_place_details",
+        "description": "search_placesで取得した場所の口コミやAI要約を取得する。place_idはsearch_placesの結果から取得すること。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "place_id": {
+              "type": "string",
+              "description": "search_placesの結果から取得したPlace ID"
+            }
+          },
+          "required": [
+            "place_id"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_directions",
+        "description": "ユーザーの現在地から目的地までの距離・所要時間・ルートを案内する。place_idはsearch_placesの結果から取得すること。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "place_id": {
+              "type": "string",
+              "description": "目的地のPlace ID"
+            },
+            "mode": {
+              "type": "string",
+              "description": "移動手段: walking（徒歩）, driving（車）, transit（公共交通機関）。デフォルトはwalking。"
+            }
+          },
+          "required": [
+            "place_id"
+          ]
+        }
+      }
+    }
+  ],
+  "openai": [
+    {
+      "type": "function",
+      "name": "search_places",
+      "description": "ユーザーの現在地付近のお店や場所を検索する。「近くのラーメン」「カフェ」のような検索ができる。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "検索クエリ（例: ラーメン、カフェ、コンビニ）"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "get_place_details",
+      "description": "search_placesで取得した場所の口コミやAI要約を取得する。place_idはsearch_placesの結果から取得すること。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "place_id": {
+            "type": "string",
+            "description": "search_placesの結果から取得したPlace ID"
+          }
+        },
+        "required": [
+          "place_id"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "get_directions",
+      "description": "ユーザーの現在地から目的地までの距離・所要時間・ルートを案内する。place_idはsearch_placesの結果から取得すること。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "place_id": {
+            "type": "string",
+            "description": "目的地のPlace ID"
+          },
+          "mode": {
+            "type": "string",
+            "description": "移動手段: walking（徒歩）, driving（車）, transit（公共交通機関）。デフォルトはwalking。"
+          }
+        },
+        "required": [
+          "place_id"
+        ]
+      }
+    }
+  ],
+  "anthropic": [
+    {
+      "name": "search_places",
+      "description": "ユーザーの現在地付近のお店や場所を検索する。「近くのラーメン」「カフェ」のような検索ができる。",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "検索クエリ（例: ラーメン、カフェ、コンビニ）"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "get_place_details",
+      "description": "search_placesで取得した場所の口コミやAI要約を取得する。place_idはsearch_placesの結果から取得すること。",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "place_id": {
+            "type": "string",
+            "description": "search_placesの結果から取得したPlace ID"
+          }
+        },
+        "required": [
+          "place_id"
+        ]
+      }
+    },
+    {
+      "name": "get_directions",
+      "description": "ユーザーの現在地から目的地までの距離・所要時間・ルートを案内する。place_idはsearch_placesの結果から取得すること。",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "place_id": {
+            "type": "string",
+            "description": "目的地のPlace ID"
+          },
+          "mode": {
+            "type": "string",
+            "description": "移動手段: walking（徒歩）, driving（車）, transit（公共交通機関）。デフォルトはwalking。"
+          }
+        },
+        "required": [
+          "place_id"
+        ]
+      }
+    }
+  ],
+  "xai": [
+    {
+      "type": "function",
+      "name": "search_places",
+      "description": "ユーザーの現在地付近のお店や場所を検索する。「近くのラーメン」「カフェ」のような検索ができる。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "検索クエリ（例: ラーメン、カフェ、コンビニ）"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "get_place_details",
+      "description": "search_placesで取得した場所の口コミやAI要約を取得する。place_idはsearch_placesの結果から取得すること。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "place_id": {
+            "type": "string",
+            "description": "search_placesの結果から取得したPlace ID"
+          }
+        },
+        "required": [
+          "place_id"
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "get_directions",
+      "description": "ユーザーの現在地から目的地までの距離・所要時間・ルートを案内する。place_idはsearch_placesの結果から取得すること。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "place_id": {
+            "type": "string",
+            "description": "目的地のPlace ID"
+          },
+          "mode": {
+            "type": "string",
+            "description": "移動手段: walking（徒歩）, driving（車）, transit（公共交通機関）。デフォルトはwalking。"
+          }
+        },
+        "required": [
+          "place_id"
+        ]
+      }
+    }
+  ],
+  "google": [
+    {
+      "function_declarations": [
+        {
+          "name": "search_places",
+          "description": "ユーザーの現在地付近のお店や場所を検索する。「近くのラーメン」「カフェ」のような検索ができる。",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "query": {
+                "type": "STRING",
+                "description": "検索クエリ（例: ラーメン、カフェ、コンビニ）"
+              }
+            },
+            "required": [
+              "query"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "function_declarations": [
+        {
+          "name": "get_place_details",
+          "description": "search_placesで取得した場所の口コミやAI要約を取得する。place_idはsearch_placesの結果から取得すること。",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "place_id": {
+                "type": "STRING",
+                "description": "search_placesの結果から取得したPlace ID"
+              }
+            },
+            "required": [
+              "place_id"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "function_declarations": [
+        {
+          "name": "get_directions",
+          "description": "ユーザーの現在地から目的地までの距離・所要時間・ルートを案内する。place_idはsearch_placesの結果から取得すること。",
+          "parameters": {
+            "type": "OBJECT",
+            "properties": {
+              "place_id": {
+                "type": "STRING",
+                "description": "目的地のPlace ID"
+              },
+              "mode": {
+                "type": "STRING",
+                "description": "移動手段: walking（徒歩）, driving（車）, transit（公共交通機関）。デフォルトはwalking。"
+              }
+            },
+            "required": [
+              "place_id"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

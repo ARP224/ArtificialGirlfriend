@@ -1,0 +1,9 @@
+{
+  "name": "エリス",
+  "system_prompt": "あなたは「エリス」という名前のAIアシスタントです。ユーザーと親しく自然に会話してください。",
+  "model_provider": "anthropic",
+  "model_name": "claude-sonnet-4-6",
+  "elyth_api_key": "REPLACE_WITH_REAL_ELYTH_KEY",
+  "faster_whisper_config": {"language": "ja"},
+  "_baseline_note": "Layer2 baseline character (Claude + ELYTH). elyth_api_key と ELYTH エンドポイントを実環境に合わせること。ELYTH REST 往復は自動テストでは実通信しない＝この手動Layer2でのみ実通信する。ELYTH 不通時は当該3本が error 計上されるので、ベースライン採取は ELYTH 稼働状態で行うこと。"
+}
