@@ -253,6 +253,21 @@ class WebSocketManager:
             except Exception:
                 pass
 
+            # Send initial YouTube reply status. Without it the YouTube tab keeps
+            # its placeholder ("状態取得中...") after every page load until the next
+            # scheduler tick — up to 60 seconds (実機 2026-10-04).
+            try:
+                from backend.youtube.youtube_session_manager import (
+                    get_youtube_session_manager,
+                )
+                await websocket.send(json.dumps({
+                    "action": "youtube_status",
+                    "data": get_youtube_session_manager().get_status(event="initial"),
+                    "timestamp": time.time(),
+                }))
+            except Exception:
+                pass
+
             # Wait for identify message (10 second timeout)
             try:
                 raw = await asyncio.wait_for(websocket.recv(), timeout=10.0)
