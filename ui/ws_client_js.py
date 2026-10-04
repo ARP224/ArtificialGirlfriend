@@ -2666,43 +2666,116 @@ def create_websocket_init_js(port: int, client_type: str = "desktop",
                 window._youtubeTimeOffset = (status.timestamp - Date.now() / 1000);
             }}
             const event = status.event || 'status';
+            const queueTotal = (status.queue_generated || 0) + (status.queue_posting || 0);
+            const pushLog = function(line) {{
+                window._youtubeActivityEntries.push(line);
+                if (window._youtubeActivityEntries.length > 80) {{
+                    window._youtubeActivityEntries.splice(0, window._youtubeActivityEntries.length - 80);
+                }}
+            }};
 
             // ELYTH同型のアクティビティログ（コメント→返信/判定を積む）
             if (event === 'session_start') {{
                 window._youtubeActivityEntries = [{_js(t('js.youtube.log_session_start'))}];
             }}
-            // 「停止中」表示になったら常にログを消す — 稜指示 2026-07-12×2回目
-            // (トグル操作時に限らず、OFFのまま手動実行→終了で停止中へ戻る
-            //  ケースも含む。生成結果は logs/youtube_session_log.json に恒久保存)
-            if (status.state === 'paused') {{
-                window._youtubeActivityEntries = [];
-            }}
             if (event === 'comment_processed' && status.last_comment) {{
                 const c = status.last_comment;
-                window._youtubeActivityEntries.push((c.author || '?') + ': ' + (c.text || ''));
+                pushLog((c.author || '?') + ': ' + (c.text || ''));
                 let line;
                 if (c.status === 'posted') {{
                     line = '  → ' + (c.reply || '') + ' ' + {_js(t('js.youtube.log_posted'))};
+                }} else if (c.status === 'generated') {{
+                    // 生成済み・未投稿（投稿はセッションの後に投稿ワーカーが行う）
+                    line = '  → ' + (c.reply || '') + ' ' + {_js(t('js.youtube.log_pending'))};
+                }} else if (c.status === 'retry') {{
+                    line = '  → ' + {_js(t('js.youtube.log_retry'))};
                 }} else if (c.status === 'skipped') {{
+                    const skipMap = {{
+                        'permanent_error':   {_js(t('js.youtube.skip.permanent_error'))},
+                        'retry_exhausted':   {_js(t('js.youtube.skip.retry_exhausted'))},
+                        'video_unavailable': {_js(t('js.youtube.skip.video_unavailable'))},
+                        'generation_failed': {_js(t('js.youtube.skip.generation_failed'))},
+                    }};
                     line = (c.skip_reason === 'denied')
                         ? '  → ' + {_js(t('js.youtube.log_denied'))}
-                        : '  → ' + {_js(t('js.youtube.log_skipped'))}.replace('{{reason}}', c.skip_reason || '?');
+                        : '  → ' + {_js(t('js.youtube.log_skipped'))}.replace('{{reason}}', skipMap[c.skip_reason] || c.skip_reason || '?');
                 }} else {{
                     line = '  → ' + (c.reply || '');
                 }}
-                window._youtubeActivityEntries.push(line);
-                if (window._youtubeActivityEntries.length > 40) {{
-                    window._youtubeActivityEntries.splice(0, window._youtubeActivityEntries.length - 40);
+                pushLog(line);
+            }}
+            // 投稿フェーズ: 投稿はセッション(取得+生成)の後に、投稿ワーカーが間隔を
+            // 空けて行う。投稿待ちがあることと次の投稿時刻をログで見せる
+            // (稜指示 2026-10-04: 「セッション終了」の後に投稿が並び、途中で
+            //  終わったように見えた)
+            if (event === 'worker_start') {{
+                pushLog({_js(t('js.youtube.log_post_start'))}.replace('{{n}}', queueTotal));
+            }}
+            if (event === 'worker_wait') {{
+                const at = window._youtubeClockAfter(status.worker_wait_seconds);
+                pushLog((queueTotal > 0
+                    ? {_js(t('js.youtube.log_wait_next'))}.replace('{{n}}', queueTotal)
+                    : {_js(t('js.youtube.log_wait_done'))}).replace('{{time}}', at));
+            }}
+            // 「セッション終了」は投稿まで終わった時点で1回だけ出す。投稿ワーカーが
+            // 動いている間の session_end では出さない。ワーカーが先に終わる(即エラー
+            // 等)と worker_end と session_end の両方がここへ来るので、直前の行が
+            // 終了行なら重ねない。
+            if (event === 'worker_end' || (event === 'session_end' && status.state !== 'posting')) {{
+                const endLine = {_js(t('js.youtube.log_session_end'))};
+                const entries = window._youtubeActivityEntries;
+                if (entries[entries.length - 1] !== endLine) {{
+                    if (status.last_worker && status.last_worker !== 'queue_empty') {{
+                        pushLog('--- ' + window._youtubeWorkerResultText(status) + ' ---');
+                    }}
+                    pushLog(endLine);
                 }}
             }}
-            if (event === 'session_end') {{
-                window._youtubeActivityEntries.push({_js(t('js.youtube.log_session_end'))});
+            // 「停止中」表示になったら常にログを消す — 稜指示 2026-07-12×2回目
+            // (トグル操作時に限らず、OFFのまま手動実行→終了で停止中へ戻る
+            //  ケースも含む。生成結果は logs/youtube_session_log.json に恒久保存)
+            // 行を積んだ後に消す: 先に消すと、停止中へ戻る瞬間の「セッション終了」
+            // 1行だけが残る。
+            if (status.state === 'paused') {{
+                window._youtubeActivityEntries = [];
             }}
 
             window._youtubeRenderStatus();
             if (!window._youtubeTimerInterval) {{
                 window._youtubeTimerInterval = setInterval(window._youtubeRenderTimer, 1000);
             }}
+        }};
+
+        // n秒後の時刻を HH:MM で返す（ログの「次の投稿は◯◯ごろ」用）
+        window._youtubeClockAfter = function(seconds) {{
+            const d = new Date(Date.now() + Math.max(0, seconds || 0) * 1000);
+            return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+        }};
+
+        // 投稿ワーカーの最終結果の文言（「前回:」とログの両方で使う）
+        window._youtubeWorkerResultText = function(s) {{
+            const lw = s.last_worker;
+            if (lw === 'queue_empty') {{
+                const skipped = s.last_worker_skipped || 0;
+                return (skipped > 0
+                    ? {_js(t('js.youtube.worker.done_skipped'))}.replace('{{k}}', skipped)
+                    : {_js(t('js.youtube.worker.done'))}).replace('{{n}}', s.last_worker_posted || 0);
+            }}
+            const reasonMap = {{
+                'exception':      {_js(t('js.youtube.worker.exception'))},
+                'stopped':        {_js(t('js.youtube.worker.stopped'))},
+                'daily_limit':    {_js(t('js.youtube.last.daily_limit'))},
+                'quota_exceeded': {_js(t('js.youtube.worker.quota_exceeded'))},
+                'verify_failed':  {_js(t('js.youtube.worker.verify_failed'))},
+                'auth_error':     {_js(t('js.youtube.last.auth_error'))},
+            }};
+            let text = reasonMap[lw] || lw;
+            // 投稿待ちが残っているときだけ「残りは次回」を添える
+            const queueTotal = (s.queue_generated || 0) + (s.queue_posting || 0);
+            if (queueTotal > 0) {{
+                text += {_js(t('js.youtube.worker.remaining'))}.replace('{{n}}', queueTotal);
+            }}
+            return text;
         }};
 
         window._youtubeRenderStatus = function() {{
@@ -2760,17 +2833,29 @@ def create_websocket_init_js(port: int, client_type: str = "desktop",
                 parts.push('@' + s.authorized_channel.channel_title);
             }}
             if (s.dry_run) parts.push({_js(t('js.youtube.dry_run'))});
-            // 直前のセッション結果（数秒で終わるdry-run等の成果が見えるように）
-            if (s.last_session) {{
+            // 直前の結果（数秒で終わるdry-run等の成果が見えるように）。投稿ワーカーの
+            // 結果があればそれを優先する: セッション(取得+生成)が「完了」でも、投稿の
+            // 成否はワーカー側にしか出ない
+            if (s.last_worker) {{
+                parts.push({_js(t('js.youtube.last_prefix'))}.replace('{{result}}', window._youtubeWorkerResultText(s)));
+            }} else if (s.last_session) {{
                 const lastMap = {{
                     'completed':           {_js(t('js.youtube.last.completed'))},
                     'dry_run_completed':   {_js(t('js.youtube.last.dry_run_completed'))},
                     'no_new_comments':     {_js(t('js.youtube.last.no_new_comments'))},
                     'initial_baseline':    {_js(t('js.youtube.last.initial_baseline'))},
+                    'initial_no_comments': {_js(t('js.youtube.last.initial_no_comments'))},
                     'drain_queue':         {_js(t('js.youtube.last.drain_queue'))},
                     'daily_limit':         {_js(t('js.youtube.last.daily_limit'))},
                     'interrupted':         {_js(t('js.youtube.last.interrupted'))},
                     'auth_error':          {_js(t('js.youtube.last.auth_error'))},
+                    'auth_transient':      {_js(t('js.youtube.last.auth_transient'))},
+                    'fetch_failed':        {_js(t('js.youtube.last.fetch_failed'))},
+                    'llm_unavailable':     {_js(t('js.youtube.last.llm_unavailable'))},
+                    'no_character':        {_js(t('js.youtube.last.no_character'))},
+                    'no_target_channel':   {_js(t('js.youtube.last.no_target_channel'))},
+                    'shutdown':            {_js(t('js.youtube.last.shutdown'))},
+                    'exception':           {_js(t('js.youtube.last.exception'))},
                 }};
                 parts.push({_js(t('js.youtube.last_prefix'))}.replace('{{result}}', lastMap[s.last_session] || s.last_session));
             }}

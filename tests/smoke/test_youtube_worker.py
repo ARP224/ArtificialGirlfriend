@@ -58,6 +58,11 @@ def manager(monkeypatch, settings):
     mgr._last_tick = 0.0
     mgr._waiting_reason = ""
     mgr._last_session_summary = ""
+    mgr._last_worker_summary = ""
+    mgr._worker_posted = 0
+    mgr._worker_skipped = 0
+    mgr._worker_wait_seconds = 0.0
+    mgr._worker_result_fresh = False
     mgr._last_comment_activity = None
     mgr._session_done = 0
     mgr._session_total = 0
@@ -173,6 +178,112 @@ def test_worker_daily_limit_stops_before_posting(manager, monkeypatch, settings)
     end = manager._run_worker(settings)
     assert end == "daily_limit"
     assert store.load_queue()[0]["status"] == "generated"
+
+
+# ---------------------------------------------------------------------------
+# Worker: 最終結果のUI露出 (実機 2026-10-04: ワーカーが落ちても画面は
+# 「前回: 完了（返信を生成）」のままで、失敗が見えなかった)
+# ---------------------------------------------------------------------------
+
+def test_worker_loop_reports_posted_result(manager, monkeypatch, settings):
+    _enqueue_generated("c1")
+    monkeypatch.setattr(ysm_mod.youtube_api, "insert_reply", lambda cid, text: {})
+    manager._worker_loop(settings)
+    status = manager.get_status()
+    assert status["last_worker"] == "queue_empty"
+    assert (status["last_worker_posted"], status["last_worker_skipped"]) == (1, 0)
+    assert manager.yt.worker_running is False
+    assert manager._last_comment_activity["status"] == "posted"
+
+
+def test_worker_loop_reports_crash(manager, monkeypatch, settings):
+    """保存の失敗などでワーカーが例外死しても、結果は 'exception' として残り、
+    次のセッションを塞がない。"""
+    _enqueue_generated("c1")
+
+    def _boom(comment_id, **fields):
+        raise PermissionError(5, "アクセスが拒否されました。")
+    monkeypatch.setattr(store, "update_queue_item", _boom)
+    manager.yt.worker_running = True
+    manager._worker_loop(settings)
+    assert manager.get_status()["last_worker"] == "exception"
+    assert manager.yt.worker_running is False
+
+
+def test_worker_skip_is_counted_and_shown(manager, monkeypatch, settings):
+    _enqueue_generated("c1")
+
+    def _raise(cid, text):
+        raise PermanentAPIError("gone", reason="commentNotFound")
+    monkeypatch.setattr(ysm_mod.youtube_api, "insert_reply", _raise)
+    manager._worker_loop(settings)
+    status = manager.get_status()
+    assert status["last_worker"] == "queue_empty"
+    assert (status["last_worker_posted"], status["last_worker_skipped"]) == (0, 1)
+    activity = manager._last_comment_activity
+    assert activity["status"] == "skipped"
+    assert activity["skip_reason"] == "permanent_error"
+
+
+def test_worker_summary_stop_with_empty_queue_reads_as_done():
+    """最後の投稿後のクールタイム中に止めた場合、投稿待ちは残っていない＝
+    画面には「完了」として見せる。"""
+    assert YouTubeSessionManager._worker_summary("stopped") == "queue_empty"
+    _enqueue_generated("c1")
+    assert YouTubeSessionManager._worker_summary("stopped") == "stopped"
+    assert YouTubeSessionManager._worker_summary("exception") == "exception"
+
+
+def test_worker_announces_wait_before_cooldown(manager, monkeypatch, settings):
+    """クールタイムに入る前に worker_wait を通知する(UIログの「投稿待ち・次の
+    投稿時刻」の材料)。投稿済みの通知が先・待ちの通知が後。"""
+    _enqueue_generated("c1")
+    monkeypatch.setattr(ysm_mod.youtube_api, "insert_reply", lambda cid, text: {})
+    events = []
+    monkeypatch.setattr(
+        YouTubeSessionManager, "_broadcast_status_update",
+        lambda self, event="status": events.append(
+            (event, self._worker_wait_seconds, len(store.pending_queue_items()))))
+    manager._run_worker(settings)
+    assert [e[0] for e in events] == ["comment_processed", "worker_wait"]
+    assert events[1][1] > 0 and events[1][2] == 0
+
+
+def test_start_worker_announces_before_thread_runs(manager, monkeypatch, settings):
+    """worker_start はスレッド開始より先に通知する＝ワーカー自身のイベントより
+    必ず前に届く(UIログの行順が崩れない)。"""
+    _enqueue_generated("c1")
+    monkeypatch.setattr(ysm_mod.youtube_api, "insert_reply", lambda cid, text: {})
+    events = []
+    monkeypatch.setattr(YouTubeSessionManager, "_broadcast_status_update",
+                        lambda self, event="status": events.append(event))
+    assert manager._start_worker(settings) is True
+    manager._worker_thread.join(timeout=10)
+    assert events[0] == "worker_start" and events[-1] == "worker_end"
+    assert manager._worker_result_fresh is True
+    assert manager._last_worker_summary == "queue_empty"
+
+
+def test_session_end_keeps_fresh_worker_result(manager, monkeypatch, settings):
+    """ワーカーがセッションの終了処理より先に死んでも結果を消さない(2026-10-04
+    の事故の順番)。ワーカーを起動しなかったセッションは前の回の結果を消す。"""
+    monkeypatch.setattr(ysm_mod, "YouTubeSessionLogger", _NoLog)
+
+    def _gen_with_dead_worker(self, s, slog):
+        self._worker_result_fresh = True         # _start_worker が起動した
+        self._last_worker_summary = "exception"  # 直後にワーカーが例外死
+        return "completed"
+    monkeypatch.setattr(YouTubeSessionManager, "_run_generation",
+                        _gen_with_dead_worker)
+    manager._session_task(settings)
+    assert manager.get_status()["last_worker"] == "exception"
+
+    monkeypatch.setattr(YouTubeSessionManager, "_run_generation",
+                        lambda self, s, slog: "no_new_comments")
+    manager._session_task(settings)
+    status = manager.get_status()
+    assert status["last_worker"] == ""
+    assert status["last_session"] == "no_new_comments"
 
 
 # ---------------------------------------------------------------------------

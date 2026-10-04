@@ -77,6 +77,16 @@ class YouTubeSessionManager:
         # UI status extras
         self._waiting_reason: str = ""
         self._last_session_summary: str = ""
+        # 投稿ワーカーの最終結果(UIの「前回:」はこちらを優先して出す)。
+        # セッションは「取得+生成まで」で終わり、投稿の成否はここにしか出ない
+        # (実機 2026-10-04: ワーカーが落ちても画面は「完了」のままだった)。
+        self._last_worker_summary: str = ""
+        self._worker_posted: int = 0
+        self._worker_skipped: int = 0
+        self._worker_wait_seconds: float = 0.0
+        # True = 実行中/直近のセッションが投稿ワーカーを起動した(結果はワーカー
+        # が書く)。False のままセッションが終われば前の回の投稿結果を消す。
+        self._worker_result_fresh: bool = False
         # ELYTH型アクティビティログ用: 直近に処理した1件（コメント→返信/判定）。
         # JS側がcomment_processedイベントで受けて履歴表示に積む
         self._last_comment_activity: Optional[Dict[str, str]] = None
@@ -346,6 +356,7 @@ class YouTubeSessionManager:
         end_reason = "exception"
         self._session_done = 0
         self._session_total = 0
+        self._worker_result_fresh = False
         try:
             end_reason = self._run_generation(settings, slog)
         finally:
@@ -356,6 +367,11 @@ class YouTubeSessionManager:
             except Exception:
                 pass
             self._last_session_summary = end_reason
+            # このセッションがワーカーを起動していなければ、前の回の投稿結果は
+            # もう「前回」ではない。起動していれば消さない: ワーカーが即死した
+            # ときは結果が先に書かれており、ここで消すと失敗が画面から消える。
+            if not self._worker_result_fresh:
+                self._last_worker_summary = ""
             logger.info(f"[YouTube] Session ended: {end_reason}")
             self._broadcast_status_update("session_end")
 
@@ -718,12 +734,18 @@ class YouTubeSessionManager:
                 return False
             self.yt.worker_running = True
             self.yt.worker_stop_event.clear()
+            self._last_worker_summary = ""
+            self._worker_posted = 0
+            self._worker_skipped = 0
+            self._worker_result_fresh = True
             self._worker_thread = threading.Thread(
                 target=self._worker_loop, args=(dict(settings),),
                 name="youtube-post-worker", daemon=True,
             )
-            self._worker_thread.start()
+        # スレッド開始より先に知らせる: worker_start が必ずワーカー自身の
+        # イベント(投稿済み・worker_end)より前に届く＝UIログの行順が崩れない。
         self._broadcast_status_update("worker_start")
+        self._worker_thread.start()
         return True
 
     def _worker_should_stop(self) -> bool:
@@ -737,10 +759,35 @@ class YouTubeSessionManager:
             end_reason = "exception"
             logger.error(f"[YouTube] Worker crashed: {e}", exc_info=True)
         finally:
+            self._worker_wait_seconds = 0.0
+            # 結果を先に書く: worker_running を落とした後の状態通知が、結果の
+            # 入っていない「停止中」を一瞬見せないように。
+            try:
+                self._last_worker_summary = self._worker_summary(end_reason)
+            except Exception:
+                self._last_worker_summary = end_reason
             # 例外死でフラグが立ちっぱなし→全セッション恒久開始不能、を防ぐ
             self.yt.worker_running = False
             logger.info(f"[YouTube] Worker ended: {end_reason}")
             self._broadcast_status_update("worker_end")
+
+    @staticmethod
+    def _worker_summary(end_reason: str) -> str:
+        """UI向けの最終結果。停止要求で止まっても投稿待ちが残っていなければ
+        「完了」として見せる(最後の投稿後のクールタイム中に止めた場合)。"""
+        if end_reason == "stopped" and not store.pending_queue_items():
+            return "queue_empty"
+        return end_reason
+
+    def _record_worker_activity(self, item: Dict[str, Any], status: str,
+                                skip_reason: str = "") -> None:
+        """Worker-side activity (posted / skipped / retry). progress=False so
+        the n/m counter stays a generation-phase progress indicator."""
+        self._record_comment_activity(
+            {"author_name": item.get("author_name", ""),
+             "text": item.get("comment_text", "")},
+            status, reply_text=item.get("reply_text", ""),
+            skip_reason=skip_reason, progress=False)
 
     def _run_worker(self, settings: Dict[str, Any]) -> str:
         own = auth.get_authorized_channel() or {}
@@ -816,24 +863,23 @@ class YouTubeSessionManager:
                         f"(retry {retry_count}/{POST_RETRY_LIMIT}): {e}")
                     store.update_queue_item(
                         comment_id, status="generated", retry_count=retry_count)
+                    self._record_worker_activity(item, "retry")
             else:
                 self._confirm_posted(item)
-                self._record_comment_activity(
-                    {"author_name": item.get("author_name", ""),
-                     "text": item.get("comment_text", "")},
-                    "posted", reply_text=item.get("reply_text", ""),
-                    progress=False)
 
             # 1〜5分のランダムクールタイム (stop要求で即中断 — spec §4-9)
             wait_s = random.uniform(
                 min(current["cooldown_min"], current["cooldown_max"]),
                 max(current["cooldown_min"], current["cooldown_max"]),
             )
+            # UIログ用: 次の投稿(投稿待ちが無ければワーカー終了)までの待ち時間
+            self._worker_wait_seconds = wait_s
+            self._broadcast_status_update("worker_wait")
             if self.yt.worker_stop_event.wait(timeout=wait_s):
                 return "stopped"
 
     def _confirm_posted(self, item: Dict[str, Any]) -> None:
-        """posted 確定: 状態→履歴転記→カウンタ→台帳(冪等)→キュー掃除."""
+        """posted 確定: 状態→履歴転記→カウンタ→台帳(冪等)→キュー掃除→UI通知."""
         comment_id = item.get("comment_id", "")
         store.update_queue_item(comment_id, status="posted")
         store.append_history(item)
@@ -845,15 +891,20 @@ class YouTubeSessionManager:
         store.register_processed_ids(state, [comment_id])
         store.save_session_state(state)
         store.remove_queue_item(comment_id)
+        self._worker_posted += 1
+        self._record_worker_activity(item, "posted")
 
     def _skip_queue_item(self, item: Dict[str, Any], reason: str) -> None:
-        """skipped 確定: ログ記録→台帳(冪等)→キュー掃除（キューを詰まらせない）."""
+        """skipped 確定: ログ記録→台帳(冪等)→キュー掃除（キューを詰まらせない）
+        →UI通知."""
         comment_id = item.get("comment_id", "")
         store.update_queue_item(comment_id, status="skipped", skip_reason=reason)
         state = store.load_session_state()
         store.register_processed_ids(state, [comment_id])
         store.save_session_state(state)
         store.remove_queue_item(comment_id)
+        self._worker_skipped += 1
+        self._record_worker_activity(item, "skipped", skip_reason=reason)
 
     # ----- Status / UI ------------------------------------------------------
 
@@ -893,6 +944,12 @@ class YouTubeSessionManager:
             "daily_post_limit": settings["daily_post_limit"],
             "authorized_channel": auth.get_authorized_channel(),
             "last_session": self._last_session_summary,
+            # 投稿ワーカーの最終結果(空=まだ無い/投稿中)。JSの「前回:」が優先表示
+            "last_worker": self._last_worker_summary,
+            "last_worker_posted": self._worker_posted,
+            "last_worker_skipped": self._worker_skipped,
+            # worker_wait イベント時のみ意味を持つ(次の投稿までの秒数)
+            "worker_wait_seconds": self._worker_wait_seconds,
             # アクティビティログ用(JSはcomment_processedイベント時のみ積む)
             "last_comment": self._last_comment_activity,
             "session_done": self._session_done,
