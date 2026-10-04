@@ -15,7 +15,9 @@ Concurrency: the single-writer guarantee comes from the scheduler design
 (spec §4: generation never runs while the worker runs), but every
 read-modify-write here still goes through one process-wide lock as cheap
 insurance; atomic write (tmp + os.replace) protects against file corruption,
-which is a separate concern from thread exclusion.
+which is a separate concern from thread exclusion. Plain reads take the same
+lock: status broadcasts read these files from other threads at any time, and
+on Windows a reader overlapping os.replace breaks the write.
 
 Daily-count reset is READ-TIME NORMALIZATION only (spec §4 v5): both the
 limit check and the increment treat a stored date different from today
@@ -54,22 +56,40 @@ _store_lock = threading.RLock()
 # ---------------------------------------------------------------------------
 
 def _read_json(path: Path, default: Any) -> Any:
-    try:
-        with open(path, "r", encoding="utf-8-sig") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return default
-    except Exception as e:
-        logger.error(f"[YouTube] Failed to read {path.name}: {e}")
-        return default
+    # Locked: an open read handle during the writer's os.replace fails the
+    # write on Windows (PermissionError), and a read landing mid-replace fails
+    # too and would pass for "no data" — readers must not overlap a save
+    # (実機 2026-10-04: 投稿ワーカーの最初の書き込みが状態表示の読みと重なって
+    # 落ち、1件も投稿されなかった・settings_store と同じ罠).
+    with _store_lock:
+        try:
+            with open(path, "r", encoding="utf-8-sig") as f:
+                return json.load(f)
+        except FileNotFoundError:
+            return default
+        except Exception as e:
+            logger.error(f"[YouTube] Failed to read {path.name}: {e}")
+            return default
 
 
 def _atomic_write_json(path: Path, data: Any) -> None:
+    """Callers hold _store_lock (in-process readers are serialized by it)."""
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(".tmp")
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-    os.replace(str(tmp), str(path))
+    # Windows: os.replace fails with PermissionError while ANY handle is open
+    # on the target. External openers (AV scan, indexer, editor) can still
+    # hold one — retry briefly instead of losing the write (settings_store の
+    # 正準形).
+    for attempt in range(10):
+        try:
+            os.replace(str(tmp), str(path))
+            break
+        except PermissionError:
+            if attempt == 9:
+                raise
+            time.sleep(0.05)
 
 
 # ---------------------------------------------------------------------------

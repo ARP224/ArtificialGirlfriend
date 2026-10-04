@@ -158,3 +158,71 @@ def test_video_context_cache():
     assert store.get_video_context("v1") is None
     store.set_video_context("v1", "title", "desc")
     assert store.get_video_context("v1") == {"title": "title", "description": "desc"}
+
+
+# ---------------------------------------------------------------------------
+# Windows: os.replace は対象が開かれている間 PermissionError になる
+# (実機 2026-10-04: 投稿ワーカーの最初の書き込みが状態表示の読みと重なって
+#  落ち、1件も投稿されなかった — settings_store と同じ罠)
+# ---------------------------------------------------------------------------
+
+def test_queue_write_retries_replace_on_permission_error(monkeypatch):
+    """外部プロセス(AVスキャン等)が対象を握っていても書き込みを失わない。"""
+    store.append_queue_item(
+        store.make_queue_item(_comment("c1", "2026-07-11T00:00:00Z"), "reply"))
+
+    real_replace = store.os.replace
+    fails = {"left": 3}
+
+    def flaky_replace(src, dst):
+        if fails["left"] > 0:
+            fails["left"] -= 1
+            raise PermissionError(5, "アクセスが拒否されました。", src)
+        return real_replace(src, dst)
+
+    monkeypatch.setattr(store.os, "replace", flaky_replace)
+    monkeypatch.setattr(store.time, "sleep", lambda s: None)  # test speed
+
+    store.update_queue_item("c1", status="posting")
+    assert fails["left"] == 0  # the flaky window was actually exercised
+    assert store.load_queue()[0]["status"] == "posting"
+
+
+def test_concurrent_status_reads_do_not_break_writes():
+    """状態表示(get_status)と同じ読みを別スレッドで連打しながら投稿ワーカーの
+    書き込みを繰り返しても、書きが落ちず読みも空振りしない(読みをロック外で
+    行っていた頃の Windows 実機競合のロック。POSIX では元から通る)。"""
+    import threading
+
+    store.append_queue_item(
+        store.make_queue_item(_comment("c1", "2026-07-11T00:00:00Z"), "reply"))
+    state = store.load_session_state()
+    store.register_processed_ids(state, ["c1"])
+    store.save_session_state(state)
+
+    stop = threading.Event()
+    empty_reads = []
+
+    def reader():
+        while not stop.is_set():
+            # キューは常に1件・台帳は常に c1 入り — 空に見えたら読みの空振り
+            if len(store.load_queue()) != 1:
+                empty_reads.append("queue")
+            if "c1" not in store.load_session_state()["processed_ids"]:
+                empty_reads.append("state")
+
+    threads = [threading.Thread(target=reader, daemon=True) for _ in range(4)]
+    for th in threads:
+        th.start()
+    try:
+        for i in range(200):
+            store.update_queue_item(
+                "c1", status="posting" if i % 2 else "generated")
+            store.save_session_state(state)
+    finally:
+        stop.set()
+        for th in threads:
+            th.join(timeout=5)
+
+    assert not empty_reads, f"a read came back empty during a write: {empty_reads[:3]}"
+    assert store.load_queue()[0]["status"] == "posting"

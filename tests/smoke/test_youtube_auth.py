@@ -3,6 +3,7 @@ flow (2026-07-12 変更: ブラウザ自動起動なし・再発行可能). Offl
 generation and pending-state bookkeeping are exercised; no network."""
 
 import json
+from types import SimpleNamespace
 
 import pytest
 
@@ -52,3 +53,70 @@ def test_begin_flow_without_client_secret(monkeypatch, tmp_path):
     monkeypatch.setattr(auth, "CLIENT_SECRET_FILE", tmp_path / "missing.json")
     result = auth.begin_authorization_flow()
     assert not result["success"]
+
+
+# ---------------------------------------------------------------------------
+# token.json: Windows の os.replace は対象が開かれている間 PermissionError
+# になる(youtube_store と同じ罠 — get_authorized_channel は状態表示のたびに
+# token.json を読む)
+# ---------------------------------------------------------------------------
+
+_CHANNEL = {"channel_id": "UCreply0000000000000000x", "channel_title": "reply ch"}
+
+
+def _fake_creds():
+    return SimpleNamespace(
+        to_json=lambda: json.dumps({"token": "t", "refresh_token": "r"}))
+
+
+def test_token_save_retries_replace_on_permission_error(monkeypatch, tmp_path):
+    """外部プロセス(AVスキャン等)が対象を握っていても書き込みを失わない。"""
+    monkeypatch.setattr(auth, "TOKEN_FILE", tmp_path / "token.json")
+
+    real_replace = auth.os.replace
+    fails = {"left": 3}
+
+    def flaky_replace(src, dst):
+        if fails["left"] > 0:
+            fails["left"] -= 1
+            raise PermissionError(5, "アクセスが拒否されました。", src)
+        return real_replace(src, dst)
+
+    monkeypatch.setattr(auth.os, "replace", flaky_replace)
+    monkeypatch.setattr(auth.time, "sleep", lambda s: None)  # test speed
+
+    auth._save_credentials(_fake_creds(), **_CHANNEL)
+    assert fails["left"] == 0  # the flaky window was actually exercised
+    assert auth.get_authorized_channel() == _CHANNEL
+
+
+def test_concurrent_channel_reads_do_not_break_token_saves(monkeypatch, tmp_path):
+    """get_authorized_channel を別スレッドで連打しながらトークンの書き戻しを
+    繰り返しても、書きが落ちず読みも「チャンネル不明」にならない(Windows 実機
+    競合のロック。POSIX では元から通る)。"""
+    import threading
+
+    monkeypatch.setattr(auth, "TOKEN_FILE", tmp_path / "token.json")
+    auth._save_credentials(_fake_creds(), **_CHANNEL)
+
+    stop = threading.Event()
+    missing = []
+
+    def reader():
+        while not stop.is_set():
+            if auth.get_authorized_channel() != _CHANNEL:
+                missing.append(1)
+
+    threads = [threading.Thread(target=reader, daemon=True) for _ in range(4)]
+    for th in threads:
+        th.start()
+    try:
+        for _ in range(200):
+            auth._save_credentials(_fake_creds())  # refresh write keeps channel info
+    finally:
+        stop.set()
+        for th in threads:
+            th.join(timeout=5)
+
+    assert not missing, "the authorized channel read came back empty during a write"
+    assert auth.get_authorized_channel() == _CHANNEL

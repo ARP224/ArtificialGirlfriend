@@ -54,6 +54,14 @@ API_TIMEOUT = 15  # seconds
 # token at the same time).
 _token_lock = threading.RLock()
 
+# Serializes token.json file I/O only — never held across the network, unlike
+# _token_lock, so get_authorized_channel() (read on every status broadcast)
+# cannot stall behind a refresh. On Windows an open read handle makes the
+# writer's os.replace fail with PermissionError, and a read landing
+# mid-replace fails too and would pass for "no channel" — readers must not
+# overlap a save (youtube_store と同じ罠).
+_token_io_lock = threading.Lock()
+
 
 # ---------------------------------------------------------------------------
 # client_secret.json
@@ -107,13 +115,24 @@ def _atomic_write_json(path: Path, data: Dict[str, Any]) -> None:
     tmp = path.with_suffix(".tmp")
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-    os.replace(str(tmp), str(path))
+    # External openers (AV scan, indexer, editor) can still hold the target —
+    # retry briefly instead of losing the write (settings_store の正準形).
+    with _token_io_lock:
+        for attempt in range(10):
+            try:
+                os.replace(str(tmp), str(path))
+                break
+            except PermissionError:
+                if attempt == 9:
+                    raise
+                time.sleep(0.05)
 
 
 def _load_token_info() -> Optional[Dict[str, Any]]:
     try:
-        with open(TOKEN_FILE, "r", encoding="utf-8-sig") as f:
-            return json.load(f)
+        with _token_io_lock:
+            with open(TOKEN_FILE, "r", encoding="utf-8-sig") as f:
+                return json.load(f)
     except FileNotFoundError:
         return None
     except Exception as e:
