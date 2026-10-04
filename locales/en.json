@@ -229,7 +229,7 @@
   "err.delete_elyth_active": "Cannot delete this character while its ELYTH session is running. Try again after the session ends.",
   "err.delete_memory_task": "Cannot delete this character while its memory processing is running. Try again shortly.",
   "youtube.beta_title": "🧪 Beta feature",
-  "youtube.beta_body": "This feature has only been verified up to dry-run (no actual posting). It should work, but behavior including real posting is not guaranteed.",
+  "youtube.beta_body": "Real posting has been confirmed to work, but this feature has not been tested enough yet, so it is labeled beta.",
   "history.empty_recent": "Select a character to view recent messages",
   "history.tab.notes": "📝 Notes",
   "history.empty_notes": "Select a character to view notes",

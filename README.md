@@ -223,7 +223,7 @@ Three things are required in every setup: an LLM (either Ollama or a cloud API),
 Software for running LLMs on your own PC.
 
 - Install it from [ollama.com](https://ollama.com/) and `ollama pull` the models you want to use
-- **Version 0.7 or later is recommended** — older versions cannot detect model capabilities (tools/vision), so the dependent features stay grayed out
+- **Version 0.9 or later is required** (the latest version is recommended) — with older versions, conversations may not work correctly, or model capabilities (tools/vision) cannot be detected and the dependent features stay grayed out
 - While you are at it, `ollama pull nomic-embed-text` for embeddings
 
 #### Cloud LLM API keys (if using cloud LLMs)
@@ -336,7 +336,7 @@ Automatic comment replies sit right next to YouTube's policies. If you read noth
    **Reading**: this is the clause closest to this feature. The replies are not mass-produced boilerplate — each one is generated for the context of its comment — but the fact remains that an AI is posting automatically. That is exactly why the rules below make disclosure of the AI (channel name, handle, description) and restraint in volume mandatory.
 
 > [!WARNING]
-> **That said, the risk is not zero**: AI-driven automatic comment replies have little precedent, and there is no guarantee the readings above will hold up against mechanical spam detection. Comment removal, or even **suspension of the posting channel / account**, remains possible. Also, verification during development stopped at dry-run (generating replies without actually posting), and **long-term operation with real posting has not been confirmed yet** (hence the beta label). Use at your own risk.
+> **That said, the risk is not zero**: AI-driven automatic comment replies have little precedent, and there is no guarantee the readings above will hold up against mechanical spam detection. Comment removal, or even **suspension of the posting channel / account**, remains possible. Also, real posting has been confirmed to work, but **the feature, including long-term operation, has not been tested enough yet** (hence the beta label). Use at your own risk.
 
 **Usage rules (the readings above stand only on these premises)**
 
