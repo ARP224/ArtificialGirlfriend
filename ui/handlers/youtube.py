@@ -128,6 +128,24 @@ def _load_char_youtube_prompt(character_id: str) -> str:
         return ""
 
 
+def _save_char_youtube_prompt(character_id: str, youtube_prompt: str) -> None:
+    """タブ内エディタの youtube_system_prompt をキャラ設定へ書く（変更時のみ —
+    無変更でも edit_character を呼ぶとアクティブキャラの再activateが走るため）。
+
+    backend.edit_character は例外を投げず {success: False} を返すので、失敗は
+    ここで例外化して呼び手の except（保存失敗の表示）に載せる。戻り値を見て
+    いなかった頃は、保存に失敗しても「設定を保存しました」とだけ出ていた。
+    """
+    new_prompt = (youtube_prompt or "").strip()
+    if new_prompt == _load_char_youtube_prompt(character_id).strip():
+        return
+    import backend
+    response = backend.edit_character(
+        character_id, {"youtube_system_prompt": new_prompt})
+    if isinstance(response, dict) and not response.get("success", True):
+        raise RuntimeError(response.get("error", "Unknown error"))
+
+
 def _client_secret_status_html() -> str:
     """client_secret.json の取り込み状態（再起動後もファイル欄が空に見えて
     「消えた」と誤解される — 稜指摘 2026-07-12 — ので枠付きで明示する）。"""
@@ -430,15 +448,10 @@ def create_youtube_control_tab() -> Dict[str, Any]:
             if resolve_note:
                 message += "\n\n" + resolve_note
 
-            # 担当キャラのシステムプロンプトはキャラconfigへ（変更時のみ書く —
-            # 無変更でもedit_characterを呼ぶとアクティブキャラの再activateが走るため）
+            # 担当キャラのシステムプロンプトはキャラconfigへ（変更時のみ書く）
             if character_id:
                 try:
-                    new_prompt = (youtube_prompt or "").strip()
-                    if new_prompt != _load_char_youtube_prompt(character_id).strip():
-                        import backend
-                        backend.edit_character(
-                            character_id, {"youtube_system_prompt": new_prompt})
+                    _save_char_youtube_prompt(character_id, youtube_prompt)
                 except Exception as e:
                     message += "\n\n" + t('youtube.prompt_save_failed', error=e)
 
