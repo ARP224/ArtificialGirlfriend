@@ -30,6 +30,7 @@ import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
+from backend.shared.atomic_io import replace_with_retry
 from backend.shared.constants import ELYTH_THREAD_STATE_DIR
 
 logger = logging.getLogger(__name__)
@@ -59,7 +60,7 @@ def _write_json(path: Path, data: Dict[str, Any]) -> None:
         tmp = path.with_suffix(".tmp")
         with open(tmp, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-        os.replace(str(tmp), str(path))
+        replace_with_retry(tmp, path)
     except Exception as e:
         logger.error(f"[ELYTH ThreadState] Failed to write {path.name}: {e}")
 

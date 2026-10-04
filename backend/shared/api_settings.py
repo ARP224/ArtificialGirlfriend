@@ -13,6 +13,7 @@ import threading
 import requests
 from typing import Dict, List, Tuple, Optional, Any
 
+from backend.shared.atomic_io import replace_with_retry
 from backend.shared.constants import API_SETTINGS_FILE
 
 logger = logging.getLogger(__name__)
@@ -199,7 +200,7 @@ def save_api_settings(settings: Dict[str, Any]) -> None:
             tmp_path = f"{API_SETTINGS_FILE}.tmp"
             with open(tmp_path, 'w', encoding='utf-8') as f:
                 json.dump(settings, f, indent=2, ensure_ascii=False)
-            os.replace(tmp_path, str(API_SETTINGS_FILE))
+            replace_with_retry(tmp_path, API_SETTINGS_FILE)
             logger.debug("API settings saved successfully")
         except Exception as e:
             logger.error(f"Failed to save API settings: {e}")

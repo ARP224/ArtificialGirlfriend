@@ -13,6 +13,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from backend.shared.atomic_io import replace_with_retry
 from backend.shared.constants import ELYTH_RELATIONSHIP_DIR, OLLAMA_GENERATION_TIMEOUT
 
 logger = logging.getLogger(__name__)
@@ -47,7 +48,7 @@ def save_elyth_relationships(character_id: str, data: Dict[str, Any]) -> None:
         data["last_updated"] = datetime.now().isoformat()
         with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-        os.replace(str(tmp_path), str(path))
+        replace_with_retry(tmp_path, path)
         logger.info(f"[ELYTH Rel] Saved for {character_id}")
     except Exception as e:
         logger.error(f"[ELYTH Rel] Failed to save for {character_id}: {e}")

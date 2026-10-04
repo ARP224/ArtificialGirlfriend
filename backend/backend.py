@@ -64,6 +64,8 @@ from backend.shared.constants import (
     ensure_directories_exist
 )
 
+from backend.shared.atomic_io import replace_with_retry
+
 # Import shared utilities from backend_utils
 from backend.shared.backend_utils import (
     standardize_response, validate_input,
@@ -564,9 +566,10 @@ def atomic_file_operation(file_path: Path, operation: str = "write"):
             temp_path = file_path.parent / f".{file_path.name}.tmp.{os.getpid()}"
             yield temp_path
             
-            # Use os.replace for true atomic operation
+            # Use os.replace for true atomic operation (briefly retried while
+            # the target is locked on Windows — see atomic_io)
             try:
-                os.replace(str(temp_path), str(file_path))
+                replace_with_retry(temp_path, file_path)
             except OSError:
                 # Fallback for cross-filesystem moves
                 shutil.move(str(temp_path), str(file_path))

@@ -22,12 +22,12 @@ Lifecycle (called from elyth_session_manager):
 
 import json
 import logging
-import os
 import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from backend.shared.atomic_io import replace_with_retry
 from backend.shared.constants import LOGS_DIR
 
 logger = logging.getLogger(__name__)
@@ -437,6 +437,6 @@ class ELYTHCycleLogger:
             tmp_path = self.output_path.with_suffix(".tmp")
             with open(tmp_path, "w", encoding="utf-8") as f:
                 json.dump(self._data, f, ensure_ascii=False, indent=2, default=str)
-            os.replace(str(tmp_path), str(self.output_path))
+            replace_with_retry(tmp_path, self.output_path)
         except Exception as e:
             logger.warning(f"[ELYTH CycleLog] flush failed: {e}")

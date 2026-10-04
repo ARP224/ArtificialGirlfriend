@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import List, Dict, Optional, Any, Tuple
 
 from backend.llm.ollama_integration import list_ollama_models as get_ollama_models
+from backend.shared.atomic_io import replace_with_retry
 from backend.shared.backend_utils import validate_character_id
 from backend.shared.constants import (
     BASE_DIR,
@@ -301,8 +302,9 @@ def _save_config_file(path: Path, data: Dict[str, Any]) -> None:
             else:
                 json.dump(data, f, indent=2, ensure_ascii=False)
         
-        # Atomic rename (on POSIX systems)
-        os.replace(temp_path, str(path))
+        # Atomic rename. Windows refuses it while any handle is open on the
+        # target (AV scan, a reader in another thread) — retried briefly.
+        replace_with_retry(temp_path, path)
         temp_path = None  # Successfully renamed
         
     except Exception as e:

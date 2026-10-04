@@ -24,11 +24,11 @@ Flushed after every append so a crash still leaves a trail.
 
 import json
 import logging
-import os
 import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
+from backend.shared.atomic_io import replace_with_retry
 from backend.shared.constants import LOGS_DIR
 
 logger = logging.getLogger(__name__)
@@ -172,6 +172,6 @@ class YouTubeSessionLogger:
             doc = {"last_run": self._data or None, "sessions": self._sessions}
             with open(tmp, "w", encoding="utf-8") as f:
                 json.dump(doc, f, indent=2, ensure_ascii=False)
-            os.replace(str(tmp), str(self.output_path))
+            replace_with_retry(tmp, self.output_path)
         except Exception as e:
             logger.warning(f"[YouTube] Session log flush failed: {e}")

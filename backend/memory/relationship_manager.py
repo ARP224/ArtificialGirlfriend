@@ -19,6 +19,7 @@ import re
 import logging
 from typing import Optional, Tuple
 
+from backend.shared.atomic_io import replace_with_retry
 from backend.shared.constants import RELATIONSHIP_DIR
 
 logger = logging.getLogger(__name__)
@@ -68,7 +69,7 @@ def save_relationship(character_id: str, content: str) -> None:
     try:
         with open(tmp_path, "w", encoding="utf-8") as f:
             f.write(content)
-        os.replace(str(tmp_path), str(path))
+        replace_with_retry(tmp_path, path)
         logger.debug(f"Saved relationship for {character_id} ({len(content)} chars)")
     except Exception as e:
         logger.error(f"Failed to save relationship for {character_id}: {e}")

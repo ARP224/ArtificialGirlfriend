@@ -20,6 +20,8 @@ import logging
 from typing import List
 from pathlib import Path
 
+from backend.shared.atomic_io import replace_with_retry
+
 
 def load_note_entries(
     note_dir: Path, character_id: str, logger: logging.Logger, label: str = "note"
@@ -58,7 +60,7 @@ def save_note_entries(
         with open(tmp_path, "w", encoding="utf-8") as f:
             for i, entry in enumerate(entries, 1):
                 f.write(f"{i}. {entry}\n")
-        os.replace(str(tmp_path), str(path))
+        replace_with_retry(tmp_path, path)
     except Exception as e:
         logger.error(f"Failed to save {label} for {character_id}: {e}")
         if tmp_path.exists():

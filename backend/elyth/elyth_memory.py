@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
+from backend.shared.atomic_io import replace_with_retry
 from backend.shared.constants import ELYTH_SESSION_DIR
 
 logger = logging.getLogger(__name__)
@@ -97,7 +98,7 @@ def save_session_log(character_id: str, session_data: Dict[str, Any]) -> None:
     try:
         with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-        os.replace(str(tmp_path), str(path))
+        replace_with_retry(tmp_path, path)
         logger.info(
             f"[ELYTH Memory] Saved session for {character_id} "
             f"({len(session_data.get('turns', []))} turns, "
