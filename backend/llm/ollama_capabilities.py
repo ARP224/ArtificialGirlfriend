@@ -38,7 +38,6 @@ num_ctx のモデル別クランプが読む真実源。判定は /api/show の
 
 import json
 import logging
-import os
 import threading
 import time
 from datetime import datetime
@@ -47,6 +46,7 @@ from typing import Any, Dict, List, Optional
 
 import requests
 
+from backend.shared.atomic_io import replace_with_retry
 from backend.shared.constants import DATA_DIR, OLLAMA_SERVER_URL
 from backend.shared.errors import AGError
 
@@ -130,14 +130,7 @@ def _save_cache() -> None:
             with open(tmp_path, "w", encoding="utf-8") as f:
                 json.dump({"version": 1, "models": _cache}, f,
                           ensure_ascii=False, indent=2)
-            for attempt in range(10):
-                try:
-                    os.replace(str(tmp_path), str(CAPABILITIES_CACHE_FILE))
-                    break
-                except PermissionError:
-                    if attempt == 9:
-                        raise
-                    time.sleep(0.05)
+            replace_with_retry(tmp_path, CAPABILITIES_CACHE_FILE)
         except Exception as e:
             logger.warning(f"Failed to save Ollama capabilities cache: {e}")
 

@@ -21,10 +21,11 @@ import copy
 import json
 import logging
 import threading
-import time
 from pathlib import Path
 from typing import Any, Dict, Optional
 import os
+
+from backend.shared.atomic_io import replace_with_retry
 
 logger = logging.getLogger(__name__)
 
@@ -210,14 +211,7 @@ def save_settings(settings: Dict[str, Any]) -> bool:
             # is open on the target. In-process readers are serialized by
             # _settings_lock, but external openers (AV scan, indexer, editor)
             # can still hold one — retry briefly instead of losing the write.
-            for attempt in range(10):
-                try:
-                    os.replace(str(tmp_path), str(SETTINGS_FILE))
-                    break
-                except PermissionError:
-                    if attempt == 9:
-                        raise
-                    time.sleep(0.05)
+            replace_with_retry(tmp_path, SETTINGS_FILE)
 
             # 書込データをそのままキャッシュせず無効化のみ: load_settings の
             # defaults マージを経た形とズレる可能性を残さない(次回読込で正規化)

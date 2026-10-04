@@ -7,6 +7,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from backend.shared import atomic_io
 from backend.youtube import auth
 
 
@@ -73,7 +74,7 @@ def test_token_save_retries_replace_on_permission_error(monkeypatch, tmp_path):
     """外部プロセス(AVスキャン等)が対象を握っていても書き込みを失わない。"""
     monkeypatch.setattr(auth, "TOKEN_FILE", tmp_path / "token.json")
 
-    real_replace = auth.os.replace
+    real_replace = atomic_io.os.replace
     fails = {"left": 3}
 
     def flaky_replace(src, dst):
@@ -82,8 +83,8 @@ def test_token_save_retries_replace_on_permission_error(monkeypatch, tmp_path):
             raise PermissionError(5, "アクセスが拒否されました。", src)
         return real_replace(src, dst)
 
-    monkeypatch.setattr(auth.os, "replace", flaky_replace)
-    monkeypatch.setattr(auth.time, "sleep", lambda s: None)  # test speed
+    monkeypatch.setattr(atomic_io.os, "replace", flaky_replace)
+    monkeypatch.setattr(atomic_io.time, "sleep", lambda s: None)  # test speed
 
     auth._save_credentials(_fake_creds(), **_CHANNEL)
     assert fails["left"] == 0  # the flaky window was actually exercised

@@ -27,7 +27,6 @@ variant deadlocks when the limit is reached (nobody runs to flip the date).
 
 import json
 import logging
-import os
 import random
 import threading
 import time
@@ -35,6 +34,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from backend.shared.atomic_io import replace_with_retry
 from backend.shared.constants import YOUTUBE_DIR
 
 logger = logging.getLogger(__name__)
@@ -80,16 +80,8 @@ def _atomic_write_json(path: Path, data: Any) -> None:
         json.dump(data, f, indent=2, ensure_ascii=False)
     # Windows: os.replace fails with PermissionError while ANY handle is open
     # on the target. External openers (AV scan, indexer, editor) can still
-    # hold one — retry briefly instead of losing the write (settings_store の
-    # 正準形).
-    for attempt in range(10):
-        try:
-            os.replace(str(tmp), str(path))
-            break
-        except PermissionError:
-            if attempt == 9:
-                raise
-            time.sleep(0.05)
+    # hold one — retry briefly instead of losing the write.
+    replace_with_retry(tmp, path)
 
 
 # ---------------------------------------------------------------------------

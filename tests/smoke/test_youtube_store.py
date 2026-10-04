@@ -7,6 +7,7 @@ constants; no network, no LLM, no product-code bending.
 
 import pytest
 
+from backend.shared import atomic_io
 from backend.youtube import youtube_store as store
 
 
@@ -171,7 +172,7 @@ def test_queue_write_retries_replace_on_permission_error(monkeypatch):
     store.append_queue_item(
         store.make_queue_item(_comment("c1", "2026-07-11T00:00:00Z"), "reply"))
 
-    real_replace = store.os.replace
+    real_replace = atomic_io.os.replace
     fails = {"left": 3}
 
     def flaky_replace(src, dst):
@@ -180,8 +181,8 @@ def test_queue_write_retries_replace_on_permission_error(monkeypatch):
             raise PermissionError(5, "アクセスが拒否されました。", src)
         return real_replace(src, dst)
 
-    monkeypatch.setattr(store.os, "replace", flaky_replace)
-    monkeypatch.setattr(store.time, "sleep", lambda s: None)  # test speed
+    monkeypatch.setattr(atomic_io.os, "replace", flaky_replace)
+    monkeypatch.setattr(atomic_io.time, "sleep", lambda s: None)  # test speed
 
     store.update_queue_item("c1", status="posting")
     assert fails["left"] == 0  # the flaky window was actually exercised

@@ -28,7 +28,6 @@ style as map_search.py); this module only manages credentials.
 
 import json
 import logging
-import os
 import shutil
 import threading
 import time
@@ -37,6 +36,7 @@ from typing import Any, Dict, Optional
 
 import requests
 
+from backend.shared.atomic_io import replace_with_retry
 from backend.shared.constants import YOUTUBE_DIR
 
 logger = logging.getLogger(__name__)
@@ -116,16 +116,9 @@ def _atomic_write_json(path: Path, data: Dict[str, Any]) -> None:
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     # External openers (AV scan, indexer, editor) can still hold the target —
-    # retry briefly instead of losing the write (settings_store の正準形).
+    # retry briefly instead of losing the write.
     with _token_io_lock:
-        for attempt in range(10):
-            try:
-                os.replace(str(tmp), str(path))
-                break
-            except PermissionError:
-                if attempt == 9:
-                    raise
-                time.sleep(0.05)
+        replace_with_retry(tmp, path)
 
 
 def _load_token_info() -> Optional[Dict[str, Any]]:

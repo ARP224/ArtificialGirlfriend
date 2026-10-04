@@ -10,7 +10,7 @@ the whole 'display' category on shutdown silently reverts the UI language to
 
 from types import SimpleNamespace
 
-from backend.shared import settings_store
+from backend.shared import atomic_io, settings_store
 
 
 def _fake_app_state():
@@ -82,7 +82,7 @@ def test_save_retries_replace_on_permission_error(tmp_path, monkeypatch):
         return real_replace(src, dst)
 
     monkeypatch.setattr(settings_store.os, 'replace', flaky_replace)
-    monkeypatch.setattr(settings_store.time, 'sleep', lambda s: None)  # test speed
+    monkeypatch.setattr(atomic_io.time, 'sleep', lambda s: None)  # test speed
 
     assert settings_store.update_setting('audio', 'stt_local_model', 'large-v2')
     assert fails['left'] == 0  # the flaky window was actually exercised
