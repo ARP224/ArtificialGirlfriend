@@ -1,6 +1,7 @@
 """Smoke tests for backend/youtube/youtube_session_manager.py — the posting
 worker state machine (spec §4 投稿フェーズ・二重投稿防止) and the generation
-phase pipeline (spec §4 生成フェーズ), with all network/LLM seams faked."""
+phase pipeline (spec §4 生成フェーズ), with all network/LLM seams faked.
+Also the scheduler tick's auth_error recovery watch (spec §2-4)."""
 
 import threading
 from types import SimpleNamespace
@@ -497,3 +498,73 @@ def test_parse_extraction_response_variants():
     assert parse('```json\n{"memories": []}\n```') == []
     assert parse('前置き {"memories": ["x"]} 後置き') == ["x"]
     assert parse("garbage") is None
+
+
+# ---------------------------------------------------------------------------
+# Scheduler tick — auth_error recovery must not depend on the master toggle
+# (OFF 中に要再認可→再認可しても手動ボタンが再起動まで灰色のままだった:
+#  稜 実機 2026-10-12。再起動で直るのは auth_error が永続化されないため)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def tick_env(manager, monkeypatch):
+    """Deterministic clock/wake gate for _tick, plus a verify_token recorder
+    and a broadcast recorder. Returns (verify_calls, events)."""
+    monkeypatch.setattr(ysm_mod, "awake_seconds", lambda: 1000.0)
+    manager._last_tick = 1000.0
+    monkeypatch.setattr(ysm_mod, "get_wake_gate",
+                        lambda: SimpleNamespace(is_open=lambda: True))
+    verify_calls = []
+    monkeypatch.setattr(ysm_mod.auth, "verify_token",
+                        lambda: verify_calls.append(1) or {"success": True})
+    events = []
+    monkeypatch.setattr(YouTubeSessionManager, "_broadcast_status_update",
+                        lambda self, event="status": events.append(event))
+    return verify_calls, events
+
+
+@pytest.mark.parametrize("enabled", [False, True])
+def test_tick_recovers_after_reauth_regardless_of_toggle(
+        manager, monkeypatch, settings, tick_env, enabled):
+    verify_calls, events = tick_env
+    settings["enabled"] = enabled
+    manager._settings = dict(settings)
+    manager.yt.auth_error = True
+    manager.yt.auth_error_token_mtime = 100.0
+    monkeypatch.setattr(ysm_mod.auth, "token_file_mtime", lambda: 200.0)  # rewritten
+
+    manager._tick()
+
+    assert verify_calls == [1]
+    assert manager.yt.auth_error is False
+    assert manager.yt.auth_error_token_mtime is None
+    assert "auth_recovered" in events  # the browser is told → button un-greys
+    assert manager.get_status()["state"] == ("idle" if enabled else "paused")
+
+
+def test_tick_keeps_auth_error_while_token_unchanged(
+        manager, monkeypatch, settings, tick_env):
+    verify_calls, _events = tick_env
+    settings["enabled"] = False
+    manager._settings = dict(settings)
+    manager.yt.auth_error = True
+    manager.yt.auth_error_token_mtime = 100.0
+    monkeypatch.setattr(ysm_mod.auth, "token_file_mtime", lambda: 100.0)  # same file
+
+    manager._tick()
+
+    assert verify_calls == []
+    assert manager.yt.auth_error is True
+    assert manager.get_status()["state"] == "auth_error"
+
+
+def test_check_auth_recovery_is_noop_when_healthy(manager, monkeypatch, tick_env):
+    """The UI nudge (認可状態の確認 → success) must not hit the network when
+    there is nothing to recover from."""
+    verify_calls, _events = tick_env
+    monkeypatch.setattr(ysm_mod.auth, "token_file_mtime", lambda: 200.0)
+
+    manager.check_auth_recovery()
+
+    assert verify_calls == []
+    assert manager.yt.auth_error is False

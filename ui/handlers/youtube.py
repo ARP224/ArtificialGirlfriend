@@ -315,6 +315,16 @@ def create_youtube_control_tab() -> Dict[str, Any]:
         elif state == "success":
             message = t('youtube.auth_success',
                         name=status.get("channel_title") or "?")
+            # 要再認可(auth_error)中に認可し直した場合はここで即回復させる。
+            # 放っておいても次の tick(最長60秒)で回復するが、その間ボタンが
+            # 灰色のままなのは「直っていない」に見える。
+            try:
+                from backend.youtube.youtube_session_manager import (
+                    get_youtube_session_manager,
+                )
+                get_youtube_session_manager().check_auth_recovery()
+            except Exception:
+                pass
         elif state == "error":
             message = t('youtube.auth_failed', error=status.get("error", "?"))
         else:  # idle / cancelled — nothing in flight; the flow block tells the state

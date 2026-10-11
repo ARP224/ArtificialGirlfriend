@@ -186,17 +186,22 @@ class YouTubeSessionManager:
         now = awake_seconds()
         settings = self._settings
 
+        # auth_error の監視はトグル ON/OFF に関係なく回す: 手動実行は OFF でも
+        # 許可されている(稜指示 2026-07-12)ので、OFF 中に要再認可へ入ったあと
+        # 再認可しても検知されず、手動ボタンが再起動まで灰色のままだった
+        # (稜 実機 2026-10-12)。
+        self.check_auth_recovery()
+
         if not settings["enabled"]:
             self._last_tick = now
             self._waiting_reason = ""
             self._broadcast_status_update("tick")
             return
 
-        # auth_error state: no sessions; watch token.json for out-of-band
-        # re-authorization (CLI in another process) and self-recover (spec §2-4).
+        # auth_error state: no sessions (the token.json watch above handles
+        # out-of-band re-authorization and self-recovery — spec §2-4).
         if self.yt.auth_error:
             self._last_tick = now
-            self._check_auth_recovery()
             self._broadcast_status_update("tick")
             return
 
@@ -266,8 +271,17 @@ class YouTubeSessionManager:
                 return False
         return getattr(self.state, "conversation_active", False)
 
-    def _check_auth_recovery(self) -> None:
-        """token.json mtime watch → re-validate → auto-recover (spec §2-4)."""
+    def check_auth_recovery(self) -> None:
+        """token.json mtime watch → re-validate → auto-recover (spec §2-4).
+
+        No-op unless in auth_error, so the UI nudge from the 認可状態の確認
+        button never triggers a verify_token network call on a healthy state.
+        Called every scheduler tick regardless of the master toggle, and by
+        ui/handlers/youtube.py right after an in-app authorization reports
+        success so the status recovers now instead of at the next tick.
+        """
+        if not self.yt.auth_error:
+            return
         current = auth.token_file_mtime()
         recorded = self.yt.auth_error_token_mtime
         changed = (
